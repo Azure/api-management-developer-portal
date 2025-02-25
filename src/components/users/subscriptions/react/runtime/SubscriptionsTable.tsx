@@ -27,6 +27,7 @@ import { Subscription } from "../../../../../models/subscription";
 import { formatDate } from "../../../../utils";
 import { ValueOrFieldWBtn } from "../../../../utils/react/ValueOrField";
 import { NoRecordsRow } from "../../../../utils/react/NoRecordsRow";
+import { ScrollableTableContainer } from "../../../../utils/react/ScrollableTableContainer";
 
 const hiddenKey = "XXXXXXXXXXXXXXXXXXXXXXXXXX";
 
@@ -184,59 +185,61 @@ const SubscriptionRow = ({ sub, saveName, cancelSubscription, regeneratePKey, re
 
 export const SubscriptionsTable = ({ subscriptions, saveName, cancelSubscription, regeneratePKey, regenerateSKey }: TPropsCommon & { subscriptions: Subscription[] }) => {
     return (
-        <Table
-            className={"fui-table"}
-            size={"small"}
-            aria-label={"Subscriptions list"}
-            style={{ tableLayout: 'auto', width: "100%" }}
-        >
-            <TableHeader>
-                <TableRow className={"fui-table-headerRow"}>
-                    <TableHeaderCell>
-                        <span className="strong">Name</span>
-                    </TableHeaderCell>
+        <ScrollableTableContainer>
+            <Table
+                className={"fui-table"}
+                size={"small"}
+                aria-label={"Subscriptions list"}
+                style={{ tableLayout: 'auto', width: "100%" }}
+            >
+                <TableHeader>
+                    <TableRow className={"fui-table-headerRow"}>
+                        <TableHeaderCell>
+                            <span className="strong">Name</span>
+                        </TableHeaderCell>
 
-                    <TableHeaderCell>
-                        <span className="strong">Product</span>
-                    </TableHeaderCell>
+                        <TableHeaderCell>
+                            <span className="strong">Product</span>
+                        </TableHeaderCell>
 
-                    <TableHeaderCell>
-                        <span className="strong">State</span>
-                    </TableHeaderCell>
+                        <TableHeaderCell>
+                            <span className="strong">State</span>
+                        </TableHeaderCell>
 
-                    <TableHeaderCell>
-                        <span className="strong">Primary key</span>
-                    </TableHeaderCell>
+                        <TableHeaderCell>
+                            <span className="strong">Primary key</span>
+                        </TableHeaderCell>
 
-                    <TableHeaderCell>
-                        <span className="strong">Secondary key</span>
-                    </TableHeaderCell>
+                        <TableHeaderCell>
+                            <span className="strong">Secondary key</span>
+                        </TableHeaderCell>
 
-                    <TableHeaderCell>
-                        <span className="strong">Date created</span>
-                    </TableHeaderCell>
+                        <TableHeaderCell>
+                            <span className="strong">Date created</span>
+                        </TableHeaderCell>
 
-                    <TableHeaderCell>
-                        <span className="strong"></span>
-                    </TableHeaderCell>
-                </TableRow>
-            </TableHeader>
+                        <TableHeaderCell>
+                            <span className="strong"></span>
+                        </TableHeaderCell>
+                    </TableRow>
+                </TableHeader>
 
-            <TableBody>
-                {subscriptions.length > 0
-                    ? subscriptions.map((sub) => (
-                        <SubscriptionRow
-                            key={sub.id}
-                            sub={sub}
-                            saveName={saveName}
-                            cancelSubscription={cancelSubscription}
-                            regeneratePKey={regeneratePKey}
-                            regenerateSKey={regenerateSKey}
-                        />
-                    ))
-                    : <NoRecordsRow colspan={7} />
-                }
-            </TableBody>
-        </Table>
+                <TableBody>
+                    {subscriptions.length > 0
+                        ? subscriptions.map((sub) => (
+                            <SubscriptionRow
+                                key={sub.id}
+                                sub={sub}
+                                saveName={saveName}
+                                cancelSubscription={cancelSubscription}
+                                regeneratePKey={regeneratePKey}
+                                regenerateSKey={regenerateSKey}
+                            />
+                        ))
+                        : <NoRecordsRow colspan={7} />
+                    }
+                </TableBody>
+            </Table>
+        </ScrollableTableContainer>
     );
 };

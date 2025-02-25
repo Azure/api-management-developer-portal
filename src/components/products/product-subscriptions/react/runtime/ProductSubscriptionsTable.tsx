@@ -9,6 +9,7 @@ import {
     TableRow,
 } from "@fluentui/react-components";
 import { Subscription } from "../../../../../models/subscription";
+import { ScrollableTableContainer } from "../../../../utils/react/ScrollableTableContainer";
 
 export const ProductSubscriptionsTable = ({
     subscriptions,
@@ -26,25 +27,27 @@ export const ProductSubscriptionsTable = ({
     ) : !subscriptions || subscriptions.length === 0 ? (
         <span className="strong" style={{ display: "block", padding: "1rem 0" }}>You don't have subscriptions yet.</span>
     ) : (
-        <Table className={"fui-table"} size={"small"} aria-label={"Your Subscriptions list"}>
-            <TableHeader>
-                <TableRow className={"fui-table-headerRow"}>
-                    <TableHeaderCell>
-                        <span className="strong">Name</span>
-                    </TableHeaderCell>
-                    <TableHeaderCell>
-                        <span className="strong">Status</span>
-                    </TableHeaderCell>
-                </TableRow>
-            </TableHeader>
-
-            <TableBody>
-                {subscriptions?.map((sub) => (
-                    <TableRow key={sub.id}>
-                        <TableCell>{sub.name}</TableCell>
-                        <TableCell>{sub.state}</TableCell>
+        <ScrollableTableContainer>
+            <Table className={"fui-table"} size={"small"} aria-label={"Your Subscriptions list"}>
+                <TableHeader>
+                    <TableRow className={"fui-table-headerRow"}>
+                        <TableHeaderCell>
+                            <span className="strong">Name</span>
+                        </TableHeaderCell>
+                        <TableHeaderCell>
+                            <span className="strong">Status</span>
+                        </TableHeaderCell>
                     </TableRow>
-                ))}
-            </TableBody>
-        </Table>
+                </TableHeader>
+
+                <TableBody>
+                    {subscriptions?.map((sub) => (
+                        <TableRow key={sub.id}>
+                            <TableCell>{sub.name}</TableCell>
+                            <TableCell>{sub.state}</TableCell>
+                        </TableRow>
+                    ))}
+                </TableBody>
+            </Table>
+        </ScrollableTableContainer>
     );

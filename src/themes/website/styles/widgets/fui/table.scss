@@ -1,3 +1,12 @@
+.scrollable-table-container {
+    width: 100%;
+    overflow: auto;
+
+    table {
+        min-width: 600px;
+    }
+}
+
 .fui-table {
     border: 1px solid #D1D1D1;
     border-radius: 0.25rem;
