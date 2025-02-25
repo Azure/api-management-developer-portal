@@ -38,6 +38,7 @@ import {
     TypeDefinitionPropertyTypeReference,
 } from "../../../../../models/typeDefinition";
 import { MarkdownProcessor } from "../../../../utils/react/MarkdownProcessor";
+import { ScrollableTableContainer } from "../../../../utils/react/ScrollableTableContainer";
 import { OperationDetailsRuntimeProps } from "./OperationDetailsRuntime";
 import {
     OperationRepresentation,
@@ -552,64 +553,66 @@ export const OperationDetails = ({
                                 <h4 className={"operation-details-title"}>
                                     Definitions
                                 </h4>
-                                <Table
-                                    aria-label={"Definitions list"}
-                                    className={"fui-table"}
-                                >
-                                    <TableHeader>
-                                        <TableRow
-                                            className={"fui-table-headerRow"}
-                                        >
-                                            <TableHeaderCell>
-                                                <span className="strong">
-                                                    Name
-                                                </span>
-                                            </TableHeaderCell>
-                                            <TableHeaderCell>
-                                                <span className="strong">
-                                                    Description
-                                                </span>
-                                            </TableHeaderCell>
-                                        </TableRow>
-                                    </TableHeader>
-                                    <TableBody>
-                                        {definitions.map((definition) => (
+                                <ScrollableTableContainer>
+                                    <Table
+                                        aria-label={"Definitions list"}
+                                        className={"fui-table"}
+                                    >
+                                        <TableHeader>
                                             <TableRow
-                                                key={definition.name}
-                                                className={"fui-table-body-row"}
+                                                className={"fui-table-headerRow"}
                                             >
-                                                <TableCell>
-                                                    <a
-                                                        href={getReferenceUrl(
-                                                            definition.name
-                                                        )}
-                                                        title={definition.name}
-                                                        className={
-                                                            "truncate-text"
-                                                        }
-                                                    >
-                                                        {definition.name}
-                                                    </a>
-                                                </TableCell>
-                                                <TableCell>
-                                                    <span
-                                                        title={
-                                                            definition.description
-                                                        }
-                                                    >
-                                                        <MarkdownProcessor
-                                                            markdownToDisplay={
+                                                <TableHeaderCell>
+                                                    <span className="strong">
+                                                        Name
+                                                    </span>
+                                                </TableHeaderCell>
+                                                <TableHeaderCell>
+                                                    <span className="strong">
+                                                        Description
+                                                    </span>
+                                                </TableHeaderCell>
+                                            </TableRow>
+                                        </TableHeader>
+                                        <TableBody>
+                                            {definitions.map((definition) => (
+                                                <TableRow
+                                                    key={definition.name}
+                                                    className={"fui-table-body-row"}
+                                                >
+                                                    <TableCell>
+                                                        <a
+                                                            href={getReferenceUrl(
+                                                                definition.name
+                                                            )}
+                                                            title={definition.name}
+                                                            className={
+                                                                "truncate-text"
+                                                            }
+                                                        >
+                                                            {definition.name}
+                                                        </a>
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        <span
+                                                            title={
                                                                 definition.description
                                                             }
-                                                            maxChars={250}
-                                                            truncate={true}
-                                                        />
-                                                    </span>
-                                                </TableCell>
-                                            </TableRow>
-                                        ))}
-                                    </TableBody>
-                                </Table>
+                                                        >
+                                                            <MarkdownProcessor
+                                                                markdownToDisplay={
+                                                                    definition.description
+                                                                }
+                                                                maxChars={250}
+                                                                truncate={true}
+                                                            />
+                                                        </span>
+                                                    </TableCell>
+                                                </TableRow>
+                                            ))}
+                                        </TableBody>
+                                    </Table>
+                                </ScrollableTableContainer>
 
                                 {definitions.map((definition) => (
                                     <div

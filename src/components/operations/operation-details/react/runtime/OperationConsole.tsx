@@ -28,6 +28,7 @@ import { ConsoleOperation } from "../../../../../models/console/consoleOperation
 import { ConsoleHeader } from "../../../../../models/console/consoleHeader";
 import { ConsoleParameter } from "../../../../../models/console/consoleParameter";
 import { ConsoleRequest } from "../../../../../models/console/consoleRequest";
+import { FormDataItem } from "../../../../../models/console/formDataItem";
 import { AuthorizationServer } from "../../../../../models/authorizationServer";
 import { KnownHttpHeaders } from "../../../../../models/knownHttpHeaders";
 import { KnownMimeTypes } from "../../../../../models/knownMimeTypes";
@@ -239,6 +240,11 @@ export const OperationConsole = ({
         rerender();
     }, [consoleOperation, rerender]);
 
+    const updateBodyDataItems = (bodyDataItems: FormDataItem[]) => {
+        consoleOperation.current.request.bodyDataItems(bodyDataItems);
+        rerender();
+    }
+
     const updateBodyFormat = (bodyFormat: RequestBodyType) => {
         consoleOperation.current.request.bodyFormat(bodyFormat);
         rerender();
@@ -357,6 +363,7 @@ export const OperationConsole = ({
                                 updateHasBody={updateHasBody}
                                 updateBody={updateBody}
                                 updateBodyBinary={updateBodyBinary}
+                                updateBodyDataItems={updateBodyDataItems}
                                 updateBodyFormat={updateBodyFormat}
                             />
                         }

@@ -2,7 +2,8 @@ import * as React from "react";
 import { Spinner, Table, TableBody } from "@fluentui/react-components";
 import { Pagination } from "../../../../../utils/react/Pagination";
 import { NoRecordsRow } from "../../../../../utils/react/NoRecordsRow";
-import * as Constants from "../../../../../../constants";
+import { ScrollableTableContainer } from "../../../../../utils/react/ScrollableTableContainer";
+import { defaultPageSize } from "../../../../../../constants";
 import { Headers, TOrderState } from "./Headers";
 
 export const ReportsTable = <T extends unknown>({ mainLabel, pageState: [pageNumber, setPageNumber], orderState, data, working, children }: {
@@ -14,24 +15,26 @@ export const ReportsTable = <T extends unknown>({ mainLabel, pageState: [pageNum
     children: (product: T) => JSX.Element
 }) => (
     <>
-        <Table className={"fui-table"} size={"small"}>
-            <Headers mainLabel={mainLabel} orderState={orderState} />
+        <ScrollableTableContainer>
+            <Table className={"fui-table"} size={"small"}>
+                <Headers mainLabel={mainLabel} orderState={orderState} />
 
-            {!working && (
-                <TableBody>
-                    {data?.value.length > 0
-                        ? data.value.map(children)
-                        : <NoRecordsRow colspan={8} customText="No data" />
-                    }
-                </TableBody>
-            )}
-        </Table>
+                {!working && (
+                    <TableBody>
+                        {data?.value.length > 0
+                            ? data.value.map(children)
+                            : <NoRecordsRow colspan={8} customText="No data" />
+                        }
+                    </TableBody>
+                )}
+            </Table>
+        </ScrollableTableContainer>
 
         {working ? (
             <Spinner label={"Loading products"} labelPosition="below" style={{ marginBottom: "1.5rem" }} size="small" />
         ) : data?.value.length > 0 && (
             <div className={"pagination-container"}>
-                <Pagination pageNumber={pageNumber} setPageNumber={setPageNumber} pageMax={Math.ceil(data?.count / Constants.defaultPageSize)} />
+                <Pagination pageNumber={pageNumber} setPageNumber={setPageNumber} pageMax={Math.ceil(data?.count / defaultPageSize)} />
             </div>
         )}
     </>
