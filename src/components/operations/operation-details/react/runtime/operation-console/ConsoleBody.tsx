@@ -4,6 +4,7 @@ import { Stack } from "@fluentui/react";
 import { Body1Strong, Button, Dropdown, Field, Input, Label, Option, Radio, RadioGroup, Textarea, Tooltip } from "@fluentui/react-components";
 import { AddCircleRegular, ArrowClockwiseRegular, ChevronUp20Regular, DeleteRegular } from "@fluentui/react-icons";
 import { ConsoleRepresentation } from "../../../../../../models/console/consoleRepresentation";
+import { FormDataItem } from "../../../../../../models/console/formDataItem";
 import { RequestBodyType } from "../../../../../../constants";
 import { BinaryField } from "./BinaryField";
 
@@ -11,13 +12,14 @@ type ConsoleBodyProps = {
     hasBody: boolean;
     body: string;
     binary: File;
-    bodyDataItems: any[];
+    bodyDataItems: FormDataItem[];
     bodyFormat: RequestBodyType;
     readonlyBodyFormat: boolean;
     representations: ConsoleRepresentation[];
     updateHasBody: (hasBody: boolean) => void;
     updateBody: (body: string) => void;
     updateBodyBinary: (file: File) => void;
+    updateBodyDataItems: (dataItems: FormDataItem[]) => void;
     updateBodyFormat: (format: RequestBodyType) => void;
 }
 
@@ -32,6 +34,7 @@ export const ConsoleBody = ({
     updateHasBody,
     updateBody,
     updateBodyBinary,
+    updateBodyDataItems,
     updateBodyFormat
 }: ConsoleBodyProps) => {
     const [isBodyCollapsed, setIsBodyCollapsed] = useState<boolean>(!hasBody);
@@ -72,6 +75,13 @@ export const ConsoleBody = ({
         setIsBodyEdited(true);
         updateBodyBinary(file);
         updateBodyFormat(RequestBodyType.binary);
+    }
+
+    const updateBodyItems = (index: number, value: any, isFile: boolean = false): void => {
+        const newBodyDataItems = [...bodyDataItems];
+        isFile ? newBodyDataItems[index].binary(value) : newBodyDataItems[index].body(value);
+        newBodyDataItems[index].body(value);
+        updateBodyDataItems(newBodyDataItems);
     }
 
     const selectRepresentation = (representationId: string): void => {
@@ -138,21 +148,27 @@ export const ConsoleBody = ({
                         }
                     </Stack>
                     {readonlyBodyFormat
-                        ? bodyDataItems?.map(dataItem =>
+                        ? bodyDataItems?.map((dataItem, index) =>
                             <Stack key={dataItem.name()}>
                                 <Label htmlFor={dataItem.name()}>{dataItem.name()} (type: {dataItem.type()})</Label>
                                 {dataItem.bodyFormat() === "string"
-                                    ? <Input id={dataItem.name()} type="text" value={dataItem.body()} />
+                                    ? <Input
+                                        id={dataItem.name()}
+                                        type="text"
+                                        value={dataItem.body() || ""}
+                                        onChange={(_, data) => updateBodyItems(index, data.value)}
+                                      />
                                     : dataItem.bodyFormat() === RequestBodyType.raw
                                         ? <Textarea
                                             id={dataItem.name()}
                                             resize="vertical"
-                                            value={dataItem.body()}
+                                            value={dataItem.body() || ""}
+                                            onChange={(_, data) => updateBodyItems(index, data.value)}
                                           />
                                         : dataItem.bodyFormat() === RequestBodyType.binary
                                             && <BinaryField
                                                 fileName={dataItem.name()}
-                                                updateBinary={(file) => uploadFile(file)}
+                                                updateBinary={(file) => updateBodyItems(index, file, true)}
                                             />
                                 }
                             </Stack>

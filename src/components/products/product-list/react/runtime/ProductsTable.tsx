@@ -9,6 +9,7 @@ import {
 } from "@fluentui/react-components";
 import { Product } from "../../../../../models/product";
 import { MarkdownProcessor } from "../../../../utils/react/MarkdownProcessor";
+import { ScrollableTableContainer } from "../../../../utils/react/ScrollableTableContainer";
 import { NoRecordsRow } from "../../../../utils/react/NoRecordsRow";
 import { markdownMaxCharsMap } from "../../../../../constants";
 
@@ -38,23 +39,25 @@ const TableBodyProducts = ({ products, getReferenceUrl }: Props) => (
 );
 
 export const ProductsTable = ({ products, getReferenceUrl }: Props) => (
-    <Table className={"fui-table"} size={"small"} aria-label={"Products List table"}>
-        <TableHeader>
-            <TableRow className={"fui-table-headerRow"}>
-                <TableHeaderCell>
-                    <span className="strong">Name</span>
-                </TableHeaderCell>
-                <TableHeaderCell>
-                    <span className="strong">Description</span>
-                </TableHeaderCell>
-            </TableRow>
-        </TableHeader>
+    <ScrollableTableContainer>
+        <Table className={"fui-table"} size={"small"} aria-label={"Products List table"}>
+            <TableHeader>
+                <TableRow className={"fui-table-headerRow"}>
+                    <TableHeaderCell>
+                        <span className="strong">Name</span>
+                    </TableHeaderCell>
+                    <TableHeaderCell>
+                        <span className="strong">Description</span>
+                    </TableHeaderCell>
+                </TableRow>
+            </TableHeader>
 
-        <TableBody>
-            <TableBodyProducts
-                products={products}
-                getReferenceUrl={getReferenceUrl}
-            />
-        </TableBody>
-    </Table>
+            <TableBody>
+                <TableBodyProducts
+                    products={products}
+                    getReferenceUrl={getReferenceUrl}
+                />
+            </TableBody>
+        </Table>
+    </ScrollableTableContainer>
 );
