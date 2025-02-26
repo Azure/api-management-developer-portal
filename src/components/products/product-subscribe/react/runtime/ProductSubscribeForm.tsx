@@ -26,18 +26,20 @@ export const ProductSubscribeForm = ({ subscribe, termsOfUse, showTermsByDefault
                 verticalAlign={"center"}
                 tokens={{ childrenGap: 15 }}
                 className="form-group"
+                style={{ marginTop: "1rem" }}
             >
                 <input
                     value={subscriptionName}
                     onChange={(event) => setSubscriptionName(event.target.value)}
                     placeholder={"Your new product subscription name"}
-                    className="form-control"
+                    className="form-control m-0" //m-0 class overrides customer styles
                     style={{ width: "20em" }}
                 />
                 <BtnSpinner
                     onClick={() => subscribe(subscriptionName, consented)}
                     className="button button-primary"
                     disabled={!subscriptionName || (termsOfUse && !consented)}
+                    style={{ margin: "0 0 0 1rem" }}
                 >
                     Subscribe
                 </BtnSpinner>
