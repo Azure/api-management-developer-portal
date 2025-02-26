@@ -6,6 +6,7 @@ export type TProps = ButtonProps & {
     onClick: () => Promise<unknown>;
     working?: boolean;
     className?: string;
+    style?: React.CSSProperties;
 };
 
 export const BtnSpinner = ({
@@ -13,7 +14,8 @@ export const BtnSpinner = ({
     onClick,
     disabled,
     working: workingProp,
-    className
+    className,
+    style = {},
 }: TProps) => {
     const [working, setWorking] = useState(false);
 
@@ -25,6 +27,7 @@ export const BtnSpinner = ({
                 onClick().finally(() => setWorking(false));
             }}
             className={className}
+            style={style}
         >
             {(working || workingProp) && <Spinner size={"extra-tiny"} style={{ marginRight: ".5rem" }} />}
             {children}
