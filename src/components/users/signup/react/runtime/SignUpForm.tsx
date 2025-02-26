@@ -133,7 +133,7 @@ export const SignUpForm = ({
                 onClick={submit}
                 className="button button-primary"
             >
-                Create
+                Sign up
             </BtnSpinner>
         </>
     );
