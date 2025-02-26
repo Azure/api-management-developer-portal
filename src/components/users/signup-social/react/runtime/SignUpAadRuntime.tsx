@@ -100,7 +100,7 @@ const SignUpAadRuntimeFC = ({ logger, router, routeHelper, signUp, termsOfUse, t
                 className="button button-primary"
                 onClick={() => signUp(provider, idToken, email, firstName, lastName, consented)}
             >
-                Create
+                Sign up
             </BtnSpinner>
         </>
     );
