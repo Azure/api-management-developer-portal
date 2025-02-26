@@ -121,15 +121,9 @@ h2 {
 
         &.toolbox-btn-is-active {
             position: relative;
-
-            &:before {
-                @include fit();
-                position: absolute;
-                background-color: $toolbox-btn-active-bg;
-                border: 1px solid $toolbox-btn-active-border;
-                border-radius: $toolbox-border-radius - 5px;
-                content: "";
-            }
+            background-color: $toolbox-btn-active-bg;
+            border: 1px solid $toolbox-btn-active-border;
+            border-radius: $toolbox-border-radius - 5px;
         }
 
         &.pull-down {
