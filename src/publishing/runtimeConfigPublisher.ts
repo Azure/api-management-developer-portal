@@ -1,6 +1,10 @@
 import * as Utils from "@paperbits/common/utils";
 import { IBlobStorage } from "@paperbits/common/persistence";
 import { IPublisher } from "@paperbits/common/publishing";
+import { ISiteService } from "@paperbits/common/sites";
+import { Logger } from "@paperbits/common/logging";
+import { WellKnownEventTypes } from "../logging/wellKnownEventTypes";
+import { isRedesignEnabledSetting } from "../constants";
 import { RuntimeConfigBuilder } from "./runtimeConfigBuilder";
 
 /**
@@ -9,10 +13,15 @@ import { RuntimeConfigBuilder } from "./runtimeConfigBuilder";
 export class RuntimeConfigPublisher implements IPublisher {
     constructor(
         private readonly runtimeConfigBuilder: RuntimeConfigBuilder,
-        private readonly outputBlobStorage: IBlobStorage
+        private readonly outputBlobStorage: IBlobStorage,
+        private readonly siteService: ISiteService,
+        private readonly logger: Logger,
     ) { }
 
     public async publish(): Promise<void> {
+        const isRedesignEnabled = await this.siteService.getSetting(isRedesignEnabledSetting);
+        this.logger.trackEvent(WellKnownEventTypes.Publishing, { message: `Preview components ${isRedesignEnabled ? 'enabled' : 'disabled'}.`});
+
         const configuration = this.runtimeConfigBuilder.build();
         const content = Utils.stringToUnit8Array(JSON.stringify(configuration));
 
