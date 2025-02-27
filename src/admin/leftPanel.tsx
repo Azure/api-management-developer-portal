@@ -4,6 +4,7 @@ import { ISiteService } from '@paperbits/common/sites';
 import { EventManager } from '@paperbits/common/events';
 import { ViewManager } from '@paperbits/common/ui';
 import { Router } from '@paperbits/common/routing';
+import { Logger } from '@paperbits/common/logging';
 import { initializeIcons } from '@fluentui/font-icons-mdl2';
 import { CommandBarButton, Icon, IIconProps, Separator, Stack, Text, Toggle } from '@fluentui/react';
 import { Pages } from './pages/pages';
@@ -67,6 +68,9 @@ export class LeftPanel extends React.Component<{}, LeftPanelState> {
 
     @Resolve('router')
     public router: Router;
+
+    @Resolve('logger')
+    public logger: Logger;
 
     constructor(props: any) {
         super(props);
@@ -240,9 +244,10 @@ export class LeftPanel extends React.Component<{}, LeftPanelState> {
                         onText={"On"}
                         offText={"Off"}
                         checked={this.state.isRedesignEnabled}
-                        onChange={async (ev, checked) => {
+                        onChange={async (_, checked) => {
                             this.setState({ isRedesignEnabled: checked });
                             await this.siteService.setSetting(isRedesignEnabledSetting, checked);
+                            this.logger.trackEvent(`${checked ? 'Checked' : 'Unchecked'}: Preview new UI design`);
                             this.eventManager.dispatchEvent('onSaveChanges');
                             this.eventManager.dispatchEvent('onDataPush'); // Needed to reload the runtime part
                         }} 
