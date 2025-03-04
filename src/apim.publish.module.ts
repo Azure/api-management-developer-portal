@@ -43,6 +43,7 @@ import { CustomWidgetPublishModule } from "./components/custom-widget/customWidg
 import { StaticDataHttpClient } from "./services/staticDataHttpClient";
 import { PublisherStaticDataProvider } from "./services/publisherStaticDataProvider";
 import { staticDataEnvironment, mockStaticDataEnvironment } from "./../environmentConstants";
+import { RedesignConfigPublisher } from "./publishing/redesignConfigPublisher";
 
 export class ApimPublishModule implements IInjectorModule {
     public register(injector: IInjector): void {
@@ -87,6 +88,7 @@ export class ApimPublishModule implements IInjectorModule {
         injector.bindSingleton("oauthService", OAuthService);
         injector.bindSingleton("runtimeConfigBuilder", RuntimeConfigBuilder);
         injector.bindToCollection("publishers", AadConfigPublisher);
+        injector.bindToCollection("publishers", RedesignConfigPublisher);
         injector.bindToCollection("publishers", RuntimeConfigPublisher);
 
         if (process.env.NODE_ENV === staticDataEnvironment || process.env.NODE_ENV === mockStaticDataEnvironment) {
