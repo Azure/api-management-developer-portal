@@ -93,7 +93,7 @@ export const ConsoleParameters = ({ queryParameters, templateParameters, updateP
                         </Dropdown>
                         :
                         <Input
-                            type={parameter.secret ? "password" : "text"}
+                            type={parameter.secret && !showPassword ? "password" : "text"}
                             placeholder="Enter parameter value"
                             value={parameter.value() ?? ""}
                             onChange={(_, data) =>

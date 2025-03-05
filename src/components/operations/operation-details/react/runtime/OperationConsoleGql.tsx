@@ -188,7 +188,7 @@ export const OperationConsoleGql = ({
         }
 
         const searchName = subscriptionKeyParamName.toLocaleLowerCase();
-        const newQueryParaemeters = queryParameters.filter(x => x.name()?.toLocaleLowerCase() !== searchName);
+        const newQueryParameters = queryParameters.filter(x => x.name()?.toLocaleLowerCase() !== searchName);
 
         const keyParameter = new ConsoleParameter();
         keyParameter.name(subscriptionKeyParamName);
@@ -199,8 +199,8 @@ export const OperationConsoleGql = ({
         keyParameter.inputType("password");
         keyParameter.value(subscriptionKey);
 
-        newQueryParaemeters.push(keyParameter);
-        setQueryParameters([...newQueryParaemeters]);
+        newQueryParameters.push(keyParameter);
+        setQueryParameters([...newQueryParameters]);
     }
 
     const handleEditorWillMount = (editor, monaco: Monaco) => {
