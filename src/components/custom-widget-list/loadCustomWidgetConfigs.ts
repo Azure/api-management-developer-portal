@@ -7,8 +7,17 @@ import { TCustomWidgetConfig } from "../custom-widget";
 
 export async function listConfigBlobs(blobStorage: MapiBlobStorage): Promise<TCustomWidgetConfig[]> {
     const configsNames = await blobStorage.listBlobs(`${BLOB_ROOT}/${BLOB_CONFIGS_FOLDER}/`);
-    const configsUint8s = await Promise.all(configsNames.map(blobName => blobStorage.downloadBlob(blobName)));
-    return configsUint8s.map(uint8 => JSON.parse(new TextDecoder().decode(uint8)));
+    const configsPromises = configsNames.map(async blobName => {
+        try {
+            const uint8 = await blobStorage.downloadBlob(blobName);
+            return JSON.parse(new TextDecoder().decode(uint8));
+        } catch (error) {
+            console.warn(`Failed to download custom widget config "${blobName}":`, error);
+            return null;
+        }
+    });
+    const configs = await Promise.all(configsPromises);
+    return configs.filter(config => config !== null);
 }
 
 function showToast(viewManager: ViewManager, widgetSource: TCustomWidgetConfig): void {

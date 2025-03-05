@@ -19,7 +19,7 @@ export class ConsoleHeader {
 
     public toggleRevealed(): void {
         this.revealed(!this.revealed());
-        this.inputTypeValue(this.secret && !this.revealed() ? "password" : "text");
+        this.inputTypeValue(this.secret() && !this.revealed() ? "password" : "text");
     }
 
     public canRename(): boolean {
