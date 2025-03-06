@@ -1,10 +1,11 @@
+import { ISettingsProvider } from "@paperbits/common/configuration/ISettingsProvider";
+import { Logger } from "@paperbits/common/logging/logger";
 import { sanitizeUrl } from "@braintree/sanitize-url";
 import { ArmResource } from "./contracts/armResource";
 import { JwtToken } from "./contracts/jwtToken";
 import { js } from "js-beautify";
 import { NameValuePair } from "./contracts/nameValuePair";
-import { USER_ID, USER_SESSION } from "./constants";
-
+import { FEATURE_FLAGS, USER_ID, USER_SESSION } from "./constants";
 
 export class Utils {
     public static getResourceName(resource: string, fullId: string, resultType: string = "name"): string {
@@ -459,5 +460,19 @@ export class Utils {
             userId: localStorage.getItem(USER_ID),
             sessionId: sessionStorage.getItem(USER_SESSION)
         };
+    }
+
+    public static async checkIsFeatureEnabled(featureFlagName: string, settingsProvider: ISettingsProvider, logger: Logger): Promise<boolean> {
+        try {
+            const settingsObject = await settingsProvider.getSetting(FEATURE_FLAGS);
+            const featureFlags = new Map(Object.entries(settingsObject ?? {}));
+            if (!featureFlags || !featureFlags.has(featureFlagName)) {
+                return false;
+            }
+            return featureFlags.get(featureFlagName) == true;
+        } catch (error) {
+            logger?.trackEvent("FeatureFlag", { message: "Feature flag check failed", data: error.message });
+            return false;
+        }
     }
 }

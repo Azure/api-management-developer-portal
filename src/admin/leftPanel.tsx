@@ -95,7 +95,12 @@ export class LeftPanel extends React.Component<{}, LeftPanelState> {
     }
 
     loadSettings = async (): Promise<void> => {
-        const redesignSetting = await this.siteService.getSetting(isRedesignEnabledSetting);
+        let redesignSetting = false;
+        try {
+            redesignSetting = await this.siteService.getSetting(isRedesignEnabledSetting);
+        } catch (error) {
+            this.logger?.trackError(error, { message: `Failed to get setting: ${isRedesignEnabledSetting}` });
+        }
         this.setState({ isRedesignEnabled: !!redesignSetting });
     }
 
