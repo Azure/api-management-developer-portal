@@ -1,3 +1,4 @@
+import { Locator } from "playwright";
 import { test, expect } from "../playwright-test";
 import { SignInBasicWidget } from "../maps/signin-basic";
 import { ProfileWidget } from "../maps/profile";
@@ -56,7 +57,7 @@ test.describe("user-resources", async () => {
             expect(subscriptionSecondaryKeyHidden).not.toBe(subscriptionSecondaryKeyShown);
 
             // check profile page screenshot with mocked data for profile page
-            expect(await page.screenshot({ type: "jpeg", fullPage: true, mask: await profileWidget.getListOfLocatorsToHide(), maskColor: '#ffffff'})).toMatchSnapshot({name: [configuration['isLocalRun'] === true ? 'self-hosted': 'deployed', 'user-resources.jpeg'],  maxDiffPixels: 20});
+            expect(await page.screenshot({ type: "jpeg", fullPage: true, mask: await profileWidget.getListOfLocatorsToHide(), maskColor: '#ffffff'})).toMatchSnapshot({name: [configuration['isLocalRun'] === true ? 'self-hosted': 'deployed', 'user-resources.jpeg']});
         }
 
         await testRunner.runTest(validate, populateData, mockedData.data);
