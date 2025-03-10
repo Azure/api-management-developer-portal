@@ -30,7 +30,8 @@ export class ProvisionService {
 
     public async provision(): Promise<void> {
         const isOldThemeEnabled = await Utils.checkIsFeatureEnabled(Constants.FEATURE_OLD_THEME, this.settingsProvider, this.logger);
-        const dataUrl = isOldThemeEnabled ? `/editors/templates/default-old.json` : `/editors/templates/default.json`;
+        const applyOldTheme = localStorage.getItem(Constants.isApplyNewThemeEnabledSetting) !== "true";
+        const dataUrl = (isOldThemeEnabled || applyOldTheme) ? `/editors/templates/default-old.json` : `/editors/templates/default.json`;
         const dataObj = await this.fetchData(dataUrl);
         const keys = Object.keys(dataObj);
         const accessToken = await this.authenticator.getAccessTokenAsString();

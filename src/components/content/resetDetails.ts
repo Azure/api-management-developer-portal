@@ -5,7 +5,7 @@ import { Component } from "@paperbits/common/ko/decorators";
 import { ViewManager } from "@paperbits/common/ui";
 import { ProvisionService } from "../../services/provisioningService";
 import { Logger } from "@paperbits/common/logging";
-
+import { isApplyNewThemeEnabledSetting } from "../../constants";
 
 @Component({
     selector: "reset-details-workshop",
@@ -26,7 +26,7 @@ export class ResetDetailsWorkshop {
         this.canReset = ko.pureComputed(() => this.response().toLocaleLowerCase() === "yes");
     }
 
-    public async reset(): Promise<void> {
+    public async reset(applyNewTheme: boolean = true): Promise<void> {
         try {
             this.logger.trackEvent("Click: Reset website");
             
@@ -38,6 +38,7 @@ export class ResetDetailsWorkshop {
             this.viewManager.setShutter();
 
             await this.provisioningService.cleanup();
+            localStorage.setItem(isApplyNewThemeEnabledSetting, applyNewTheme ? "true" : "false");
 
             this.logger.trackEvent("Success: Website reset");
 

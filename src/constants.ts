@@ -369,6 +369,11 @@ export const fuiTheme: Theme = {
 export const isRedesignEnabledSetting = "isRedesignEnabled";
 
 /**
+ * Key for the setting that tracks if reset to the new theme is enabled
+ */
+export const isApplyNewThemeEnabledSetting = "isApplyNewThemeEnabled";
+
+/**
  * Key of the default admin user
  */
 export const integrationUserId = '/users/integration';
