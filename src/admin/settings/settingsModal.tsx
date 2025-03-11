@@ -110,7 +110,7 @@ export class SettingsModal extends React.Component<SettingsModalProps, SettingsM
         if (this.state.selectedTab === Tab.Advanced) {
             this.resetDetailsWorkshop.reset(this.state.applyNewTheme);
         } else {
-            await this.siteService.setSetting<SiteSettingsContract>('site', this.state.settings);            
+            await this.siteService.setSetting<SiteSettingsContract>('site', this.state.settings);
             this.eventManager.dispatchEvent('onSaveChanges');
         }
 

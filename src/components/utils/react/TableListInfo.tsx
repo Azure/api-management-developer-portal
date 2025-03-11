@@ -93,7 +93,7 @@ export const TableListInfo = ({
                 />
             )}
 
-            <div className="form-group" style={{ marginTop: 0 }}>
+            <div className="form-group" style={{ marginTop: 0, marginBottom: 0 }}>
                 <input
                     type="search"
                     autoComplete="off"
