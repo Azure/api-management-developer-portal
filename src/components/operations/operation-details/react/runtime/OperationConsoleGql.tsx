@@ -6,6 +6,7 @@ import Editor, { Monaco } from '@monaco-editor/react';
 import { ISettingsProvider } from "@paperbits/common/configuration";
 import { SessionManager } from "@paperbits/common/persistence/sessionManager";
 import { HttpClient, HttpRequest } from "@paperbits/common/http";
+import { Logger } from "@paperbits/common/logging";
 import { Stack } from "@fluentui/react";
 import {
     Accordion,
@@ -76,6 +77,7 @@ type OperationConsoleProps = {
     settingsProvider: ISettingsProvider;
     sessionManager: SessionManager;
     httpClient: HttpClient;
+    logger: Logger;
 }
 
 export enum ConsoleTab {
@@ -103,7 +105,8 @@ export const OperationConsoleGql = ({
     routeHelper,
     settingsProvider,
     sessionManager,
-    httpClient
+    httpClient,
+    logger
 }: OperationConsoleProps) => {
     const [working, setWorking] = useState<boolean>(false);
     const [sendingRequest, setSendingRequest] = useState<boolean>(false);
@@ -434,7 +437,7 @@ export const OperationConsoleGql = ({
                         setWsLogItems(wsLogItems => [data, ...wsLogItems]);
                     }
                 } catch (error) {
-                    //this.logger.trackError(error);
+                    logger.trackError(error);
                 }
             }
             else if (data.logType === LogItemType.SendData) {
@@ -445,7 +448,7 @@ export const OperationConsoleGql = ({
                         setWsLogItems(wsLogItems => [data, ...wsLogItems]);
                     }
                 } catch (error) {
-                    //this.logger.trackError(error);
+                    logger.trackError(error);
                 }
             }
             else if (data.logType === LogItemType.Connection) {
