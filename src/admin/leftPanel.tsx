@@ -99,7 +99,7 @@ export class LeftPanel extends React.Component<{}, LeftPanelState> {
         try {
             redesignSetting = await this.siteService.getSetting(isRedesignEnabledSetting);
         } catch (error) {
-            this.logger?.trackError(error, { message: `Failed to get setting: ${isRedesignEnabledSetting}` });
+            this.logger?.trackError(error, { message: `Failed to get setting: ${isRedesignEnabledSetting} - admin panel` });
         }
         this.setState({ isRedesignEnabled: !!redesignSetting });
     }

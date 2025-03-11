@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { ISettingsProvider } from "@paperbits/common/configuration";
 import { SessionManager } from "@paperbits/common/persistence/sessionManager";
 import { HttpClient } from "@paperbits/common/http/httpClient";
+import { Logger } from "@paperbits/common/logging";
 import {
     GraphQLField,
     GraphQLInputType,
@@ -68,6 +69,7 @@ export const OperationDetailsGql = ({
     settingsProvider,
     sessionManager,
     httpClient,
+    logger,
     enableConsole,
     useCorsProxy,
     includeAllHostnames,
@@ -86,6 +88,7 @@ export const OperationDetailsGql = ({
     settingsProvider: ISettingsProvider;
     sessionManager: SessionManager;
     httpClient: HttpClient;
+    logger: Logger
 }) => {
     const [working, setWorking] = useState(false);
     const [api, setApi] = useState<Api>(null);
@@ -343,6 +346,7 @@ export const OperationDetailsGql = ({
                             settingsProvider={settingsProvider}
                             sessionManager={sessionManager}
                             httpClient={httpClient}
+                            logger={logger}
                         />
                         <div className={"operation-table"}>
                             <div className={"operation-table-header"}>
