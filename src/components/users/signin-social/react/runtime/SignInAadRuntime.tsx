@@ -73,6 +73,6 @@ export class SignInAadRuntime extends React.Component<SignInAadRuntimeProps> {
     }
 
     render() {
-        return (<SignInAadRuntimeFC {...this.props} signIn={this.signIn.bind(this)} />);
+        return (<SignInAadRuntimeFC {...this.props} signIn={this.signIn.bind(this)} classNames={`${this.props.classNames} mr-20`} />);
     }
 }
