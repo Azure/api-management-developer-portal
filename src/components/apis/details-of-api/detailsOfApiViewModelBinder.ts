@@ -1,6 +1,7 @@
 import { StyleCompiler } from "@paperbits/common/styles";
 import { ViewModelBinder, WidgetState } from "@paperbits/common/widgets";
 import { ISiteService } from "@paperbits/common/sites";
+import { Logger } from "@paperbits/common/logging";
 import { DetailsOfApiModel } from "./detailsOfApiModel";
 import { DetailsOfApiViewModel } from "./react/DetailsOfApiViewModel";
 import { isRedesignEnabledSetting } from "../../../constants";
@@ -9,6 +10,7 @@ export class DetailsOfApiViewModelBinder implements ViewModelBinder<DetailsOfApi
     constructor(
         private readonly styleCompiler: StyleCompiler,
         private readonly siteService: ISiteService,
+        private readonly logger: Logger
     ) { }
 
     public stateToInstance(state: WidgetState, componentInstance: DetailsOfApiViewModel): void {
@@ -26,6 +28,14 @@ export class DetailsOfApiViewModelBinder implements ViewModelBinder<DetailsOfApi
             state.styles = await this.styleCompiler.getStyleModelAsync(model.styles);
         }
 
-        state.isRedesignEnabled = !!(await this.siteService.getSetting(isRedesignEnabledSetting));
+        let isRedesignEnabled = false;
+        
+        try {
+            isRedesignEnabled = !!(await this.siteService.getSetting(isRedesignEnabledSetting));
+        } catch (error) {
+            this.logger?.trackError(error, { message: `Failed to get setting: ${isRedesignEnabledSetting} - DetailsOfApiViewModelBinder` });
+        } finally {
+            state.isRedesignEnabled = isRedesignEnabled;
+        }
     }
 }

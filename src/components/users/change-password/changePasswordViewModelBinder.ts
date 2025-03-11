@@ -2,6 +2,7 @@ import { ISettingsProvider } from "@paperbits/common/configuration";
 import { StyleCompiler } from "@paperbits/common/styles";
 import { ISiteService } from "@paperbits/common/sites";
 import { ViewModelBinder, WidgetState } from "@paperbits/common/widgets";
+import { Logger } from "@paperbits/common/logging";
 import { ChangePasswordModel } from "./changePasswordModel";
 import { ChangePasswordViewModel } from "./react/ChangePasswordViewModel";
 import { isRedesignEnabledSetting } from "../../../constants";
@@ -11,6 +12,7 @@ export class ChangePasswordViewModelBinder implements ViewModelBinder<ChangePass
         private readonly settingsProvider: ISettingsProvider,
         private readonly styleCompiler: StyleCompiler,
         private readonly siteService: ISiteService,
+        private readonly logger: Logger
     ) { }
 
     public stateToInstance(state: WidgetState, componentInstance: ChangePasswordViewModel): void {
@@ -28,6 +30,14 @@ export class ChangePasswordViewModelBinder implements ViewModelBinder<ChangePass
             state.styles = await this.styleCompiler.getStyleModelAsync(model.styles);
         }
 
-        state.isRedesignEnabled = !!(await this.siteService.getSetting(isRedesignEnabledSetting));
+        let isRedesignEnabled = false;
+        
+        try {
+            isRedesignEnabled = !!(await this.siteService.getSetting(isRedesignEnabledSetting));
+        } catch (error) {
+            this.logger?.trackError(error, { message: `Failed to get setting: ${isRedesignEnabledSetting} - ChangePasswordViewModelBinder` });
+        } finally {
+            state.isRedesignEnabled = isRedesignEnabled;
+        }
     }
 }

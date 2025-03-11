@@ -1,6 +1,7 @@
 import { StyleCompiler } from "@paperbits/common/styles";
 import { ISiteService } from "@paperbits/common/sites";
 import { ViewModelBinder, WidgetState } from "@paperbits/common/widgets";
+import { Logger } from "@paperbits/common/logging";
 import { ProductDetailsModel } from "./productDetailsModel";
 import { ProductDetailsViewModel } from "./react/ProductDetailsViewModel";
 import { isRedesignEnabledSetting } from "../../../constants";
@@ -9,6 +10,7 @@ export class ProductDetailsViewModelBinder implements ViewModelBinder<ProductDet
     constructor(
         private readonly styleCompiler: StyleCompiler,
         private readonly siteService: ISiteService,
+        private readonly logger: Logger
     ) { }
 
     public stateToInstance(state: WidgetState, componentInstance: ProductDetailsViewModel): void {
@@ -23,6 +25,14 @@ export class ProductDetailsViewModelBinder implements ViewModelBinder<ProductDet
             state.styles = await this.styleCompiler.getStyleModelAsync(model.styles);
         }
 
-        state.isRedesignEnabled = !!(await this.siteService.getSetting(isRedesignEnabledSetting));
+        let isRedesignEnabled = false;
+        
+        try {
+            isRedesignEnabled = !!(await this.siteService.getSetting(isRedesignEnabledSetting));
+        } catch (error) {
+            this.logger?.trackError(error, { message: `Failed to get setting: ${isRedesignEnabledSetting} - ProductDetailsViewModelBinder` });
+        } finally {
+            state.isRedesignEnabled = isRedesignEnabled;
+        }
     }
 }

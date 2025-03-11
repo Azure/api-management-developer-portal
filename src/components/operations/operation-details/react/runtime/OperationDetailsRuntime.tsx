@@ -4,6 +4,7 @@ import { Router } from "@paperbits/common/routing";
 import { ISettingsProvider } from "@paperbits/common/configuration";
 import { SessionManager } from "@paperbits/common/persistence/sessionManager";
 import { HttpClient } from "@paperbits/common/http/httpClient";
+import { Logger } from "@paperbits/common/logging";
 import { FluentProvider} from "@fluentui/react-components";
 import { TypeOfApi, fuiTheme } from "../../../../../constants";
 import { ApiService } from "../../../../../services/apiService";
@@ -75,6 +76,9 @@ export class OperationDetailsRuntime extends React.Component<OperationDetailsRun
 
     @Resolve("httpClient")
     public httpClient: HttpClient;
+
+    @Resolve("logger")
+    public logger: Logger;
 
     constructor(props: OperationDetailsRuntimeProps) {
         super(props);
@@ -151,6 +155,7 @@ export class OperationDetailsRuntime extends React.Component<OperationDetailsRun
                             settingsProvider={this.settingsProvider}
                             sessionManager={this.sessionManager}
                             httpClient={this.httpClient}
+                            logger={this.logger}
                           />
                         : <OperationDetails
                             {...this.props}

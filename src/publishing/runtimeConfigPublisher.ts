@@ -19,7 +19,14 @@ export class RuntimeConfigPublisher implements IPublisher {
     ) { }
 
     public async publish(): Promise<void> {
-        const isRedesignEnabled = await this.siteService.getSetting(isRedesignEnabledSetting);
+        let isRedesignEnabled = false;
+        
+        try {
+            isRedesignEnabled = !!(await this.siteService.getSetting(isRedesignEnabledSetting));
+        } catch (error) {
+            this.logger?.trackError(error, { message: `Failed to get setting: ${isRedesignEnabledSetting} - RuntimeConfigPublisher` });
+        }
+
         this.logger.trackEvent(WellKnownEventTypes.Publishing, { message: `Preview components ${isRedesignEnabled ? 'enabled' : 'disabled'}.`});
 
         const configuration = this.runtimeConfigBuilder.build();
