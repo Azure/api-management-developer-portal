@@ -1,6 +1,7 @@
 import { StyleCompiler } from "@paperbits/common/styles";
 import { ISiteService } from "@paperbits/common/sites/ISiteService";
 import { ViewModelBinder, WidgetState } from "@paperbits/common/widgets";
+import { Logger } from "@paperbits/common/logging";
 import { TermsOfService } from "../../../contracts/identitySettings";
 import { DelegationAction, DelegationParameters } from "../../../contracts/tenantSettings";
 import { IdentityService } from "../../../services";
@@ -17,6 +18,7 @@ export class SigninViewModelBinder implements ViewModelBinder<SigninModel, Signi
         private readonly identityService: IdentityService,
         private readonly styleCompiler: StyleCompiler,
         private readonly siteService: ISiteService,
+        private readonly logger: Logger
     ) {}
 
     public async getTermsOfService(): Promise<TermsOfService> {
@@ -58,6 +60,14 @@ export class SigninViewModelBinder implements ViewModelBinder<SigninModel, Signi
             state.styles = await this.styleCompiler.getStyleModelAsync(model.styles);
         }
 
-        state.isRedesignEnabled = !!(await this.siteService.getSetting(isRedesignEnabledSetting));
+        let isRedesignEnabled = false;
+        
+        try {
+            isRedesignEnabled = !!(await this.siteService.getSetting(isRedesignEnabledSetting));
+        } catch (error) {
+            this.logger?.trackError(error, { message: `Failed to get setting: ${isRedesignEnabledSetting} - SigninViewModelBinder` });
+        } finally {
+            state.isRedesignEnabled = isRedesignEnabled;
+        }
     }
 }

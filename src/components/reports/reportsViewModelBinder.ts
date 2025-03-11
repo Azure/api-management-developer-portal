@@ -1,6 +1,7 @@
 import { ViewModelBinder, WidgetState } from "@paperbits/common/widgets";
 import { StyleCompiler } from "@paperbits/common/styles";
 import { ISiteService } from "@paperbits/common/sites";
+import { Logger } from "@paperbits/common/logging";
 import { isRedesignEnabledSetting } from "../../constants";
 import { ReportsModel } from "./reportsModel";
 import { ReportsViewModel } from "./react/ReportsViewModel";
@@ -9,6 +10,7 @@ export class ReportsViewModelBinder implements ViewModelBinder<ReportsModel, Rep
     constructor(
         private readonly styleCompiler: StyleCompiler,
         private readonly siteService: ISiteService,
+        private readonly logger: Logger
     ) { }
 
     public stateToInstance(state: WidgetState, componentInstance: ReportsViewModel): void {
@@ -23,6 +25,14 @@ export class ReportsViewModelBinder implements ViewModelBinder<ReportsModel, Rep
             state.styles = await this.styleCompiler.getStyleModelAsync(model.styles);
         }
 
-        state.isRedesignEnabled = !!(await this.siteService.getSetting(isRedesignEnabledSetting));
+        let isRedesignEnabled = false;
+        
+        try {
+            isRedesignEnabled = !!(await this.siteService.getSetting(isRedesignEnabledSetting));
+        } catch (error) {
+            this.logger?.trackError(error, { message: `Failed to get setting: ${isRedesignEnabledSetting} - ReportsViewModelBinder` });
+        } finally {
+            state.isRedesignEnabled = isRedesignEnabled;
+        }
     }
 }

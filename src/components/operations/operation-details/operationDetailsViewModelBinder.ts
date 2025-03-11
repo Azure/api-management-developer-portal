@@ -1,6 +1,7 @@
 import { ViewModelBinder, WidgetState } from "@paperbits/common/widgets";
 import { StyleCompiler } from "@paperbits/common/styles";
 import { ISiteService } from "@paperbits/common/sites";
+import { Logger } from "@paperbits/common/logging";
 import { isRedesignEnabledSetting } from "../../../constants";
 import { OperationDetailsViewModel } from "./react/OperationDetailsViewModel";
 import { OperationDetailsModel } from "./operationDetailsModel";
@@ -8,7 +9,8 @@ import { OperationDetailsModel } from "./operationDetailsModel";
 export class OperationDetailsViewModelBinder implements ViewModelBinder<OperationDetailsModel, OperationDetailsViewModel> {
     constructor(
         private readonly styleCompiler: StyleCompiler,
-        private readonly siteService: ISiteService
+        private readonly siteService: ISiteService,
+        private readonly logger: Logger
     ) { }
 
     public stateToInstance(state: WidgetState, componentInstance: OperationDetailsViewModel): void {
@@ -36,6 +38,14 @@ export class OperationDetailsViewModelBinder implements ViewModelBinder<Operatio
             state.styles = await this.styleCompiler.getStyleModelAsync(model.styles);
         }
 
-        state.isRedesignEnabled = !!(await this.siteService.getSetting(isRedesignEnabledSetting));
+        let isRedesignEnabled = false;
+        
+        try {
+            isRedesignEnabled = !!(await this.siteService.getSetting(isRedesignEnabledSetting));
+        } catch (error) {
+            this.logger?.trackError(error, { message: `Failed to get setting: ${isRedesignEnabledSetting} - OperationDetailsViewModelBinder` });
+        } finally {
+            state.isRedesignEnabled = isRedesignEnabled;
+        }
     }
 }
