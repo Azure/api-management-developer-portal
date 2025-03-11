@@ -47,7 +47,7 @@ import { OAuthService } from "../../../../../services/oauthService";
 import { ProductService } from "../../../../../services/productService";
 import { UsersService } from "../../../../../services/usersService";
 import { GraphqlService, TGraphqlTypes } from "../../../../../services/graphqlService";
-import { GraphqlProtocols } from "../../../../../constants";
+import { GqlWsMessageType, GraphqlProtocols, graphqlSubProtocol, GraphqlTypes } from "../../../../../constants";
 import { MarkdownProcessor } from "../../../../utils/react/MarkdownProcessor";
 import { Utils } from "../../../../../utils";
 import { ConsoleAuthorization } from "./operation-console/ConsoleAuthorization";
@@ -56,6 +56,8 @@ import { ConsoleParameters } from "./operation-console/ConsoleParameters";
 import { OperationNodes, createFieldStringFromNodes, documentToTree, loadGQLSchema } from "./operation-console/graphqlUtils";
 import { ResponsePackage, getAuthServers, getBackendUrl, loadSubscriptionKeys,setupOAuth } from "./operation-console/consoleUtils";
 import { GraphQLInputTreeNode, GraphQLTreeNode } from "./operation-console/graphql-utilities/graphql-node-models";
+import { LogItem, LogItemType, WebsocketClient } from "./operation-console/ws-utilities/websocketClient";
+import { ConsoleWsLogItems } from "./operation-console/ConsoleWsLogItems";
 
 type OperationConsoleProps = {
     isOpen: boolean;
@@ -76,12 +78,13 @@ type OperationConsoleProps = {
     httpClient: HttpClient;
 }
 
-enum ConsoleTab {
+export enum ConsoleTab {
     auth = "auth",
     parameters = "parameters",
     headers = "headers",
     queryVariables = "query-variables",
-    response = "response"
+    response = "response",
+    wsconsole = "wsconsole"
 }
 
 export const OperationConsoleGql = ({
@@ -122,9 +125,16 @@ export const OperationConsoleGql = ({
     const [responseLanguage, setResponseLanguage] = useState<string>("html");
     const [requestError, setRequestError] = useState<string>(null);
 
+    const [isWs, setIsWs] = useState<boolean>(false);
+    const [webSocket, setWebSocket] = useState<WebsocketClient>(null);
+    const [wsLogItems, setWsLogItems] = useState<LogItem[]>([]);
+    const [connectingWs, setConnectingWs] = useState<boolean>(false);
+    const [isWsConnected, setIsWsConnected] = useState<boolean>(false);
+
     const generateDocument = useCallback((globalNodes) => {
         const document = createFieldStringFromNodes(globalNodes, 0);
         setDocument(document);
+        document.trim().startsWith(GraphqlTypes.subscription) ? setIsWs(true) : setIsWs(false);
     }, []);
 
     useEffect(() => {
@@ -167,6 +177,10 @@ export const OperationConsoleGql = ({
     useEffect(() => {
         generateDocument(globalNodes);
     }, [globalNodes, generateDocument]);
+
+    useEffect(() => {
+        !isWs && closeWs();
+    }, [isWs]);
 
     const setDefaultHeader = () => {
         const defaultHeader = new ConsoleHeader();
@@ -377,6 +391,107 @@ export const OperationConsoleGql = ({
         return response;
     }
 
+    const wsConnect = async (): Promise<void> => {
+        setSelectedTab(ConsoleTab.wsconsole);
+        setConnectingWs(true);
+
+        const protocol = api.protocols.includes(GraphqlProtocols.wss) ? GraphqlProtocols.wss : GraphqlProtocols.ws;
+        const urlTemplate = getRequestPath();
+        const url = `${protocol}://${hostnames[0]}${Utils.ensureLeadingSlash(urlTemplate)}`;
+
+        const ws = initWebSocket();
+        ws.connect(url, graphqlSubProtocol);
+    }
+
+    const initWebSocket = (): WebsocketClient => {
+        const wsClient = new WebsocketClient();
+
+        wsClient.onOpen = () => {
+            setConnectingWs(false);
+            setIsWsConnected(true);
+            wsClient.send(JSON.stringify({
+                type: GqlWsMessageType.connection_init,
+                payload: {}
+            }));
+            wsClient.send(JSON.stringify({
+                type: GqlWsMessageType.subscribe,
+                id: "1",
+                payload: {
+                    query: document,
+                    variables: queryVariables && queryVariables.length > 0 ? JSON.parse(queryVariables) : null
+                }
+            }, null, 2));
+        };
+        wsClient.onLogItem = (data: LogItem) => {
+            if (!data) {
+                return;
+            }
+            if (data.logType === LogItemType.GetData) {
+                try {
+                    const json = JSON.parse(data.logData);
+                    if (json["type"] == GqlWsMessageType.next && "payload" in json) {
+                        data.logData = JSON.stringify(json["payload"], null, 2);
+                        setWsLogItems(wsLogItems => [data, ...wsLogItems]);
+                    }
+                } catch (error) {
+                    //this.logger.trackError(error);
+                }
+            }
+            else if (data.logType === LogItemType.SendData) {
+                try {
+                    const json = JSON.parse(data.logData);
+                    if (json["type"] == GqlWsMessageType.subscribe && "payload" in json) {
+                        data.logData = JSON.stringify(json["payload"], null, 2);
+                        setWsLogItems(wsLogItems => [data, ...wsLogItems]);
+                    }
+                } catch (error) {
+                    //this.logger.trackError(error);
+                }
+            }
+            else if (data.logType === LogItemType.Connection) {
+                if (data.logData.includes("Disconnected")) {
+                    return;
+                }
+                if (data.logData.includes("Disconnecting from")) {
+                    data.logData = data.logData.replace("Disconnecting", "Disconnected");
+                }
+                setWsLogItems(wsLogItems => [data, ...wsLogItems]);
+            }
+            else {
+                setWsLogItems(wsLogItems => [data, ...wsLogItems]);
+            }
+        };
+        wsClient.onError = (error: string) => {
+            setConnectingWs(false);
+            setIsWsConnected(false);
+        };
+
+        setWebSocket(wsClient);
+        return wsClient;
+    }
+
+    const clearWsLogs = (): void => {
+        setWsLogItems([]);
+    }
+
+    const closeWs = async (): Promise<void> => {
+        closeWsConnection();
+        setIsWs(false);
+        setSelectedTab(ConsoleTab.response);
+    }
+
+    const closeWsConnection = async (): Promise<void> => {
+        if (isWsConnected) {
+            setIsWsConnected(false);
+            webSocket?.disconnect();
+        }
+    }
+
+    const restartSubscription = (): void => {
+        closeWsConnection();
+        wsConnect();
+    }
+
     const renderBreadcrumbItem = (name: string, isCurrent: boolean, url?: string) => (
         <>
             {isTruncatableBreadcrumbContent(name, 20)
@@ -429,6 +544,38 @@ export const OperationConsoleGql = ({
         });
     }
 
+    const renderButton = (): JSX.Element => {
+        if (isWs) {
+            return (
+                <Button
+                    appearance="primary"
+                    disabled={connectingWs}
+                    onClick={() => isWsConnected ? restartSubscription() : wsConnect()}
+                >
+                    {isWsConnected
+                        ? "Send"
+                        : connectingWs
+                            ? "Connecting"
+                            : "Connect"
+                    }
+                </Button>
+            );
+        } else {
+            return (
+                <Button
+                    appearance="primary"
+                    disabled={sendingRequest}
+                    onClick={() => sendRequest()}
+                >
+                    {sendingRequest
+                        ? "Sending"
+                        : "Send"
+                    }
+                </Button>
+            );
+        }
+    }
+
     return (
         <OverlayDrawer
             open={isOpen}
@@ -467,13 +614,7 @@ export const OperationConsoleGql = ({
                     : <>
                         <Stack horizontal verticalAlign="center" horizontalAlign="space-between" className={"console-gql-header"}>
                             <Body1>Query editor</Body1>
-                            <Button
-                                appearance="primary"
-                                disabled={sendingRequest}
-                                onClick={() => sendRequest()}
-                            >
-                                {sendingRequest ? "Sending" : "Send"}
-                            </Button>
+                            {renderButton()}
                         </Stack>
                         <Stack horizontal className={"console-gql-body"}>
                             <div className={"gql-explorer"}>
@@ -517,6 +658,7 @@ export const OperationConsoleGql = ({
                                             <Tab value={ConsoleTab.headers}>Headers</Tab>
                                             <Tab value={ConsoleTab.queryVariables}>Query variables</Tab>
                                             <Tab value={ConsoleTab.response}>Response</Tab>
+                                            {isWs && <Tab value={ConsoleTab.wsconsole}>Websocket console</Tab>}
                                         </TabList>
                                         <div className={`gql-tab-content${selectedTab === ConsoleTab.queryVariables ? ' query-variables-tab': ''}`}>
                                             {selectedTab === ConsoleTab.auth && (authorizationServers.length > 0 || api.subscriptionRequired) &&
@@ -560,6 +702,27 @@ export const OperationConsoleGql = ({
                                                     ? <MarkdownProcessor markdownToDisplay={requestError} />
                                                     : response && <SyntaxHighlighter children={response} language={responseLanguage} style={a11yLight} />
                                                 )
+                                            }
+                                            {selectedTab === ConsoleTab.wsconsole &&
+                                                <>                                                
+                                                    <ConsoleWsLogItems wsLogItems={wsLogItems} />
+                                                    <Stack horizontal className={"ws-console-actions"} tokens={{ childrenGap: 10 }}>
+                                                        <Button
+                                                            appearance="secondary"
+                                                            disabled={connectingWs || !isWsConnected}
+                                                            onClick={() => closeWs()}
+                                                        >
+                                                            Disconnect
+                                                        </Button>
+                                                        <Button
+                                                            appearance="secondary"
+                                                            disabled={connectingWs || !isWsConnected}
+                                                            onClick={() => clearWsLogs()}
+                                                        >
+                                                            Clear logs
+                                                        </Button>
+                                                    </Stack>
+                                                </>
                                             }
                                         </div>
                                     </div>
