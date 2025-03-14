@@ -21,11 +21,11 @@ jobs:
           command: "install"
 
       - pwsh: |        
-          node ./migrate --sourceSubscriptionId "$(sourceSubscriptionId)" --sourceResourceGroupName  "$(sourceResourceGroupName)" --sourceServiceName "$(sourceServiceName)" --destServiceName "$(destServiceName)" --destSubscriptionId "$(destSubscriptionId)" --destResourceGroupName "$(destResourceGroupName)" --sourceTenantId "$(sourceAzureTenantId)" --sourceServicePrincipal "$(sourceServicePrincipal)" --sourceSecret "$(sourceServicePrincipalSecret)"  --destTenantId "$(destAzureTenantId)" --destServicePrincipal "$(destServicePrincipal)" --destSecret "$(destServicePrincipalSecret)"
+          node ./migrate --sourceSubscriptionId "$(sourceSubscriptionId)" --sourceResourceGroupName  "$(sourceResourceGroupName)" --sourceServiceName "$(sourceServiceName)" --destServiceName "$(destServiceName)" --destSubscriptionId "$(destSubscriptionId)" --destResourceGroupName "$(destResourceGroupName)" --sourceTenantId "$(sourceAzureTenantId)" --sourceServicePrincipal "$(sourceServicePrincipal)" --sourceServicePrincipalSecret "$(sourceServicePrincipalSecret)"  --destTenantId "$(destAzureTenantId)" --destServicePrincipal "$(destServicePrincipal)" --destServicePrincipalSecret "$(destServicePrincipalSecret)"
         workingDirectory: "$(System.DefaultWorkingDirectory)/scripts.v3"
         displayName: Run Migrate cmd from $(sourceServiceName) to $(destinationServiceName)
               
       - pwsh: |
-          node ./updatecontenturl --existingEnvUrls "$(existingEnvUrls)" --destEnvUrls  "$(destEnvUrls)" --destServiceName "$(destinationServiceName)" --destSubscriptionId "$(destSubscriptionId)" --destResourceGroupName "$(destResourceGroupName)" --destTenantId "$(destAzureTenantId)" --destServicePrincipal "$(destServicePrincipal)" --destSecret "$(destServicePrincipalSecret)"
+          node ./updatecontenturl --existingEnvUrls "$(existingEnvUrls)" --destEnvUrls  "$(destEnvUrls)" --destServiceName "$(destServiceName)" --destSubscriptionId "$(destSubscriptionId)" --destResourceGroupName "$(destResourceGroupName)" --destTenantId "$(destAzureTenantId)" --destServicePrincipal "$(destServicePrincipal)" --destServicePrincipalSecret "$(destServicePrincipalSecret)"
         workingDirectory: '$(System.DefaultWorkingDirectory)/scripts.v3'
         displayName: Update urls for  $(destinationServiceName)
