@@ -111,6 +111,7 @@ import { ChangePasswordRuntimeModule } from "./components/users/change-password/
 import { ConfirmPasswordRuntimeModule } from "./components/users/confirm-password/confirmPassword.runtime.module";
 import { SubscriptionsRuntimeModule } from "./components/users/subscriptions/subscriptions.runtime.module";
 import { ReportsRuntimeModule } from "./components/reports/reports.runtime.module";
+import { ApplicationListRuntimeModule } from "./components/applications/application-list/applicationList.runtime.module";
 import { ValidationSummaryRuntimeModule } from "./components/users/validation-summary/validationSummary.runtime.module";
 import { ClientLogger } from "./logging/clientLogger";
 
@@ -213,6 +214,7 @@ export class ApimRuntimeModule implements IInjectorModule {
         injector.bindModule(new ConfirmPasswordRuntimeModule());
         injector.bindModule(new SubscriptionsRuntimeModule());
         injector.bindModule(new ReportsRuntimeModule());
+        injector.bindModule(new ApplicationListRuntimeModule());
         injector.bindModule(new ValidationSummaryRuntimeModule());
 
         if (process.env.NODE_ENV === staticDataEnvironment) {

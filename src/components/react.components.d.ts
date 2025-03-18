@@ -54,5 +54,7 @@ declare namespace JSX {
         "placeholder-content": any;
         "fui-reports-runtime": any;
         "reports-runtime": any;
+        "fui-application-list": any;
+        "application-list": any;
     }
 }
