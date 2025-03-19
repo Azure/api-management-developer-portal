@@ -115,7 +115,7 @@ export class SignUpRuntime extends React.Component<SignUpRuntimeProps> {
 
         const validationGroup = {
             email: ValidationMessages.emailRequired,
-            password: { required: ValidationMessages.passwordRequired, eval: (val) => val.length < 8 && "Password is too short." }, // TODO: password requirements should come from Management API.
+            password: { required: ValidationMessages.passwordRequired, eval: (val) => val.length < 8 && "Password should be at least 8 characters long." }, // TODO for self-hosted: password requirements should come from Management API.
             passwordConfirmation: { eval: (val) => val !== password && ValidationMessages.passwordConfirmationMustMatch },
             firstName: ValidationMessages.firstNameRequired,
             lastName: ValidationMessages.lastNameRequired,

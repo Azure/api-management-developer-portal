@@ -78,7 +78,7 @@ export class ConfirmPasswordRuntime extends React.Component<{}, ConfirmPasswordR
         }
 
         const validationGroup = {
-            password: { required: ValidationMessages.passwordRequired, eval: (val) => val.length < 8 && "Password is too short." }, // TODO: password requirements should come from Management API.
+            password: { required: ValidationMessages.passwordRequired, eval: (val) => val.length < 8 && "Password should be at least 8 characters long." }, // TODO for self-hosted: password requirements should come from Management API.
             passwordConfirmation: { eval: (val) => val !== password && ValidationMessages.passwordConfirmationMustMatch },
         }
 

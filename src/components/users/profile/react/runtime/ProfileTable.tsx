@@ -78,8 +78,8 @@ export const ProfileTable = ({ user, save, changePassword, deleteAccount, delega
 
                 <TableBody>
                     <TableRow>
-                        <TableCell>{user.email}</TableCell>
-                        <TableCell>
+                        <TableCell className="text-truncate">{user.email}</TableCell>
+                        <TableCell className="text-truncate">
                             <ValueOrField
                                 enableSave={false}
                                 isEdit={isEdit}
@@ -90,7 +90,7 @@ export const ProfileTable = ({ user, save, changePassword, deleteAccount, delega
                                 {user.firstName}
                             </ValueOrField>
                         </TableCell>
-                        <TableCell>
+                        <TableCell className="text-truncate">
                             <ValueOrField
                                 enableSave={false}
                                 isEdit={isEdit}
