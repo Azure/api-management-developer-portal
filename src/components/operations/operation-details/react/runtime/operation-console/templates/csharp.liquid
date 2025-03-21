@@ -1,0 +1,215 @@
+using System;
+using System.Net.Http.Headers;
+using System.Text;
+using System.Net.Http;
+using System.Web;
+using System.IO;
+
+namespace CSHttpClientSample
+{
+    static class Program
+    {
+        static void Main()
+        {
+            MakeRequest();
+            Console.WriteLine("Hit ENTER to exit...");
+            Console.ReadLine();
+        }
+
+        static async void MakeRequest()
+        {
+            var client = new HttpClient();
+
+{% if console.request.meaningfulHeaders.size > 0 %}
+            // Request headers
+{% for header in console.request.meaningfulHeaders -%}
+{% case header.name | downcase -%}
+{%when"content-disposition"-%}
+            {%- continue %};
+{%when  "content-encoding" -%}
+            {%- continue %};
+{%when  "content-language" -%}
+            {%- continue -%};
+{%when  "content-length" %}
+            {%- continue -%};
+{%when  "content-location" %}
+            {%- continue %};
+{%when  "content-md5" -%}
+            {%- continue %};
+{%when  "content-range" -%}
+            {%- continue %};
+{%when  "content-type" -%}
+            {%- continue -%};
+{%when  "expires" -%}
+            {%- continue %};
+{%when  "last-modified" -%}
+            {%- continue %};
+{% when "accept"%}
+            client.DefaultRequestHeaders.Accept.Add(MediaTypeWithQualityHeaderValue.Parse("{{header.value}}"));
+{% when "accept-charset" %}
+            client.DefaultRequestHeaders.AcceptCharset.Add(StringWithQualityHeaderValue.Parse("{{header.value}}"));
+{% when "accept-encoding" %}
+            client.DefaultRequestHeaders.AcceptEncoding.Add(StringWithQualityHeaderValue.Parse("{{header.value}}"));
+{% when "accept-language" %}
+            client.DefaultRequestHeaders.AcceptLanguage.Add(StringWithQualityHeaderValue.Parse("{{header.value}}"));
+{% when "cache-control" %}
+            client.DefaultRequestHeaders.CacheControl = CacheControlHeaderValue.Parse("{{header.value}}");
+{% when "connection" %}
+            client.DefaultRequestHeaders.Connection.Add("{{header.value}}");
+{% when "date" %}
+            client.DefaultRequestHeaders.Date = DateTimeOffset.Parse("{{header.value}}");
+{% when "expect" %}
+            client.DefaultRequestHeaders.Expect.Add(NameValueWithParametersHeaderValue.Parse("{{header.value}}"));
+{% when "if-match" %}
+            client.DefaultRequestHeaders.IfMatch.Add(EntityTagHeaderValue.Parse("{{header.value}}"));
+{% when "if-modified-since" %}
+            client.DefaultRequestHeaders.IfModifiedSince = DateTimeOffset.Parse("{{header.value}}");
+{% when "if-none-match" %}
+            client.DefaultRequestHeaders.IfNoneMatch.Add(EntityTagHeaderValue.Parse("{{header.value}}"));
+{% when "if-range" %}
+            client.DefaultRequestHeaders.IfRange = RangeConditionHeaderValue.Parse("{{header.value}}");
+{% when "if-unmodified-since" %}
+            client.DefaultRequestHeaders.IfUnmodifiedSince = DateTimeOffset.Parse("{{header.value}}");
+{% when "max-forwards" %}
+            client.DefaultRequestHeaders.MaxForwards = int.Parse("{{header.value}}");
+{% when "pragma" %}
+            client.DefaultRequestHeaders.Pragma.Add(NameValueHeaderValue.Parse("{{header.value}}"));
+{% when "range" %}
+            client.DefaultRequestHeaders.Range = RangeHeaderValue.Parse("{{header.value}}");
+{% when "referer" %}
+            client.DefaultRequestHeaders.Referrer = new Uri("{{header.value}}");
+{% when "te" %}
+            client.DefaultRequestHeaders.TE.Add(TransferCodingWithQualityHeaderValue.Parse("{{header.value}}"));
+{% when "transfer-encoding" %}
+            client.DefaultRequestHeaders.TransferEncoding.Add(TransferCodingHeaderValue.Parse("{{header.value}}"));
+{% when "upgrade" %}
+            client.DefaultRequestHeaders.Upgrade.Add(ProductHeaderValue.Parse("{{header.value}}"));
+{% when "user-agent" %}
+            client.DefaultRequestHeaders.UserAgent.Add(ProductInfoHeaderValue.Parse("{{header.value}}"));
+{% when "via" %}
+            client.DefaultRequestHeaders.Via.Add(ViaHeaderValue.Parse("{{header.value}}"));
+{% when "warning" %}
+            client.DefaultRequestHeaders.Warning.Add(WarningHeaderValue.Parse("{{header.value}}"));
+{% else %}
+    {% if showSecrets == false and header.secret -%}
+        client.DefaultRequestHeaders.Add("{{header.name}}", "{{header.hiddenValue}}");
+    {% else -%}
+        client.DefaultRequestHeaders.Add("{{header.name}}", "{{header.value}}");
+    {% endif -%}
+            
+{% endcase -%}
+{% endfor -%}
+{% endif -%}
+
+            var uri = "{{console.requestUrl}}";
+
+{% case console.method -%}
+
+{% when "POST" %}
+            HttpResponseMessage response;
+            {%- if console.request.body != blank %}
+            // Request body
+{%- if console.request.bodyFormat == "raw"  -%}
+            {%- assign formattedBody = console.requestbody | replace:'"','\\"' -%}
+            {%- assign formattedBody = formattedBody | replace: '\r\n', ' ' -%}
+            {%- assign formattedBody = formattedBody | replace: '     ', ' ' %}
+
+            using (var content = new StringContent("{{formattedBody}}"))
+            {
+{%- elsif console.request.bodyFormat == "binary" %}
+            using (var content = new StreamContent(File.OpenRead(" < path\\to\\{{console.request.binary.name}} > ")))
+            {
+{%- endif %}
+    {%- for header in console.request.meaningfulHeaders -%}
+        {% case header.name | downcase -%}
+            {%when"content-disposition" %}
+                content.Headers.ContentDisposition = new ContentDispositionHeaderValue("{{header.value}}");
+            {%when  "content-encoding" %}
+                content.Headers.ContentEncoding.Add("{{header.value}}");
+            {%when  "content-language" %}
+                content.Headers.ContentLanguage.Add("{{header.value}}");
+            {%when  "content-length" %}
+                content.Headers.ContentLength = {{header.value}};
+            {%when  "content-location" %}
+                content.Headers.ContentLocation = new Uri("{{header.value}}"); 
+            {%when  "content-md5" %}
+                content.Headers.Add("content-md5", "{{header.value}}");
+            {%when  "content-range" %}
+                content.Headers.ContentRange = new ContentRangeHeaderValue({{header.value}});
+            {%when  "content-type" %}
+                content.Headers.ContentType = new MediaTypeHeaderValue("{{header.value}}");
+            {%when  "expires" %}
+                content.Headers.Add("expires", "{{header.value}}");
+            {%when  "last-modified" %}
+                content.Headers.Add("last-modified", "{{header.value}}");
+            {% else -%}
+                {%- continue -%};
+        {% endcase -%}
+    {% endfor -%}
+{% endif -%}
+               response = await client.PostAsync(uri, content);
+            }
+
+{% when "GET" -%}
+            var response = await client.GetAsync(uri);
+{% when "DELETE" -%}
+            var response = await client.DeleteAsync(uri);
+{% when "PUT" %}
+            HttpResponseMessage response;
+{% if console.request.body != blank %}
+            // Request body
+{%- if console.request.bodyFormat == "raw"  -%}
+            {%- assign formattedBody = console.request.body | replace:'"','\\"' -%}
+            {%- assign formattedBody = formattedBody | replace: '\r\n', ' ' -%}
+            {%- assign formattedBody = formattedBody | replace: '     ', ' ' %}
+            using (var content = new StringContent("{{formattedBody}}"))
+            {
+{%- elsif console.request.bodyFormat == "binary" %}
+            using (var content = new  StreamContent(File.OpenRead(" < path\\to\\{{console.request.binary.name}} > ")))
+            {
+{%- endif %}
+{%- for header in console.request.meaningfulHeaders -%}
+    {% case header.name | downcase -%}
+        {%when"content-disposition" %}
+            content.Headers.ContentDisposition = new ContentDispositionHeaderValue("{{header.value}}");
+        {%when  "content-encoding" %}
+            content.Headers.ContentEncoding.Add("{{header.value}}");
+        {%when  "content-language" %}
+            content.Headers.ContentLanguage.Add("{{header.value}}");
+        {%when  "content-length" %}
+            content.Headers.ContentLength = {{header.value}};
+        {%when  "content-location" %}
+            content.Headers.ContentLocation = new Uri("{{header.value}}"); 
+        {%when  "content-md5" %}
+            content.Headers.Add("content-md5", "{{header.value}}");
+        {%when  "content-range" %}
+            content.Headers.ContentRange = new ContentRangeHeaderValue({{header.value}});
+        {%when  "content-type" %}
+            content.Headers.ContentType = new MediaTypeHeaderValue("{{header.value}}");
+        {%when  "expires" %}
+            content.Headers.Add("expires", "{{header.value}}");
+        {%when  "last-modified" %}
+            content.Headers.Add("last-modified", "{{header.value}}");
+        {% else -%}
+            {%- continue -%};
+    {% endcase -%}
+{% endfor -%}
+{% endif -%}
+                response = await client.PutAsync(uri, content);
+            }
+{% when "HEAD" -%}
+            var response = await client.SendAsync(new HttpRequestMessage(HttpMethod.Head, uri));
+{% when "OPTIONS" -%}
+            var response = await client.SendAsync(new HttpRequestMessage(HttpMethod.Options, uri));
+{% when "TRACE" -%}
+            var response = await client.SendAsync(new HttpRequestMessage(HttpMethod.Trace, uri));
+
+            if (response.Content != null)
+            {
+                var responseString = await response.Content.ReadAsStringAsync();
+                Console.WriteLine(responseString);
+            }
+{% endcase %}
+        }
+    }
+}

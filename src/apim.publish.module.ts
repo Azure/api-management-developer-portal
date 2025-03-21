@@ -1,40 +1,41 @@
+import { ReactModule } from "@paperbits/react/react.module";
 import { AadConfigPublisher } from "./publishing/aadConfigPublisher";
 import { IInjector, IInjectorModule } from "@paperbits/common/injection";
 import { ConsoleLogger } from "@paperbits/common/logging";
 import { RoleBasedSecurityPublishModule } from "@paperbits/core/security/roleBasedSecurity.publish.module";
 import { MapiClient } from "./services/mapiClient";
 import { MapiObjectStorage, MapiBlobStorage } from "./persistence";
-import { ListOfApisPublishModule } from "./components/apis/list-of-apis/ko/listOfApis.module";
-import { DetailsOfApiPublishModule } from "./components/apis/details-of-api/ko/detailsOfApi.module";
-import { HistoryOfApiPublishModule } from "./components/apis/history-of-api/ko/historyOfApi.module";
-import { SigninPublishModule } from "./components/users/signin/signin.module";
-import { SigninSocialPublishModule } from "./components/users/signin-social/signinSocial.module";
-import { SignupPublishModule } from "./components/users/signup/signup.module";
-import { SignupSocialPublishModule } from "./components/users/signup-social/signupSocial.module";
-import { ProfilePublishModule } from "./components/users/profile/profile.module";
-import { SubscriptionsPublishModule } from "./components/users/subscriptions/subscriptions.module";
-import { ProductDetailsPublishModule } from "./components/products/product-details/productDetails.module";
+import { ListOfApisPublishModule } from "./components/apis/list-of-apis/listOfApis.publish.module";
+import { DetailsOfApiPublishModule } from "./components/apis/details-of-api/detailsOfApi.publish.module";
+import { HistoryOfApiPublishModule } from "./components/apis/history-of-api/historyOfApi.publish.module";
+import { SigninPublishModule } from "./components/users/signin/signin.publish.module";
+import { SigninSocialPublishModule } from "./components/users/signin-social/signinSocial.publish.module";
+import { SignupPublishModule } from "./components/users/signup/signup.publish.module";
+import { SignupSocialPublishModule } from "./components/users/signup-social/signupSocial.publish.module";
+import { ProfilePublishModule } from "./components/users/profile/profile.publish.module";
+import { SubscriptionsPublishModule } from "./components/users/subscriptions/subscriptions.publish.module";
+import { ProductDetailsPublishModule } from "./components/products/product-details/productDetails.publish.module";
 import { StaticRouter } from "./components/staticRouter";
 import { StaticUserService } from "./services/userService";
 import { StaticAuthenticator } from "./components/staticAuthenticator";
-import { OperationListPublishModule } from "./components/operations/operation-list/ko/operationList.module";
+import { OperationListPublishModule } from "./components/operations/operation-list/operationList.publish.module";
 import { OperationDetailsPublishModule } from "./components/operations/operation-details/operationDetails.publish.module";
-import { ProductListPublishModule } from "./components/products/product-list/ko/productList.module";
-import { ProductSubscribePublishModule } from "./components/products/product-subscribe/ko/productSubscribe.module";
-import { ProductApisPublishModule } from "./components/products/product-apis/ko/productApis.module";
-import { ProductSubscriptionsPublishModule } from "./components/products/product-subscriptions/ko/productSubscriptions.module";
+import { ProductListPublishModule } from "./components/products/product-list/productList.publish.module";
+import { ProductApisPublishModule } from "./components/products/product-apis/productApis.publish.module";
+import { ProductSubscribePublishModule } from "./components/products/product-subscribe/productSubscribe.publish.module";
+import { ProductSubscriptionsPublishModule } from "./components/products/product-subscriptions/productSubscriptions.publish.module";
 import { IdentityService } from "./services/identityService";
-import { ResetPasswordPublishModule } from "./components/users/reset-password/resetPassword.module";
-import { ConfirmPasswordPublishModule } from "./components/users/confirm-password/ko/confirmPassword.module";
-import { ChangePasswordPublishModule } from "./components/users/change-password/ko/changePassword.module";
-import { ReportsPublishModule } from "./components/reports/ko/reports.module";
+import { ResetPasswordPublishModule } from "./components/users/reset-password/resetPassword.publish.module";
+import { ConfirmPasswordPublishModule } from "./components/users/confirm-password/confirmPassword.publish.module";
+import { ChangePasswordPublishModule } from "./components/users/change-password/changePassword.publish.module";
+import { ReportsPublishModule } from "./components/reports/reports.publish.module";
 import { TenantService } from "./services/tenantService";
-import { ValidationSummaryPublishModule } from "./components/users/validation-summary/validationSummary.module";
+import { ValidationSummaryPublishModule } from "./components/users/validation-summary/validationSummary.publish.module";
 import { BackendService } from "./services/backendService";
 import { StaticRoleService } from "./services/roleService";
 import { ProvisionService } from "./services/provisioningService";
 import { OAuthService } from "./services/oauthService";
-import { ApiProductsPublishModule } from "./components/apis/api-products/ko/apiProducts.module";
+import { ApiProductsPublishModule } from "./components/apis/api-products/apiProducts.publish.module";
 import { RuntimeConfigPublisher } from "./publishing/runtimeConfigPublisher";
 import { RuntimeConfigBuilder } from "./publishing/runtimeConfigBuilder";
 import { CustomHtmlPublishModule } from "./components/custom-html/customHtml.publish.module";
@@ -42,9 +43,11 @@ import { CustomWidgetPublishModule } from "./components/custom-widget/customWidg
 import { StaticDataHttpClient } from "./services/staticDataHttpClient";
 import { PublisherStaticDataProvider } from "./services/publisherStaticDataProvider";
 import { staticDataEnvironment, mockStaticDataEnvironment } from "./../environmentConstants";
+import { RedesignConfigPublisher } from "./publishing/redesignConfigPublisher";
 
 export class ApimPublishModule implements IInjectorModule {
     public register(injector: IInjector): void {
+        injector.bindModule(new ReactModule());
         injector.bindModule(new ListOfApisPublishModule());
         injector.bindModule(new ApiProductsPublishModule());
         injector.bindModule(new DetailsOfApiPublishModule());
@@ -85,6 +88,7 @@ export class ApimPublishModule implements IInjectorModule {
         injector.bindSingleton("oauthService", OAuthService);
         injector.bindSingleton("runtimeConfigBuilder", RuntimeConfigBuilder);
         injector.bindToCollection("publishers", AadConfigPublisher);
+        injector.bindToCollection("publishers", RedesignConfigPublisher);
         injector.bindToCollection("publishers", RuntimeConfigPublisher);
 
         if (process.env.NODE_ENV === staticDataEnvironment || process.env.NODE_ENV === mockStaticDataEnvironment) {

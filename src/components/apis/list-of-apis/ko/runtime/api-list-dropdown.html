@@ -1,6 +1,6 @@
 <div class="form-group">
     <div class="input-group" tabindex="0" aria-label="APIs">
-        <div class="form-control text-truncate" data-toggle="dropdown" role="button">
+        <div class="form-control text-truncate m-0" data-toggle="dropdown" role="button">
             <span data-bind="text: selection"></span>
             <!-- ko if: selectedApi() -->
             <!-- ko if: selectedApi().type === 'soap' -->
@@ -18,8 +18,8 @@
             <i class="icon-emb icon-emb-chevron-down"></i>
         </button>
         <div class="dropdown api-list-dropdown">
-            <input type="search" class="form-control form-control-light" aria-label="Search" placeholder="Search APIs"
-                data-bind="textInput: pattern" autofocus />
+            <input type="search" class="form-control form-control-light m-0" aria-label="Search" placeholder="Search APIs"
+                data-bind="textInput: pattern, style: { width: '100%' }" autofocus />
 
             <!-- <tag-input params="{ scope: 'apis', onChange: onTagsChange }"></tag-input> -->
 

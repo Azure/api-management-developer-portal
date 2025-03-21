@@ -1,0 +1,37 @@
+########### Python 3.2 #############
+import urllib.request, json
+
+try:
+    url = "{{console.requestUrl}}"
+
+    hdr ={
+    # Request headers
+{%- for header in console.request.meaningfulHeaders %}
+    {% if showSecrets == false and header.secret -%}
+        '{{header.name}}': '{{header.hiddenValue}}',
+    {%- else -%}
+        '{{header.name}}': '{{header.value}}',
+    {%- endif -%}
+{%- endfor %}
+    }
+{% if console.request.body != blank %}
+    # Request body
+{%- if console.request.bodyFormat == "raw" %}
+    data =  {{request.body}}
+    data = json.dumps(data)
+    req = urllib.request.Request(url, headers=hdr, data = bytes(data.encode("utf-8")))
+{%- elsif  console.request.bodyFormat == "binary" %}
+    with open('< path/to/{{request.binary.name}} >', 'rb') as f:
+        data = f.read()
+    req = urllib.request.Request(url, headers=hdr, data = bytes(data))
+{%- endif %}
+{% else %}
+    req = urllib.request.Request(url, headers=hdr)
+{% endif %}
+    req.get_method = lambda: '{{console.method}}'
+    response = urllib.request.urlopen(req)
+    print(response.getcode())
+    print(response.read())
+except Exception as e:
+    print(e)
+####################################

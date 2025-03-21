@@ -1,0 +1,29 @@
+fui-api-details {
+    width: 100%;
+
+    .api-title {
+        margin-right: 1rem;
+    }
+
+    .api-version-menu {
+        padding: .25rem;
+        min-width: 50px;
+        align-self: center;
+        align-items: unset;
+        margin: 0 1rem 0 .5rem;
+    }
+
+    .api-details-dropdowns {
+        margin: 1.25rem 0;
+    }
+
+    .api-details-dropdown {
+        min-width: 190px;
+        margin: 0 1rem 0 .5rem;
+    }
+
+    .api-additional-info,
+    .api-additional-info-block {
+        margin-top: 1rem;
+    }
+}

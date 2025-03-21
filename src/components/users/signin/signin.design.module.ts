@@ -1,11 +1,12 @@
 import { IInjectorModule, IInjector } from "@paperbits/common/injection";
-import { SigninHandlers } from "./signinHandlers";
-import { SigninModelBinder } from "./signinModelBinder";
-import { SigninViewModelBinder } from "./ko/signinViewModelBinder";
 import { IWidgetService } from "@paperbits/common/widgets";
+import { ReactComponentBinder } from "@paperbits/react/bindings";
+import { ComponentFlow } from "@paperbits/common/components";
+import { SigninHandlers } from "./signinHandlers";
 import { SigninModel } from "./signinModel";
-import { KnockoutComponentBinder } from "@paperbits/core/ko";
-import { SigninViewModel } from "./ko/signinViewModel";
+import { SigninModelBinder } from "./signinModelBinder";
+import { SigninViewModel } from "./react/SigninViewModel";
+import { SigninViewModelBinder } from "./signinViewModelBinder";
 
 export class SigninDesignModule implements IInjectorModule {
     public register(injector: IInjector): void {
@@ -17,10 +18,11 @@ export class SigninDesignModule implements IInjectorModule {
 
         widgetService.registerWidget("signin", {
             modelDefinition: SigninModel,
-            componentBinder: KnockoutComponentBinder,
+            componentBinder: ReactComponentBinder,
             componentDefinition: SigninViewModel,
             modelBinder: SigninModelBinder,
-            viewModelBinder: SigninViewModelBinder
+            viewModelBinder: SigninViewModelBinder,
+            componentFlow: ComponentFlow.Block
         });
 
         widgetService.registerWidgetEditor("signin", {

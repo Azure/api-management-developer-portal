@@ -5,7 +5,7 @@ import { ISiteService, SiteSettingsContract } from '@paperbits/common/sites';
 import { IMediaService, MediaContract } from '@paperbits/common/media';
 import { MetaDataSetter } from "@paperbits/common/meta/metaDataSetter";
 import { EventManager } from '@paperbits/common/events';
-import { Checkbox, CommandBarButton, DefaultButton, Icon, Image, ImageFit, Label, Link, Modal, Pivot, PivotItem, PrimaryButton, Stack, Text, TextField } from '@fluentui/react';
+import { Checkbox, CommandBarButton, DefaultButton, Image, ImageFit, Label, Modal, Pivot, PivotItem, PrimaryButton, Stack, Text, TextField } from '@fluentui/react';
 import { MediaSelectionItemModal } from '../media/mediaSelectionItemModal';
 import { getThumbnailUrl } from '../utils/helpers';
 import { ResetDetailsWorkshop } from '../../components/content';
@@ -23,7 +23,8 @@ interface SettingsModalState {
     selectedFavicon: MediaContract,
     showMediaSelectionModal: boolean,
     showResetConfirmation: boolean,
-    resetConfirmation: string
+    resetConfirmation: string,
+    applyNewTheme: boolean
 }
 
 interface SettingsModalProps {
@@ -56,7 +57,8 @@ export class SettingsModal extends React.Component<SettingsModalProps, SettingsM
             selectedFavicon: null,
             showMediaSelectionModal: false,
             showResetConfirmation: false,
-            resetConfirmation: ''
+            resetConfirmation: '',
+            applyNewTheme: true
         }
     }
 
@@ -106,9 +108,9 @@ export class SettingsModal extends React.Component<SettingsModalProps, SettingsM
 
     saveChanges = async (): Promise<void> => {
         if (this.state.selectedTab === Tab.Advanced) {
-            this.resetDetailsWorkshop.reset();
+            this.resetDetailsWorkshop.reset(this.state.applyNewTheme);
         } else {
-            await this.siteService.setSetting('site', this.state.settings);
+            await this.siteService.setSetting<SiteSettingsContract>('site', this.state.settings);
             this.eventManager.dispatchEvent('onSaveChanges');
         }
 
@@ -193,6 +195,12 @@ export class SettingsModal extends React.Component<SettingsModalProps, SettingsM
                             <Stack className="reset-content-wrapper">
                                 <Text block styles={{ root: { fontWeight: 600 } }}>Restore website to default state</Text>
                                 <Text block>By resetting the website, all the pages, layouts, customizations, and uploaded media, will be deleted. The published version of the developer portal will not be deleted.</Text>
+                                <Checkbox
+                                    label="Apply new starter theme"
+                                    checked={this.state.applyNewTheme}
+                                    onChange={() => this.setState({ applyNewTheme: !this.state.applyNewTheme })}
+                                    styles={{ root: { paddingTop: '10px' } }}
+                                />
                                 <Checkbox
                                     label="Yes, reset the website to default state"
                                     checked={this.state.showResetConfirmation}
