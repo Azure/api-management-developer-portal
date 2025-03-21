@@ -1,11 +1,16 @@
 import { Utils } from "../utils";
 
+const enum TokenType {
+    sharedAccessSignature = "SharedAccessSignature",
+    bearer = "Bearer"
+}
+
 export class AccessToken {
     constructor(
         /**
          * Type of token, i.e. Bearer or SharedAccessSignature.
          */
-        public readonly type: string,
+        public readonly type: TokenType,
 
         /**
          * Token value.
@@ -29,7 +34,6 @@ export class AccessToken {
 
         if (match && match.length >= 2) {
             const tokenValue = match[1];
-
             return AccessToken.parseSharedAccessSignature(tokenValue);
         }
 
@@ -54,12 +58,12 @@ export class AccessToken {
         const dateTimeIso = `${year}-${month}-${day}T${hour}:${minute}:00.000Z`;
         const expirationDateUtc = new Date(dateTimeIso);
 
-        return new AccessToken("SharedAccessSignature", value, expirationDateUtc, userId);
+        return new AccessToken(TokenType.sharedAccessSignature, value, expirationDateUtc, userId);
     }
 
     private static parseBearerToken(value: string): AccessToken {
         const decodedToken = Utils.parseJwt(value);
-        return new AccessToken("Bearer", value, decodedToken.exp);
+        return new AccessToken(TokenType.bearer, value, decodedToken.exp);
     }
 
     public static parse(token: string): AccessToken {
@@ -105,6 +109,9 @@ export class AccessToken {
     }
 
     public toString(): string {
-        return `${this.type} token="${this.value}",refresh="true"`;
+        if (this.type === TokenType.sharedAccessSignature) {
+            return `${this.type} token="${this.value}",refresh="true"`;
+        }
+        return `${this.type} ${this.value}`;
     }
 }

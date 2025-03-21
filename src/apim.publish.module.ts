@@ -2,7 +2,6 @@ import { AadConfigPublisher } from "./publishing/aadConfigPublisher";
 import { IInjector, IInjectorModule } from "@paperbits/common/injection";
 import { ConsoleLogger } from "@paperbits/common/logging";
 import { RoleBasedSecurityPublishModule } from "@paperbits/core/security/roleBasedSecurity.publish.module";
-import { MapiClient } from "./services/mapiClient";
 import { MapiObjectStorage, MapiBlobStorage } from "./persistence";
 import { ListOfApisPublishModule } from "./components/apis/list-of-apis/ko/listOfApis.module";
 import { DetailsOfApiPublishModule } from "./components/apis/details-of-api/ko/detailsOfApi.module";
@@ -42,6 +41,8 @@ import { CustomWidgetPublishModule } from "./components/custom-widget/customWidg
 import { StaticDataHttpClient } from "./services/staticDataHttpClient";
 import { PublisherStaticDataProvider } from "./services/publisherStaticDataProvider";
 import { staticDataEnvironment, mockStaticDataEnvironment } from "./../environmentConstants";
+import { PublishingRetryStrategy } from "./clients/retryStrategy/publishingRetryStrategy";
+import MapiClientDirect from "./clients/mapiClientDirect";
 
 export class ApimPublishModule implements IInjectorModule {
     public register(injector: IInjector): void {
@@ -78,7 +79,8 @@ export class ApimPublishModule implements IInjectorModule {
         injector.bindSingleton("identityService", IdentityService);
         injector.bindSingleton("router", StaticRouter);
         injector.bindSingleton("authenticator", StaticAuthenticator);
-        injector.bindSingleton("mapiClient", MapiClient);
+        injector.bindSingleton("retryStrategy", PublishingRetryStrategy);
+        injector.bindSingleton("apiClient", MapiClientDirect);
         injector.bindSingleton("objectStorage", MapiObjectStorage);
         injector.bindSingleton("blobStorage", MapiBlobStorage);
         injector.bindSingleton("logger", ConsoleLogger);

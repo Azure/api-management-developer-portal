@@ -7,6 +7,10 @@ export class StaticAuthenticator implements IAuthenticator {
         return this.accessToken;
     }
 
+    public getStoredAccessToken(): AccessToken {
+        return this.accessToken;
+    }
+
     public async getAccessTokenAsString(): Promise<string> {
         return this.accessToken?.toString();
     }

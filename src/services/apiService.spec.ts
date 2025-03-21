@@ -2,10 +2,12 @@ import { expect } from "chai";
 import { describe, it } from "mocha";
 import { ConsoleLogger } from "@paperbits/common/logging";
 import { ApiService } from "./apiService";
-import { MapiClient } from "./mapiClient";
+
 import { MockHttpClient, bookStoreApi } from "./../../tests/mocks";
 import { StaticAuthenticator } from "./../components/staticAuthenticator";
 import { StaticSettingsProvider } from "./../components/staticSettingsProvider";
+import DataApiClient from "../clients/dataApiClient";
+import { NoRetryStrategy } from "../clients/retryStrategy/noRetryStrategy";
 
 const settingsProvider = new StaticSettingsProvider({
     managementApiUrl: "https://contoso.management.azure-api.net",
@@ -25,9 +27,9 @@ describe("API service", async () => {
                 value: [bookStoreApi]
             });
 
-        const mapiClient = new MapiClient(httpClient, authenticator, settingsProvider, logger);
+        const apiClient = new DataApiClient(httpClient, authenticator, settingsProvider, new NoRetryStrategy(), logger);
 
-        const apiService = new ApiService(mapiClient);
+        const apiService = new ApiService(apiClient);
         const apis = await apiService.getApis();
 
         expect(apis.value.length).to.equals(1);
@@ -41,9 +43,9 @@ describe("API service", async () => {
             .get("/apis/book-store-api")
             .reply(200, bookStoreApi);
 
-        const mapiClient = new MapiClient(httpClient, authenticator, settingsProvider, logger);
+        const apiClient = new DataApiClient(httpClient, authenticator, settingsProvider, new NoRetryStrategy(), logger);
 
-        const apiService = new ApiService(mapiClient);
+        const apiService = new ApiService(apiClient);
         const api = await apiService.getApi("apis/book-store-api");
 
         expect(api.displayName).to.equal(bookStoreApi.properties.displayName);

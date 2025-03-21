@@ -11,7 +11,7 @@ import "@paperbits/core/ko/bindingHandlers/bindingHandlers.listbox";
 import "@paperbits/core/ko/bindingHandlers/bindingHandlers.scrollable";
 import { RoleBasedSecurityRuntimeModule } from "@paperbits/core/security/roleBasedSecurity.runtime.module";
 import { staticDataEnvironment } from "./../environmentConstants";
-import { AccessTokenRefrsher } from "./authentication/accessTokenRefresher";
+import { AccessTokenRefresher } from "./authentication/accessTokenRefresher";
 import "./bindingHandlers/acceptChange";
 import "./bindingHandlers/barChart";
 import "./bindingHandlers/copyToClipboard";
@@ -78,7 +78,6 @@ import { AadServiceV2 } from "./services/aadServiceV2";
 import { AnalyticsService } from "./services/analyticsService";
 import { ApiService } from "./services/apiService";
 import { BackendService } from "./services/backendService";
-import { MapiClient } from "./services/mapiClient";
 import { OAuthService } from "./services/oauthService";
 import { ProductService } from "./services/productService";
 import { ProvisionService } from "./services/provisioningService";
@@ -89,11 +88,13 @@ import { TenantService } from "./services/tenantService";
 import { UsersService } from "./services/usersService";
 import { TraceClick } from "./bindingHandlers/traceClick";
 import { ClientLogger } from "./logging/clientLogger";
+import DataApiClient from "./clients/dataApiClient";
+import { NoRetryStrategy } from "./clients/retryStrategy/noRetryStrategy";
 
 export class ApimRuntimeModule implements IInjectorModule {
     public register(injector: IInjector): void {
-        injector.bindSingleton("logger", ConsoleLogger);
-        // injector.bindSingleton("logger", ClientLogger);
+        //injector.bindSingleton("logger", ConsoleLogger);
+        injector.bindSingleton("logger", ClientLogger);
         injector.bindSingleton("traceClick", TraceClick);
         injector.bindToCollection("autostart", UnhandledErrorHandler);
         injector.bindToCollection("autostart", BalloonBindingHandler);
@@ -150,8 +151,11 @@ export class ApimRuntimeModule implements IInjectorModule {
         injector.bindSingleton("backendService", BackendService);
         injector.bindSingleton("aadService", AadService);
         injector.bindSingleton("aadServiceV2", AadServiceV2);
-        injector.bindSingleton("mapiClient", MapiClient);
         injector.bindSingleton("settingsProvider", ApimSettingsProvider);
+
+        injector.bindSingleton("retryStrategy", NoRetryStrategy);
+        injector.bindSingleton("apiClient", DataApiClient);
+
         injector.bindSingleton("authenticator", DefaultAuthenticator);
         injector.bindSingleton("routeHelper", RouteHelper);
         injector.bindSingleton("graphDocService", GraphDocService);
@@ -161,7 +165,7 @@ export class ApimRuntimeModule implements IInjectorModule {
         injector.bindSingleton("viewStack", ViewStack);
         injector.bindSingleton("sessionManager", DefaultSessionManager);
         injector.bind("tagInput", TagInput);
-        injector.bindToCollection("autostart", AccessTokenRefrsher);
+        injector.bindToCollection("autostart", AccessTokenRefresher);
         injector.bind("pagination", Pagination);
         injector.bind("oauthServerConfiguration", OauthServerConfiguration);
         injector.bindModule(new CustomWidgetRuntimeModule());

@@ -2,11 +2,9 @@ import { IBlobStorage } from "@paperbits/common/persistence";
 import { AzureBlobStorage } from "@paperbits/azure";
 import { Logger } from "@paperbits/common/logging";
 import { ISettingsProvider } from "@paperbits/common/configuration";
-import { MapiClient } from "../services";
 import { StaticSettingsProvider } from "../components/staticSettingsProvider";
 import { Utils } from "../utils";
-
-
+import IApiClient from "../clients/IApiClient";
 
 const defaultContainerName = "content";
 
@@ -14,7 +12,7 @@ export class MapiBlobStorage implements IBlobStorage {
     private storageClient: AzureBlobStorage;
 
     constructor(
-        private readonly mapiClient: MapiClient,
+        private readonly apiClient: IApiClient,
         private readonly settingsProvider: ISettingsProvider,
         private readonly logger: Logger
     ) { }
@@ -50,7 +48,7 @@ export class MapiBlobStorage implements IBlobStorage {
             });
         }
         else {
-            const result = await this.mapiClient.post<any>(`/portalSettings/mediaContent/listSecrets`, [await this.mapiClient.getPortalHeader("getStorageSasUrl")]);
+            const result = await this.apiClient.post<any>(`/portalSettings/mediaContent/listSecrets`, [await this.apiClient.getPortalHeader("getStorageSasUrl")]);
             const blobStorageUrl = result.containerSasUrl;
 
             storageSettingsProvider = new StaticSettingsProvider({

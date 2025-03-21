@@ -1,40 +1,40 @@
 import * as Constants from "./../constants";
 import { ISettingsProvider } from "@paperbits/common/configuration";
-import { Logger } from "@paperbits/common/logging";
 import { Utils } from "../utils";
-import { TtlCache } from "./ttlCache";
+import { TtlCache } from "../services/ttlCache";
 import { HttpClient, HttpRequest, HttpResponse, HttpMethod, HttpHeader } from "@paperbits/common/http";
-import { MapiError } from "../errors/mapiError";
+import { MapiError, MapiErrorCodes } from "../errors/mapiError";
 import { IAuthenticator, AccessToken } from "../authentication";
 import { KnownHttpHeaders } from "../models/knownHttpHeaders";
 import { KnownMimeTypes } from "../models/knownMimeTypes";
 import { Page } from "../models/page";
+import { injectable } from "inversify";
+import IApiClient from "./IApiClient";
+import { Logger } from "@paperbits/common/logging";
+import { IRetryStrategy } from "./retryStrategy/retryStrategy";
+import { eventTypes } from "../logging/clientLogger";
 
-export interface IHttpBatchResponses {
-    responses: IHttpBatchResponse[];
-}
-
-export interface IHttpBatchResponse {
-    httpStatusCode: number;
-    headers: {
-        [key: string]: string;
-    };
-    content: any;
-}
-
-export class MapiClient {
-    private managementApiUrl: string;
+@injectable()
+export default abstract class ApiClient implements IApiClient {
+    protected baseUrl: string;
     private environment: string;
     private developerPortalType: string;
     private initializePromise: Promise<void>;
     private requestCache: TtlCache = new TtlCache();
 
     constructor(
-        private readonly httpClient: HttpClient,
-        private readonly authenticator: IAuthenticator,
-        private readonly settingsProvider: ISettingsProvider,
-        private readonly logger: Logger
+        protected readonly httpClient: HttpClient,
+        protected readonly authenticator: IAuthenticator,
+        protected readonly settingsProvider: ISettingsProvider,
+        protected readonly retryStrategy: IRetryStrategy,
+        protected readonly logger: Logger
     ) { }
+
+    protected abstract setBaseUrl(): Promise<void>;
+
+    protected abstract setUserPrefix(query: string, userId?: string): string;
+
+    protected abstract getApiVersion(): string;
 
     private async ensureInitialized(): Promise<void> {
         if (!this.initializePromise) {
@@ -45,28 +45,21 @@ export class MapiClient {
 
     private async initialize(): Promise<void> {
         const settings = await this.settingsProvider.getSettings();
+        this.environment = settings["environment"];
+
+        await this.setBaseUrl();
+
+        if (!this.baseUrl) {
+            throw new Error(`Base API URL ("${Constants.SettingNames.backendUrl}") setting is missing in configuration file.`);
+        }
 
         this.developerPortalType = settings[Constants.SettingNames.developerPortalType] || Constants.DeveloperPortalType.selfHosted;
-        const managementApiUrl = settings[Constants.SettingNames.managementApiUrl];
 
-        if (!managementApiUrl) {
-            throw new Error(`Management API URL ("${Constants.SettingNames.managementApiUrl}") setting is missing in configuration file.`);
+        const managementApiAccessToken = await this.authenticator.getAccessToken();
+
+        if (!managementApiAccessToken) {
+            console.warn(`Development mode: Please check token for ${this.environment} environment.`);
         }
-
-        this.managementApiUrl = Utils.ensureUrlArmified(managementApiUrl);
-
-        const managementApiAccessToken = settings[Constants.SettingNames.managementApiAccessToken];
-
-        if (managementApiAccessToken) {
-            const accessToken = AccessToken.parse(managementApiAccessToken);
-            await this.authenticator.setAccessToken(accessToken);
-        }
-        else if (this.environment === "development") {
-            console.warn(`Development mode: Please specify ${Constants.SettingNames.managementApiAccessToken}" in configuration file.`);
-            return;
-        }
-
-        this.environment = settings["environment"];
     }
 
     private async requestInternal<T>(httpRequest: HttpRequest): Promise<T> {
@@ -90,7 +83,7 @@ export class MapiClient {
             httpRequest.body = JSON.stringify(httpRequest.body);
         }
 
-        const call = () => this.makeRequest<T>(httpRequest);
+        const call = () => this.retryStrategy.invokeCall<T>(() => this.makeRequest<T>(httpRequest));
         const requestKey = this.getRequestKey(httpRequest);
 
         if (requestKey) {
@@ -108,55 +101,70 @@ export class MapiClient {
         let key = `${httpRequest.method}:${httpRequest.url}`;
 
         if (httpRequest.headers) {
-            key += ":" + httpRequest.headers.sort().map(k => `${k}=${httpRequest.headers.join(",")}`).join("&");
+            key += ":" + httpRequest.headers.sort().map(k => `${k?.name?.toString()}=${k?.value?.toString()}`).join("&");
         }
 
         return key;
     }
 
-    protected async makeRequest<T>(httpRequest: HttpRequest): Promise<T> {
+    private async makeRequest<T>(httpRequest: HttpRequest): Promise<T> {
+        const response = await this.makeRequestRaw<T>(httpRequest);
+        return await this.handleResponse<T>(response, httpRequest.url);
+    }
+
+    private async makeRequestRaw<T>(httpRequest: HttpRequest): Promise<HttpResponse<T>> {
         const authHeader = httpRequest.headers.find(header => header.name === KnownHttpHeaders.Authorization);
         const portalHeader = httpRequest.headers.find(header => header.name === Constants.portalHeaderName);
+        const isUserResourceHeader = httpRequest.headers.find(header => header.name === Constants.isUserResourceHeaderName);
+        let additionalPortalHeaderData = "";
 
         if (!authHeader?.value) {
-            const accessToken = await this.authenticator.getAccessTokenAsString();
+            const accessToken = await this.authenticator.getAccessToken();
 
             if (accessToken) {
-                httpRequest.headers.push({ name: KnownHttpHeaders.Authorization, value: `${accessToken}` });
+                httpRequest.headers.push({ name: KnownHttpHeaders.Authorization, value: `${accessToken.toString()}` });
             } else {
                 if (!portalHeader) {
-                    httpRequest.headers.push(await this.getPortalHeader("unauthorized"));
+                    additionalPortalHeaderData += "unauthorized";
                 } else {
                     portalHeader.value = `${portalHeader.value}-unauthorized`;
+                }
+            }
+
+            if (isUserResourceHeader?.value == "true") {
+                httpRequest.url = this.setUserPrefix(httpRequest.url, accessToken?.userId);
+                const indexOfisUserHeader = httpRequest.headers.indexOf(isUserResourceHeader);
+                if (indexOfisUserHeader !== -1) {
+                    httpRequest.headers.splice(indexOfisUserHeader, 1);
                 }
             }
         }
 
         if (!portalHeader && httpRequest.method !== HttpMethod.head) {
-            httpRequest.headers.push(await this.getPortalHeader());
+            httpRequest.headers.push(await this.getPortalHeader(additionalPortalHeaderData));
         }
 
         // Do nothing if absolute URL
         if (!httpRequest.url.startsWith("https://") && !httpRequest.url.startsWith("http://")) {
-            httpRequest.url = `${this.managementApiUrl}${Utils.ensureLeadingSlash(httpRequest.url)}`;
+            httpRequest.url = `${this.baseUrl}${Utils.ensureLeadingSlash(httpRequest.url)}`;
         }
 
-        const url = new URL(httpRequest.url);
-
-        if (!url.searchParams.has("api-version")) {
-            httpRequest.url = Utils.addQueryParameter(httpRequest.url, `api-version=${Constants.managementApiVersion}`);
+        if (!Utils.IsQueryParameterExists(httpRequest.url, "api-version")) {
+            httpRequest.url = Utils.addQueryParameter(httpRequest.url, `api-version=${this.getApiVersion()}`);
         }
 
         let response: HttpResponse<T>;
 
         try {
             response = await this.httpClient.send<T>(httpRequest);
+            this.logger.trackEvent(eventTypes.clientRequest, { message: `request response`, method: httpRequest.method, requestUrl: httpRequest.url, responseCode: response.statusCode+""});
         }
         catch (error) {
+            this.logger.trackEvent(eventTypes.clientRequest, { message: `request error: ${error?.message}`, method: httpRequest.method, requestUrl: httpRequest.url, responseCode: response.statusCode+"" });
             throw new Error(`Unable to complete request. Error: ${error.message}`);
         }
 
-        return await this.handleResponse<T>(response, httpRequest.url);
+        return response;
     }
 
     private async handleResponse<T>(response: HttpResponse<T>, url: string): Promise<T> {
@@ -183,7 +191,11 @@ export class MapiClient {
 
     private async handleError(errorResponse: HttpResponse<any>, requestedUrl: string): Promise<void> {
         if (errorResponse.statusCode === 429) {
-            throw new MapiError("too_many_logins", "Too many attempts. Please try later.");
+            const retryAfterHeader = errorResponse.headers.find(h => h.name.toLowerCase() === "retry-after");
+            throw new MapiError(MapiErrorCodes.TooManyRequest, "Too Many Requests made. Please try later.", retryAfterHeader? [{
+                message: retryAfterHeader.name,
+                target: retryAfterHeader.value
+            }]: []);
         }
 
         if (errorResponse.statusCode === 401) {
@@ -191,49 +203,55 @@ export class MapiClient {
 
             if (authHeader && authHeader.value.indexOf("Basic") !== -1) {
                 if (authHeader.value.indexOf("identity_not_confirmed") !== -1) {
-                    throw new MapiError("identity_not_confirmed", "User status is Pending. Please check confirmation email.");
+                    throw new MapiError(MapiErrorCodes.IdentityNotConfirmed, "User status is Pending. Please check confirmation email.");
                 }
                 if (authHeader.value.indexOf("invalid_identity") !== -1) {
-                    throw new MapiError("invalid_identity", "Invalid email or password.");
+                    throw new MapiError(MapiErrorCodes.InvalidIdentity, "Invalid email or password.");
                 }
             }
         }
 
-        const error = this.createMapiError(errorResponse.statusCode, requestedUrl, () => errorResponse.toObject().error);
+        const error = this.createMapiError(errorResponse.statusCode, requestedUrl, () => {
+            const error = errorResponse.toObject();
+            if (error.message != null) {
+                return (JSON.parse(error.message)).error;
+            } else {
+                return error.error;
+            }
+        });
 
         if (error) {
             throw error;
         }
 
-        throw new MapiError("Unhandled", "Unhandled error");
+        throw new MapiError(MapiErrorCodes.Unhandled, "Unhandled error");
     }
 
     private createMapiError(statusCode: number, url: string, getError: () => any): any {
         switch (statusCode) {
             case 400:
                 return getError();
-
             case 401:
                 this.authenticator.clearAccessToken();
-                return new MapiError("Unauthorized", "Unauthorized request.");
+                return new MapiError(MapiErrorCodes.Unauthorized, "Unauthorized request.");
 
             case 403:
-                return new MapiError("Forbidden", "You're not authorized to perform this operation.");
+                return new MapiError(MapiErrorCodes.Forbidden, "You're not authorized to perform this operation.");
 
             case 404:
-                return new MapiError("ResourceNotFound", `Resource not found: ${url}`);
+                return new MapiError(MapiErrorCodes.NotFound, `Resource not found: ${url}`);
 
             case 408:
-                return new MapiError("RequestTimeout", "Could not complete the request. Please try again later.");
+                return new MapiError(MapiErrorCodes.Timeout, "Could not complete the request. Please try again later.");
 
             case 409:
                 return getError();
 
             case 500:
-                return new MapiError("ServerError", "Internal server error.");
+                return new MapiError(MapiErrorCodes.ServerError, "Internal server error.");
 
             default:
-                return new MapiError("Unhandled", `Unexpected status code in SMAPI response: ${statusCode}.`);
+                return new MapiError(MapiErrorCodes.Unhandled, `Unexpected status code in SMAPI response: ${statusCode}.`);
         }
     }
 
@@ -255,13 +273,30 @@ export class MapiClient {
                     allItems.push(...result.value);
                 }
                 if (result.nextLink) {
-                    return call(result.nextLink).then(takeResult);
+                    const nextLink = this.prepareNextLink(result.nextLink);
+                    return call(nextLink).then(takeResult);
                 }
             }
             return Promise.resolve(allItems);
         };
 
+        // TODO: fix caching for getAll
         return this.get(url, headers).then(takeResult);
+    }
+
+
+    protected prepareNextLink(nextLink: string): string {
+        if (!nextLink)
+            return "";
+
+        const url = new URL(nextLink);
+        if (url.protocol === "https:"
+            && url.port !== "443"
+            && (url.hostname == "127.0.0.1" || url.hostname == "localhost")) {
+            url.protocol = "http:";
+            return url.toString();
+        }
+        return nextLink;
     }
 
     public get<TResponse>(url: string, headers?: HttpHeader[]): Promise<TResponse> {
@@ -270,6 +305,15 @@ export class MapiClient {
             url: url,
             headers: headers
         });
+    }
+
+    public send<TResponse>(url: string, httpMethod: string, headers?: HttpHeader[], body?: any): Promise<HttpResponse<TResponse>> {
+        return this.makeRequestRaw({
+            method: httpMethod,
+            url: url,
+            headers: headers ?? [],
+            body: body
+        })
     }
 
     public post<TResponse>(url: string, headers?: HttpHeader[], body?: any): Promise<TResponse> {

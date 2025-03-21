@@ -1,12 +1,13 @@
 {
     "environment": "development",
-    "managementApiUrl": "https://<service-name>.management.azure-api.net",
-    "managementApiAccessToken": "SharedAccessSignature ...",
-    "backendUrl": "https://<service-name>.developer.azure-api.net",
     "useHipCaptcha": false,
     "integration": {
         "googleFonts": {
             "apiKey": "<Google API Key>"
         }
-    }
+    },
+    "armEndpoint": "management.azure.com",
+    "subscriptionId":"<service subscription>",
+    "resourceGroupName":"<service resource group>",
+    "serviceName":"<service name>"
 }
