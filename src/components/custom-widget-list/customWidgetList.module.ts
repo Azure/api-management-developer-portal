@@ -11,6 +11,7 @@ import { DevelopmentInstructions } from "./developmentInstructions";
 import { CopyCode } from "./copyCode";
 import { KnockoutComponentBinder } from "@paperbits/core/ko";
 import { CustomWidgetEditorViewModel, CustomWidgetViewModel, CustomWidgetViewModelBinder } from "../custom-widget/ko";
+import { customWidgetPrefixName } from "../custom-widget/ko/utils";
 
 export class CustomWidgetListModule implements IInjectorModule {
     public register(injector: IInjector): void {
@@ -27,7 +28,7 @@ export class CustomWidgetListModule implements IInjectorModule {
 
         const widgetService = injector.resolve<IWidgetService>("widgetService");
         configsPromise.then(configs => configs.forEach(config => {
-            widgetService.registerWidget(config.name, {
+            widgetService.registerWidget(customWidgetPrefixName(config.name), {
                 modelDefinition: CustomWidgetModel,
                 componentBinder: KnockoutComponentBinder,
                 componentDefinition: CustomWidgetViewModel,
@@ -35,7 +36,7 @@ export class CustomWidgetListModule implements IInjectorModule {
                 viewModelBinder: CustomWidgetViewModelBinder
             });
 
-            widgetService.registerWidgetEditor(config.name, {
+            widgetService.registerWidgetEditor(customWidgetPrefixName(config.name), {
                 displayName: config.displayName || config.name,
                 category: widgetCategory,
                 iconClass: "widget-icon widget-icon-component",

@@ -9,19 +9,31 @@ import * as Constants from "../../../constants";
 import { MapiBlobStorage } from "../../../persistence";
 import { CustomWidgetModel } from "../customWidgetModel";
 
+const customWidgetNamePrefix = "CustomWidget-"
+
+export const customWidgetPrefixName = (name: string): string => {
+    return customWidgetNamePrefix + name;
+}
+
+export const customWidgetRemovePrefixName = (name: string): string => {
+    return name.startsWith(customWidgetNamePrefix) ? name.replace(customWidgetNamePrefix, "") : name; // replace first occurrence only
+}
+
 export async function buildWidgetSource(
     blobStorage: MapiBlobStorage,
     model: CustomWidgetModel,
     environment: Environment,
     filePath: string,
 ): Promise<{ override: string | null, src: string }> {
+    const name = customWidgetRemovePrefixName(model.name);
+
     // check is necessary during publishing as window.sessionStorage.getItem throws "DOMException {}  node:internal/process/promises:279"
     const developmentSrc = environment !== "publishing"
-        ? window.sessionStorage.getItem(Constants.overrideConfigSessionKeyPrefix + model.name)
+        ? window.sessionStorage.getItem(Constants.overrideConfigSessionKeyPrefix + name)
         : null;
 
     const url = new URL(developmentSrc == null ? (
-        await blobStorage.getDownloadUrlWithoutToken(`${buildBlobDataPath(model.name)}${filePath}`)
+        await blobStorage.getDownloadUrlWithoutToken(`${buildBlobDataPath(name)}${filePath}`)
     ) : developmentSrc + filePath);
 
     url.pathname = decodeURIComponent(url.pathname);
