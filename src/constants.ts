@@ -253,6 +253,9 @@ export enum SettingNames {
     subscriptionId ="subscriptionId",
     resourceGroupName = "resourceGroupName",
     serviceName = "serviceName",
+    aadClientId = "aadClientId",
+    aadAuthority = "aadAuthority",
+    aadLoginRequest = "aadLoginRequest",
 }
 
 export enum DeveloperPortalType {
