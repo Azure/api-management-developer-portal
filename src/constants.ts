@@ -244,11 +244,28 @@ export const graphqlSubProtocol = "graphql-transport-ws";
  */
 export enum SettingNames {
     backendUrl = "backendUrl",
+    dataApiUrl = "dataApiUrl",
     managementApiUrl = "managementApiUrl",
     managementApiAccessToken = "managementApiAccessToken",
     aadClientConfig = "aad",
     aadB2CClientConfig = "aadB2C",
-    developerPortalType = "developerPortalType"
+    developerPortalType = "developerPortalType",
+    subscriptionId ="subscriptionId",
+    resourceGroupName = "resourceGroupName",
+    serviceName = "serviceName",
+    authTenantId = "authTenantId",
+    directDataApi = "directDataApi",
+    isMultitenant = "isMultiTenant",
+    armAccessToken = "armAccessToken",
+
+    armEndpoint = "armEndpoint",
+    designTimeSettings = "designTimeSettings",
+}
+
+export enum PortalEnvironment {
+    development = "development",
+    publishing = "publishing",
+    runtime = "runtime"
 }
 
 export enum DeveloperPortalType {
@@ -293,12 +310,23 @@ export enum GrantTypes {
     password = "password"
 }
 
-export const managementApiVersion = "2022-04-01-preview";
+export const managementApiVersion = "2023-03-01-preview";
+export const dataApiVersion = "2022-04-01-preview";
 
 /**
  * Header name to track developer portal type.
  */
 export const portalHeaderName = "x-ms-apim-client";
+
+/**
+ * Header name to know if it is a user resource.
+ */
+export const isUserResourceHeaderName = "IsUserResource";
+
+export enum DeveloperPortalTypes {
+    SelfHostedPortal = "self-hosted-portal",
+    Managed = "managed"
+}
 
 export const releaseNameFormat = "YYYYMMDDHHmmss";
 
@@ -340,6 +368,7 @@ export const overrideToastSessionKeyPrefix = "MS_APIM_CW_override_toast_dismisse
  */
 export const mobileBreakpoint = 768;
 export const smallMobileBreakpoint = 400;
+export const adminUserId = "1";
 
 /**
  * Key of the default admin user

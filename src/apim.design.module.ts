@@ -19,7 +19,7 @@ import { SignupDesignModule } from "./components/users/signup/signup.design.modu
 import { ProfileDesignModule } from "./components/users/profile/profile.design.module";
 import { SubscriptionsDesignModule } from "./components/users/subscriptions/subscriptions.design.module";
 import { ProductDetailsDesignModule } from "./components/products/product-details/productDetails.design.module";
-import { MapiClient, IdentityService } from "./services";
+import { IdentityService } from "./services";
 import { SetupModule } from "./components/setup/setup.module";
 import { ContentModule } from "./components/content";
 import { CustomWidgetListModule } from "./components/custom-widget-list";
@@ -43,12 +43,15 @@ import { ProvisionService } from "./services/provisioningService";
 import { PolicyService } from "./services/policyService";
 import { OAuthService } from "./services/oauthService";
 import { OldContentRouteGuard } from "./routing/oldContentRouteGuard";
-import { AccessTokenRefrsher } from "./authentication/accessTokenRefresher";
 import { ApiProductsDesignModule } from "./components/apis/api-products/ko/apiProductsEditor.module";
 import { RuntimeConfigurator } from "./services/runtimeConfigurator";
 import { CustomHtmlDesignModule } from "./components/custom-html/customHtml.design.module";
 import { CustomWidgetDesignModule } from "./components/custom-widget/customWidget.design.module";
 import { CodeEditor } from "./components/code-editor/code-editor";
+import { ArmAuthenticator as SelfHostedArmAuthenticator } from "./components/armAuthenticator";
+import { ArmService } from "./services/armService";
+import { MapiClient } from "./clients/mapiClient";
+import { NoRetryStrategy } from "./clients/retryStrategy/noRetryStrategy";
 
 
 export class ApimDesignModule implements IInjectorModule {
@@ -87,8 +90,11 @@ export class ApimDesignModule implements IInjectorModule {
         injector.bindSingleton("provisioningService", ProvisionService);
         injector.bindSingleton("identityService", IdentityService);
         injector.bindSingleton("policyService", PolicyService);
-        injector.bindSingleton("mapiClient", MapiClient);
-        injector.bindSingleton("authenticator", DefaultAuthenticator);
+        injector.bindSingleton("retryStrategy", NoRetryStrategy);
+        injector.bindSingleton("apiClient", MapiClient);
+        injector.bindSingleton("authenticator", SelfHostedArmAuthenticator);
+        injector.bindSingleton("armService", ArmService);
+
         injector.bindSingleton("objectStorage", MapiObjectStorage);
         injector.bindSingleton("blobStorage", MapiBlobStorage);
         injector.bindToCollection("routeGuards", OldContentRouteGuard);
@@ -96,11 +102,10 @@ export class ApimDesignModule implements IInjectorModule {
         injector.bindInstance("reservedPermalinks", Constants.reservedPermalinks);
         injector.bindSingleton("oauthService", OAuthService);
         injector.bindToCollection("autostart", HistoryRouteHandler);
-        injector.bindToCollection("autostart", AccessTokenRefrsher);
         injector.bindToCollection("autostart", RuntimeConfigurator);
         injector.bindSingleton("sessionManager", DefaultSessionManager);
         injector.bind("CodeEditor", CodeEditor);
-        injector.bindModule(new CustomWidgetListModule()); // needs "blobStorage"
+        // injector.bindModule(new CustomWidgetListModule()); // needs "blobStorage"
         injector.bindModule(new ContentModule());
         injector.bindModule(new HelpModule());
     }

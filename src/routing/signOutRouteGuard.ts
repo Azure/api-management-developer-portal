@@ -1,16 +1,16 @@
 import { RouteGuard, Route } from "@paperbits/common/routing";
 import { IAuthenticator } from "../authentication";
 import * as Constants from "../constants";
-import { MapiClient } from "../services/mapiClient";
 import { Identity } from "../contracts/identity";
 import { TenantService } from "../services/tenantService";
 import { BackendService } from "../services/backendService";
 import { DelegationAction, DelegationParameters } from "../contracts/tenantSettings";
 import { clear } from "idb-keyval";
+import IApiClient from "../clients/IApiClient";
 
 export class SignOutRouteGuard implements RouteGuard {
     constructor(
-        private readonly mapiClient: MapiClient,
+        private readonly apiClient: IApiClient,
         private readonly authenticator: IAuthenticator,
         private readonly tenantService: TenantService,
         private readonly backendService: BackendService
@@ -31,7 +31,7 @@ export class SignOutRouteGuard implements RouteGuard {
 
                 if (token) {
                     try {
-                        const identity = await this.mapiClient.get<Identity>("/identity", [await this.mapiClient.getPortalHeader("delegationSignOut")]);
+                        const identity = await this.apiClient.get<Identity>("/identity", [await this.apiClient.getPortalHeader("delegationSignOut")]);
 
                         if (identity) {
                             const delegationParam = {};
