@@ -106,7 +106,7 @@ export class PageDetailsModal extends React.Component<PageDetailsModalProps, Pag
     }, 300);
 
     validatePermalink = async (permalink: string): Promise<string> => {
-        if (!this.state.copyPage && permalink === this.props.page?.permalink) return '';
+        if (permalink === this.props.page?.permalink || (this.state.copyPage && permalink === this.props.page?.permalink + '-copy')) return '';
 
         const isPermalinkNotDefined = await this.permalinkService.isPermalinkDefined(permalink) && !reservedPermalinks.includes(permalink);
         const errorMessage = validateField(UNIQUE_REQUIRED, permalink, isPermalinkNotDefined);
@@ -126,11 +126,11 @@ export class PageDetailsModal extends React.Component<PageDetailsModalProps, Pag
     }
 
     copyPage = async (): Promise<void> => {
-        this.setState({ copyPage: true, page: { 
-            ...this.state.page,
-            permalink: this.state.page.permalink + '-copy',
-            title: this.state.page.title + ' (copy)'
-        }});
+        const copiedPage: PageContract = await this.pageService.copyPage(this.state.page.key);
+
+        if (copiedPage?.key) {
+            this.setState({ copyPage: true, page: copiedPage });
+        }
     }
 
     savePage = async (): Promise<void> => {
@@ -147,7 +147,7 @@ export class PageDetailsModal extends React.Component<PageDetailsModalProps, Pag
             return;
         }
 
-        if (this.props.page && !this.state.copyPage) {
+        if (this.props.page || this.state.copyPage) {
             await this.pageService.updatePage(this.state.page);
         } else {
             const newPage = this.state.page;
