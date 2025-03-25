@@ -3,6 +3,7 @@ import { KnownHttpHeaders } from "../knownHttpHeaders";
 import { Parameter } from "../parameter";
 
 export class ConsoleHeader {
+    public readonly id: string;
     public readonly name: ko.Observable<string>;
     public readonly value: ko.Observable<string>;
     public readonly readonly: boolean;
@@ -18,7 +19,7 @@ export class ConsoleHeader {
 
     public toggleRevealed(): void {
         this.revealed(!this.revealed());
-        this.inputTypeValue(this.secret && !this.revealed() ? "password" : "text");
+        this.inputTypeValue(this.secret() && !this.revealed() ? "password" : "text");
     }
 
     public canRename(): boolean {
@@ -26,6 +27,7 @@ export class ConsoleHeader {
     }
 
     constructor(contract?: Parameter) {
+        this.id = crypto.randomUUID();
         this.name = ko.observable(null);
         this.value = ko.observable(null);
         this.secret = ko.observable();

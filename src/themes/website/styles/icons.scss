@@ -180,6 +180,18 @@
     background-image: url("./icons/icon-magnifier.svg");
 }
 
+.icon-svg-cancel {
+    background-image: url("./icons/icon-cancel.svg");
+}
+
 .info-icon-size {
     font-size: 13px;
+}
+
+.icon-svg-entraId {
+    @include icon-18px();
+    margin: 0 .5em 0 0;
+    background-image: url("./icons/icon-entraid.svg");
+    background-color: transparent;
+    background-size: 100% 100%;
 }

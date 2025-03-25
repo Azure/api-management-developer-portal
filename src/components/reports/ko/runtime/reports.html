@@ -1,11 +1,11 @@
-<div class="btn-group" role="group" aria-label="Time range">
-    <button class="button button-default"
+<div class="btn-group flex flex-row" role="group" aria-label="Time range">
+    <button class="button button-default mr-20"
         data-bind="click: setTimeRange1Hour, disable: selectedPeriod() == '1hour'">Last hour</button>
-    <button class="button button-default"
+    <button class="button button-default mr-20"
         data-bind="click: setTimeRange1Day, disable: selectedPeriod() == '1day'">Today</button>
-    <button class="button button-default"
+    <button class="button button-default mr-20"
         data-bind="click: setTimeRange7Days, disable: selectedPeriod() == '7days'">Last 7 days</button>
-    <button class="button button-default"
+    <button class="button button-default mr-20"
         data-bind="click: setTimeRange30Days, disable: selectedPeriod() == '30days'">Last 30 days</button>
     <button class="button button-default"
         data-bind="click: setTimeRange90Days, disable: selectedPeriod() == '90days'">Last 90 days</button>

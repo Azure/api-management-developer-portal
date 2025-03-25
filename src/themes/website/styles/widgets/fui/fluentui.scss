@@ -1,0 +1,91 @@
+/**
+    Styles for React Fluent UI (fui) based common components
+*/
+
+// For consistency with designs and admin panel
+.fui-search-icon {
+    color: #0078D4;
+    transform: scaleX(-1);
+}
+
+.fui-MenuItem .fui-MenuItem__checkmark {
+    margin-top: 0;
+}
+
+.pagination-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+}
+
+.pagination-page-button > span {
+    font-size: 1rem;
+}
+
+.operation-method {
+    color: #696969;
+
+    &.method-GET {
+        color: #107C10;
+    }
+
+    &.method-POST {
+        color: #0F6CBD;
+    }
+
+    &.method-DELETE {
+        color: #C50F1F;
+    }
+
+    &.method-PUT {
+        color: #8e562e;
+    }
+}
+
+.ws-log-send {
+    color: #107C10;
+}
+
+.ws-log-get {
+    color: #0F6CBD;
+}
+
+.fui-filterBy-container {
+    margin: 0 calc(-1 * var(--spacingHorizontalM));
+}
+
+.markdown-truncate {
+    > * {
+        display: block;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+}
+
+.align-center {
+    display: flex;
+    align-items: center;
+}
+
+.show-more-options {
+    width: 100%;
+}
+
+fui-api-list-runtime, // TMP solution while KO is not fully migrated to React/FUI
+fui-product-list-runtime,
+fui-product-apis-runtime,
+fui-product-details-runtime,
+fui-product-subscribe-runtime,
+fui-product-subscriptions-runtime,
+fui-signin-runtime,
+fui-signup-runtime,
+fui-signup-aad-runtime,
+fui-reset-password,
+fui-change-password,
+fui-confirm-password,
+fui-profile-runtime,
+fui-subscriptions-runtime,
+fui-reports-runtime,
+fui-validation-summary {
+    width: 100%;
+}

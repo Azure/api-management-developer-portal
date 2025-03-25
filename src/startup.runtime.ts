@@ -9,7 +9,7 @@ import { Logger } from "@paperbits/common/logging";
 import { TelemetryConfigurator } from "./telemetry/telemetryConfigurator";
 import { Utils } from "./utils";
 import { ISettingsProvider } from "@paperbits/common/configuration/ISettingsProvider";
-import { FEATURE_CLIENT_TELEMETRY, FEATURE_FLAGS } from "./constants";
+import { FEATURE_CLIENT_TELEMETRY, isRedesignEnabledSetting } from "./constants";
 
 define({ "application/x-zip-compressed": ["zip"] }, true);
 
@@ -45,9 +45,13 @@ window.onbeforeunload = () => {
 function initFeatures() {
     const logger = injector.resolve<Logger>("logger");
     const settingsProvider = injector.resolve<ISettingsProvider>("settingsProvider");
-    checkIsFeatureEnabled(FEATURE_CLIENT_TELEMETRY, settingsProvider, logger)
+    Utils.checkIsFeatureEnabled(FEATURE_CLIENT_TELEMETRY, settingsProvider, logger)
         .then((isEnabled) => {
-            logger.trackEvent("FeatureFlag", { feature: FEATURE_CLIENT_TELEMETRY, enabled: isEnabled.toString(), message: `Feature flag '${FEATURE_CLIENT_TELEMETRY}' - enabled` });
+            logger.trackEvent("FeatureFlag", {
+                feature: FEATURE_CLIENT_TELEMETRY,
+                enabled: isEnabled.toString(),
+                message: `Feature flag '${FEATURE_CLIENT_TELEMETRY}' - ${isEnabled ? 'enabled' : 'disabled'}`
+            });
             let telemetryConfigurator = new TelemetryConfigurator(injector);
             if (isEnabled) {
                 telemetryConfigurator.configure();
@@ -55,20 +59,12 @@ function initFeatures() {
                 telemetryConfigurator.cleanUp();
             }
         });
-}
-
-async function checkIsFeatureEnabled(featureFlagName: string, settingsProvider: ISettingsProvider, logger: Logger): Promise<boolean> {
-    try {
-        const settingsObject = await settingsProvider.getSetting(FEATURE_FLAGS);
-
-        const featureFlags = new Map(Object.entries(settingsObject ?? {}));
-        if (!featureFlags || !featureFlags.has(featureFlagName)) {
-            return false;
-        }
-
-        return featureFlags.get(featureFlagName) == true;
-    } catch (error) {
-        logger?.trackEvent("FeatureFlag", { message: "Feature flag check failed", data: error.message });
-        return false;
-    }
+    Utils.checkIsFeatureEnabled(isRedesignEnabledSetting, settingsProvider, logger)
+        .then((isEnabled) => {
+            logger.trackEvent("FeatureFlag", {
+                feature: isRedesignEnabledSetting,
+                enabled: isEnabled.toString(),
+                message: `Feature flag '${isRedesignEnabledSetting}' - ${isEnabled ? 'enabled' : 'disabled'}`
+            });
+        });
 }

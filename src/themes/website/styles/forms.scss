@@ -36,21 +36,22 @@ form {
 }
 
 .invalid-feedback {
+    display: block;
+    flex-basis: 100%;
     margin-top: 0.25rem;
     font-size: 0.875em;
     color: $form-invalid-color;
-    display: none;
-}
-
-:invalid~.invalid-feedback,
-.invalid~.invalid-feedback {
-    display: block;
 }
 
 form.needs-validation:invalid {
     [type="submit"] {
         pointer-events: none;
     }
+}
+
+label.required::after {
+    content: " *";
+    color: $required-color;
 }
 
 input[type="range"] {
@@ -108,15 +109,28 @@ input[type="range"] {
     }
 }
 
+input:focus-visible {
+    outline: none;
+}
+
 input[type=search] {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
     @extend .icon-svg-magnifier;
-    background-position: 5px center;
-    background-size: 1em;
+    background-position: 10px center;
+    background-size: 1.2em;
     background-repeat: no-repeat;
-    padding-left: calc(1em + 10px) !important;
+    padding-left: calc(1.2em + 15px) !important;
+    padding-right: 5px !important;
+
+    &::-webkit-search-cancel-button {
+        -webkit-appearance: none;
+        @extend .icon-svg-cancel;
+        height: 20px;
+        width: 20px;
+        cursor: pointer;
+    }
 }
 
 .switch {

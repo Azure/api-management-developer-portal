@@ -12,7 +12,7 @@ staticData.publisherConfig.plugins.push(new webpack.DefinePlugin({
 }));
 staticData.publisherConfig.plugins.push(new CopyWebpackPlugin({
     patterns: [
-        { from: `./templates/default.json`, to: "editors/templates/default.json" },
+        { from: `./templates/default-old.json`, to: "editors/templates/default.json" },
         { from: `./tests/mocks/defaultStaticData.json`, to: "tests/mocks/defaultStaticData.json" }
     ]
 }));
@@ -25,7 +25,7 @@ staticData.publisherRuntimeConfig.plugins.push(new webpack.DefinePlugin({
 
 staticData.publisherRuntimeConfig.plugins.push(new CopyWebpackPlugin({
     patterns: [
-        { from: `./templates/default.json`, to: "editors/templates/default.json" },
+        { from: `./templates/default-old.json`, to: "editors/templates/default.json" },
         { from: `./tests/mocks/defaultStaticData.json`, to: "tests/mocks/defaultStaticData.json" }
     ]
 }));

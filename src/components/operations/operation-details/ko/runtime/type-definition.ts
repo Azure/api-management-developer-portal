@@ -34,6 +34,7 @@ export class TypeDefinitionViewModel {
         this.rawSchemaFormat = ko.observable();
         this.schemaView = ko.observable();
         this.defaultSchemaView = ko.observable();
+        this.showExamples = ko.observable(false);
     }
 
     @Param()
@@ -53,6 +54,9 @@ export class TypeDefinitionViewModel {
 
     @Param()
     public examples?: Record<string, string>;
+
+    @Param()
+    public showExamples?: ko.Observable<boolean>;
 
     @OnMounted()
     public initialize(): void {

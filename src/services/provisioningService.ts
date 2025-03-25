@@ -3,10 +3,13 @@ import { IAuthenticator } from "../authentication";
 import { ViewManager } from "@paperbits/common/ui";
 import { Router } from "@paperbits/common/routing";
 import { AzureBlobStorage } from "@paperbits/azure";
+import { ISettingsProvider } from "@paperbits/common/configuration/ISettingsProvider";
+import { Logger } from "@paperbits/common/logging/logger";
 import * as Constants from "../constants";
-import { MapiClient } from "./mapiClient";
 import { KnownMimeTypes } from "../models/knownMimeTypes";
 import { KnownHttpHeaders } from "../models/knownHttpHeaders";
+import { Utils } from "../utils";
+import { MapiClient } from "./mapiClient";
 
 export class ProvisionService {
     constructor(
@@ -15,7 +18,9 @@ export class ProvisionService {
         private readonly authenticator: IAuthenticator,
         private readonly viewManager: ViewManager,
         private readonly router: Router,
-        private readonly blobStorage: AzureBlobStorage
+        private readonly blobStorage: AzureBlobStorage,
+        private readonly settingsProvider: ISettingsProvider,
+        private readonly logger: Logger
     ) { }
 
     private async fetchData(url: string): Promise<Object> {
@@ -24,7 +29,9 @@ export class ProvisionService {
     }
 
     public async provision(): Promise<void> {
-        const dataUrl = `/editors/templates/default.json`;
+        const isOldThemeEnabled = await Utils.checkIsFeatureEnabled(Constants.FEATURE_OLD_THEME, this.settingsProvider, this.logger);
+        const applyOldTheme = localStorage.getItem(Constants.isApplyNewThemeEnabledSetting) !== "true";
+        const dataUrl = (isOldThemeEnabled || applyOldTheme) ? `/editors/templates/default-old.json` : `/editors/templates/default.json`;
         const dataObj = await this.fetchData(dataUrl);
         const keys = Object.keys(dataObj);
         const accessToken = await this.authenticator.getAccessTokenAsString();

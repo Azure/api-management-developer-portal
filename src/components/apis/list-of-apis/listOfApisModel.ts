@@ -1,5 +1,6 @@
 import { HyperlinkModel } from "@paperbits/common/permalinks";
 import { LocalStyles } from "@paperbits/common/styles";
+import { FiltersPosition } from "./listOfApisContract";
 
 export class ListOfApisModel {
     /**
@@ -26,6 +27,16 @@ export class ListOfApisModel {
      * Link to a page that contains operation details.
      */
     public detailsPageHyperlink: HyperlinkModel;
+
+    /**
+     * Indicates position of filters.
+     */
+    public filtersPosition: FiltersPosition;
+
+    /**
+     * Indicates that view switching is allowed.
+     */
+    public allowViewSwitching: boolean;
 
     /**
      * Widget local styles.

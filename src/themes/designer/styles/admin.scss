@@ -39,6 +39,13 @@
 
 .side-panel {
     padding: 12px;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+
+    .side-panel-content {
+        flex: 1;
+    }
 }
 
 .admin-side-panel-opener {
