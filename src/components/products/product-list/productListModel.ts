@@ -16,14 +16,14 @@ export class ProductListModel {
     public allowSelection: boolean;
 
     /**
-     * Link to a page that contains operation details.
+     * Link to a page that contains product details.
      */
     public detailsPageHyperlink: HyperlinkModel;
 
     /**
      * Indicates that view switching is allowed.
      */
-    allowViewSwitching: boolean;
+    public allowViewSwitching: boolean;
 
     /**
      * Widget local styles.

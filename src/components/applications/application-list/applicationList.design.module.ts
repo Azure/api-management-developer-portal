@@ -8,17 +8,18 @@ import { ApplicationListModel } from "./applicationListModel";
 import { ApplicationListModelBinder } from "./applicationListModelBinder";
 import { ApplicationListViewModel } from "./react/ApplicationListViewModel";
 import { ApplicationListViewModelBinder } from "./applicationListViewModelBinder";
+import { ApplicationListEditor } from "./ko/applicationListEditor";
 
 export class ApplicationListDesignModule implements IInjectorModule {
     public register(injector: IInjector): void {
-        //injector.bind("operationListEditor", OperationListEditor);
+        injector.bind("applicationListEditor", ApplicationListEditor);
         injector.bindSingleton("applicationListModelBinder", ApplicationListModelBinder);
         injector.bindSingleton("applicationListViewModelBinder", ApplicationListViewModelBinder)
         injector.bindSingleton("applicationListHandlers", ApplicationListHandlers);
 
         const widgetService = injector.resolve<IWidgetService>("widgetService");
 
-        widgetService.registerWidget("operationList", {
+        widgetService.registerWidget("application-list", {
             modelDefinition: ApplicationListModel,
             componentBinder: ReactComponentBinder,
             componentDefinition: ApplicationListViewModel,
@@ -27,11 +28,12 @@ export class ApplicationListDesignModule implements IInjectorModule {
             componentFlow: ComponentFlow.Block
         });
 
-        widgetService.registerWidgetEditor("product-details", {
+        widgetService.registerWidgetEditor("application-list", {
             displayName: "Application: List",
             category: "Applications",
             iconClass: "widget-icon widget-icon-api-management",
             componentBinder: KnockoutComponentBinder,
+            componentDefinition: ApplicationListEditor,
             handlerComponent: ApplicationListHandlers
         });
     }
