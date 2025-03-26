@@ -1844,10 +1844,6 @@
       {
         "name": "content-type",
         "value": "application/json; charset=utf-8"
-      },
-      {
-        "name": "ocp-apim-sas-token",
-        "value": "***REMOVED***,refresh=\"true\""
       }
     ],
     "statusCode": 200,

@@ -49,7 +49,10 @@ export class ChangePasswordRuntime extends React.Component<ChangePasswordRuntime
 
         const validationGroup = {
             password: ValidationMessages.passwordRequired,
-            newPassword: { required: ValidationMessages.newPasswordRequired, eval: (val) => val.length < 8 && "New password is too short." }, // TODO: password requirements should come from Management API.
+            newPassword: {
+                required: ValidationMessages.newPasswordRequired,
+                eval: (val) => (val.length < 8 && "New password should be at least 8 characters long.") || (val === password && ValidationMessages.newPasswordMustBeDifferent)
+            }, // TODO for self-hosted: password requirements should come from Management API.
             passwordConfirmation: { eval: (val) => val !== newPassword && ValidationMessages.passwordConfirmationMustMatch },
         }
 
