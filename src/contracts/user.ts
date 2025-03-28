@@ -1,25 +1,13 @@
-import { ArmResource } from "./armResource";
-
-export interface UserContract extends ArmResource {
-    properties: UserPropertiesContract;
-}
-
-export interface UserIdentity {
-    /**
-     * Identifier value within provider.
-     */
-    id: string;
+export interface UserContract {
 
     /**
-     * Identity provider name.
-     */
-    provider: string;
-}
+    * User identifier.
+    */
+    id?: string;
 
-export interface UserPropertiesContract {
     /**
-     * First name.
-     */
+    * First name.
+    */
     firstName: string;
 
     /**
@@ -59,10 +47,16 @@ export interface UserPropertiesContract {
      * Collection of user identities.
      */
     identities?: UserIdentity[];
+}
+
+export interface UserIdentity {
+    /**
+     * Identifier value within provider.
+     */
+    id: string;
 
     /**
-     *  Application type. Required to send notification with proper urls in emails.
-     *  
+     * Identity provider name.
      */
-    appType: string;
+    provider: string;
 }

@@ -1,5 +1,4 @@
 import { ProductContract, ProductState } from "../contracts/product";
-import { Utils } from "../utils";
 
 export class Product {
     public readonly id: string;
@@ -13,14 +12,17 @@ export class Product {
     public readonly terms: string;
 
     constructor(contract?: ProductContract) {
-        this.id = Utils.getResourceName("products", contract.id, "shortId");
-        this.name = contract.name;
-        this.displayName = contract.properties.displayName;
-        this.description = contract.properties.description;
-        this.approvalRequired = contract.properties.approvalRequired;
-        this.state = contract.properties.state;
-        this.subscriptionRequired = contract.properties.subscriptionRequired;
-        this.subscriptionsLimit = contract.properties.subscriptionsLimit;
-        this.terms = contract.properties.terms;
+        if (!contract) {
+            return;
+        }
+
+        this.id = contract.id;
+        this.name = contract.id;
+        this.displayName = contract.name;
+        this.description = contract.description;
+        this.approvalRequired = contract.approvalRequired;
+        this.subscriptionRequired = contract.subscriptionRequired;
+        this.subscriptionsLimit = contract.subscriptionsLimit;
+        this.terms = contract.terms;
     }
 }

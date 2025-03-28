@@ -1,36 +1,35 @@
 import * as Constants from "./../constants";
 import { ISettingsProvider } from "@paperbits/common/configuration";
-import { HttpClient } from "@paperbits/common/http";
+import { HttpMethod } from "@paperbits/common/http";
 import { Logger } from "@paperbits/common/logging";
 import { KnownHttpHeaders } from "../models/knownHttpHeaders";
 import { Utils } from "../utils";
 import { AccessToken, IAuthenticator } from "./../authentication";
+import { IApiClient } from "../clients";
 
+export class AccessTokenRefresher {
+    private readonly interval: NodeJS.Timeout;
 
-export class AccessTokenRefrsher {
     constructor(
         private readonly settingsProvider: ISettingsProvider,
         private readonly authenticator: IAuthenticator,
-        private readonly httpClient: HttpClient,
+        private readonly apiClient: IApiClient,
         private readonly logger: Logger
     ) {
         this.refreshToken = this.refreshToken.bind(this);
-        setInterval(() => this.refreshToken(), 60 * 1000);
+        this.interval = setInterval(() => this.refreshToken(), 60 * 1000);
     }
 
     private async refreshToken(): Promise<void> {
-        const settings = await this.settingsProvider.getSettings();
+        const settings = await this.settingsProvider.getSettings<object>();
+        const dataApiUrl = Utils.getDataApiUrl(settings);
 
-        let managementApiUrl = settings[Constants.SettingNames.managementApiUrl];
-
-        if (!managementApiUrl) {
-            throw new Error(`Management API URL ("${Constants.SettingNames.managementApiUrl}") setting is missing in configuration file.`);
+        if (!dataApiUrl) {
+            throw new Error(`Management API URL ("${Constants.SettingNames.dataApiUrl}") setting is missing in configuration file.`);
         }
 
-        managementApiUrl = Utils.ensureUrlArmified(managementApiUrl);
-
         try {
-            const accessToken = await this.authenticator.getAccessToken();
+            const accessToken = this.authenticator.getStoredAccessToken(); // refresh only if we have stored access token
 
             if (!accessToken) {
                 return;
@@ -43,11 +42,11 @@ export class AccessTokenRefrsher {
                 return;
             }
 
-            const response = await this.httpClient.send({
-                method: "GET",
-                url: `${managementApiUrl}${Utils.ensureLeadingSlash("/identity")}?api-version=${Constants.managementApiVersion}`,
-                headers: [{ name: KnownHttpHeaders.Authorization, value: accessToken.toString() }]
-            });
+            const response = await this.apiClient.send(
+                "/identity",
+                HttpMethod.get,
+                [ { name: KnownHttpHeaders.Authorization, value: accessToken.toString() }, await this.apiClient.getPortalHeader("refreshToken") ]
+            );
 
             const accessTokenHeader = response.headers.find(x => x.name.toLowerCase() === KnownHttpHeaders.OcpApimSasToken.toLowerCase());
 
@@ -61,5 +60,9 @@ export class AccessTokenRefrsher {
         catch (error) {
             this.logger.trackError(error, { message: "Unable to refresh access token." });
         }
+    }
+
+    public async dispose() {
+        clearInterval(this.interval);
     }
 }

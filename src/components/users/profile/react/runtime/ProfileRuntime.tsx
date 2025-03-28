@@ -11,10 +11,10 @@ import { Logger } from "@paperbits/common/logging";
 import { User } from "../../../../../models/user";
 import { RouteHelper } from "../../../../../routing/routeHelper";
 import { UsersService } from "../../../../../services/usersService";
-import { TenantService } from "../../../../../services/tenantService";
-import { BackendService } from "../../../../../services/backendService";
+import { IDelegationService } from "../../../../../services/IDelegationService";
 import { dispatchErrors, parseAndDispatchError } from "../../../validation-summary/utils";
 import { ErrorSources } from "../../../validation-summary/constants";
+import { Identity } from "../../../../../contracts/identity";
 import { DelegationAction, DelegationParameters } from "../../../../../contracts/tenantSettings";
 import { Utils } from "../../../../../utils";
 import { fuiTheme, pageUrlChangePassword } from "../../../../../constants";
@@ -29,9 +29,13 @@ type ProfileRuntimeFCProps = ProfileRuntimeProps & {
     applyDelegation(action: DelegationAction, userId: string): Promise<boolean>
 };
 
+const isBasicAccount = (identity: Identity) => identity.provider === "Basic";
+
 const initUser = async (usersService: UsersService) => {
     await usersService.ensureSignedIn();
-    return usersService.getCurrentUser();
+    const user = await usersService.getCurrentUser()
+    const identity: Identity = await usersService.getCurrentUserIdWithProvider();
+    return { user, isBasicAccount: isBasicAccount(identity) };
 };
 
 const getCloseAccountWarning = (isBasicAccount: boolean, firstName: string, lastName: string, email: string): string => (
@@ -47,11 +51,15 @@ const ProfileRuntimeFC = ({
 }: ProfileRuntimeFCProps) => {
     const [working, setWorking] = useState(true);
     const [user, setUser] = useState<User>();
+    const [isBasicAccount, setIsBasicAccount] = useState<boolean>();
 
     useEffect(() => {
         setWorking(true);
         initUser(usersService)
-            .then((value) => setUser(value))
+            .then(({ user, isBasicAccount }) => {
+                setUser(user);
+                setIsBasicAccount(isBasicAccount);
+            })
             .finally(() => setWorking(false));
     }, [usersService]);
 
@@ -76,7 +84,7 @@ const ProfileRuntimeFC = ({
         const isDelegationEnabled = await applyDelegation(DelegationAction.closeAccount, user.id);
         if (isDelegationEnabled) return;
 
-        const confirmed = window.confirm(getCloseAccountWarning(user.isBasicAccount, user.firstName, user.lastName, user.email));
+        const confirmed = window.confirm(getCloseAccountWarning(isBasicAccount, user.firstName, user.lastName, user.email));
         if (confirmed) {
             await usersService.deleteUser(user.id);
         }
@@ -105,11 +113,8 @@ export class ProfileRuntime extends React.Component<ProfileRuntimeProps> {
     @Resolve("eventManager")
     public eventManager: EventManager;
 
-    @Resolve("tenantService")
-    public tenantService: TenantService;
-
-    @Resolve("backendService")
-    public backendService: BackendService;
+    @Resolve("delegationService")
+    public delegationService: IDelegationService;
 
     @Resolve("routeHelper")
     public routeHelper: RouteHelper;
@@ -123,11 +128,12 @@ export class ProfileRuntime extends React.Component<ProfileRuntimeProps> {
     private async applyDelegation(action: DelegationAction, userId: string): Promise<boolean> {
         if (!userId) return false;
 
-        const isDelegationEnabled = await this.tenantService.isDelegationEnabled();
+        const isDelegationEnabled = await this.delegationService.isUserRegistrationDelegationEnabled();
         if (isDelegationEnabled) {
+            const userIdentifier = Utils.getResourceName("users", userId);
             const delegationParam = {};
-            delegationParam[DelegationParameters.UserId] = Utils.getResourceName("users", userId);
-            const delegationUrl = await this.backendService.getDelegationString(action, delegationParam);
+            delegationParam[DelegationParameters.UserId] = userIdentifier;
+            const delegationUrl = await this.delegationService.getUserDelegationUrl(userIdentifier, action, delegationParam);
             if (delegationUrl) {
                 location.assign(delegationUrl);
             }

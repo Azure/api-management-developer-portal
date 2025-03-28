@@ -59,7 +59,7 @@ function initFeatures() {
                 telemetryConfigurator.cleanUp();
             }
         });
-    Utils.checkIsFeatureEnabled(isRedesignEnabledSetting, settingsProvider, logger)
+    checkIsRedesignEnabled(settingsProvider, logger)
         .then((isEnabled) => {
             logger.trackEvent("FeatureFlag", {
                 feature: isRedesignEnabledSetting,
@@ -67,4 +67,17 @@ function initFeatures() {
                 message: `Feature flag '${isRedesignEnabledSetting}' - ${isEnabled ? 'enabled' : 'disabled'}`
             });
         });
+}
+
+async function checkIsRedesignEnabled(settingsProvider: ISettingsProvider, logger: Logger) {
+    try {
+        const setting = await settingsProvider.getSetting(isRedesignEnabledSetting);
+
+        if (!setting) return false;
+
+        return setting;
+    } catch (error) {
+        logger?.trackEvent("FeatureFlag", { message: "Feature flag check failed", data: error.message });
+        return false;
+    }
 }

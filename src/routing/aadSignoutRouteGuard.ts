@@ -5,6 +5,9 @@ import { RouteGuard, Route } from "@paperbits/common/routing";
 import { ISettingsProvider } from "@paperbits/common/configuration";
 import { IAuthenticator } from "../authentication";
 import { AadB2CClientConfig } from "../contracts/aadB2CClientConfig";
+import { Logger } from "@paperbits/common/logging";
+import { eventTypes } from "../logging/clientLogger";
+import { AadServiceV2 } from "../services/aadServiceV2";
 
 
 /**
@@ -14,7 +17,8 @@ export class AadSignOutRouteGuard implements RouteGuard {
     constructor(
         private readonly authenticator: IAuthenticator,
         private readonly settingsProvider: ISettingsProvider,
-        private readonly httpClient: HttpClient
+        private readonly httpClient: HttpClient,
+        private readonly logger: Logger
     ) { }
 
     public async canActivate(route: Route): Promise<boolean> {
@@ -22,13 +26,18 @@ export class AadSignOutRouteGuard implements RouteGuard {
             return true;
         }
 
-        const config = await this.settingsProvider.getSetting<AadB2CClientConfig>(Constants.SettingNames.aadB2CClientConfig);
+        const loginClientConfigType = sessionStorage.getItem(Constants.loginClientConfigType);
+        if(!loginClientConfigType) {
+            return true; // if no AAD/B2C sessions open, allow router to continue the route change processing.
+        }
+
+        const config = await this.settingsProvider.getSetting<AadB2CClientConfig>(loginClientConfigType);
 
         if (!config) {
             return true;
         }
 
-        const auth = `https://${config.authority}/tfp/${config.signinTenant}/${config.signinPolicyName}`;
+        const auth = AadServiceV2.getAuthorityUrl(loginClientConfigType, config.authority, config.signinTenant, config.signinPolicyName);
 
         const msalConfig = {
             auth: {
@@ -50,9 +59,17 @@ export class AadSignOutRouteGuard implements RouteGuard {
         await this.httpClient.send({ url: "/signout" }); // server session termination.
 
         this.authenticator.clearAccessToken();
+        sessionStorage.removeItem(Constants.loginClientConfigType);
+        let eventType = loginClientConfigType === Constants.SettingNames.aadB2CClientConfig ? eventTypes.aadB2CLogin : eventTypes.aadLogin;
+        msalInstance.setActiveAccount(signedInUserAccount);
+        const response = await msalInstance.acquireTokenSilent({scopes: ["openid"]});
+
         msalInstance.logoutPopup({
+            idTokenHint: response?.idToken,
             postLogoutRedirectUri: location.origin + "/",
             mainWindowRedirectUri: location.origin + "/"
+        }).catch((error) => {
+            this.logger.trackEvent(eventType, { message: `Sign out failed. ${error?.message}.` });
         }); // actual sign-out from AAD/B2C
 
         return false; // explicitly stopping route execution.

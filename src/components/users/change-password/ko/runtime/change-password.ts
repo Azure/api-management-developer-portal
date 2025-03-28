@@ -53,9 +53,13 @@ export class ChangePassword {
             decorateInputElement: true
         });
 
-        this.password.extend(<any>{ required: { message: ValidationMessages.passwordRequired } }); // TODO: password requirements should come from Management API.
-        this.newPassword.extend(<any>{ required: { message: ValidationMessages.newPasswordRequired }, minLength: 8 }); // TODO: password requirements should come from Management API.
-        this.newPassword.extend(<any>{ notEqual: { message: ValidationMessages.newPasswordMustBeDifferent, params: this.password } });
+        this.password.extend(<any>{ required: { message: ValidationMessages.passwordRequired } });
+        this.newPassword.extend(<any>{
+            required: { message: ValidationMessages.newPasswordRequired },
+            minLength: 8,
+            passwordValidator: {},
+            notEqual: { message: ValidationMessages.newPasswordMustBeDifferent, params: this.password }
+        });
         this.passwordConfirmation.extend(<any>{ equal: { message: ValidationMessages.passwordConfirmationMustMatch, params: this.newPassword } });
         this.captcha.extend(<any>{ required: { message: ValidationMessages.captchaRequired } });
     }

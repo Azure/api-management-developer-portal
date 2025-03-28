@@ -3,4 +3,5 @@ export interface ArmResource {
     type?: string;
     name?: string;
     properties: any;
+    sku?: {name: string};
 }

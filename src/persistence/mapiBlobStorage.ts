@@ -1,20 +1,19 @@
-import { IBlobStorage } from "@paperbits/common/persistence";
 import { AzureBlobStorage } from "@paperbits/azure";
 import { Logger } from "@paperbits/common/logging";
 import { ISettingsProvider } from "@paperbits/common/configuration";
-import { MapiClient } from "../services";
-import { StaticSettingsProvider } from "../components/staticSettingsProvider";
+import { StaticSettingsProvider } from "../configuration/staticSettingsProvider";
 import { Utils } from "../utils";
-
-
+import { TenantService } from "../services/tenantService";
+import { ReadStream } from "fs";
+import { IStreamBlobStorage } from "./IStreamBlobStorage";
 
 const defaultContainerName = "content";
 
-export class MapiBlobStorage implements IBlobStorage {
+export class MapiBlobStorage implements IStreamBlobStorage {
     private storageClient: AzureBlobStorage;
 
     constructor(
-        private readonly mapiClient: MapiClient,
+        private readonly tenantService: TenantService,
         private readonly settingsProvider: ISettingsProvider,
         private readonly logger: Logger
     ) { }
@@ -50,11 +49,10 @@ export class MapiBlobStorage implements IBlobStorage {
             });
         }
         else {
-            const result = await this.mapiClient.post<any>(`/portalSettings/mediaContent/listSecrets`, [await this.mapiClient.getPortalHeader("getStorageSasUrl")]);
-            const blobStorageUrl = result.containerSasUrl;
+            const containerSasUrl = await this.tenantService.getMediaContentBlobUrl();
 
             storageSettingsProvider = new StaticSettingsProvider({
-                blobStorageUrl: blobStorageUrl
+                blobStorageUrl: containerSasUrl
             });
         }
 
@@ -118,5 +116,25 @@ export class MapiBlobStorage implements IBlobStorage {
     public async deleteBlob(blobKey: string): Promise<void> {
         const client = await this.getStorageClient();
         return await client.deleteBlob(blobKey);
+    }
+
+    /**
+     * Uploads specified content into storage in Node.JS
+     * @param blobKey {string} Blob key.
+     * @param content {ReadStream} Content stream.
+     * @param contentType {string} Content type, e.g. `image/png`.
+     */
+    public async uploadStreamToBlob(blobKey: string, contentStream: ReadStream, contentType?: string): Promise<void> {
+        const client = await this.getStorageClient();
+        await client.uploadStreamToBlob(blobKey, contentStream, contentType);
+    }
+
+    /**
+     * Get blob from storage in Node.JS
+     * @param blobKey {string} Blob key.
+     */
+    public async getBlobAsStream(blobKey: string): Promise<NodeJS.ReadableStream> {
+        const client = await this.getStorageClient();
+        return client.getBlobAsStream(blobKey);
     }
 }

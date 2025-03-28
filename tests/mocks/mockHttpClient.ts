@@ -6,9 +6,13 @@ import { KnownMimeTypes } from "../../src/models/knownMimeTypes";
 import { Utils } from "../../src/utils";
 
 class HttpMockRequestBuilder {
+    private callCount = 0;
+
     constructor(private readonly response: HttpResponse<any>) { }
 
-    public reply(status: number, body?: object, headers?: object): void {
+    public reply(status: number, body?: object, headers?: object): HttpMockRequestBuilder {
+        this.callCount++;
+
         this.response.statusCode = status;
 
         if (body) {
@@ -27,7 +31,11 @@ class HttpMockRequestBuilder {
                 name: name,
                 value: responseHeaders[name]
             }));
+
+        return this;
     }
+
+    public get callsCount(): number { return this.callCount; }
 }
 
 class HttpMockBuilder {
@@ -37,8 +45,6 @@ class HttpMockBuilder {
         if (!url.startsWith("http")) {
             url = `https://contoso.management.azure-api.com${Utils.ensureLeadingSlash(url)}`;
         }
-
-        url = Utils.ensureUrlArmified(url);
 
         const parsed = new URL(url);
         const path = parsed.pathname;

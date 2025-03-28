@@ -1,22 +1,6 @@
-import { AadClientLibrary } from "../constants";
+import { AadClientConfig } from "./aadClientConfig";
 
-export interface AadB2CClientConfig {
-    /**
-     * Client ID of the Application in the external Identity Provider.
-     * It is App ID for Facebook login, Client ID for Google login, App ID for Microsoft.
-     */
-    clientId: string;
-
-    /**
-     * OpenID Connect discovery endpoint hostname for AAD or AAD B2C, e.g. login.windows.net
-     */
-    authority: string;
-
-    /**
-     * The TenantId to use instead of Common when logging into Active Directory.
-     */
-    signinTenant: string;
-
+export interface AadB2CClientConfig extends AadClientConfig{
     /**
      * Sign-in policy name. Only applies to AAD B2C identity provider.
      */
@@ -31,9 +15,4 @@ export interface AadB2CClientConfig {
      * Password reset policy name. Only applies to AAD B2C identity provider.
      */
     passwordResetPolicyName: string;
-
-    /**
-     * The client library to be used in the developer portal
-     */
-     clientLibrary: AadClientLibrary;
 }

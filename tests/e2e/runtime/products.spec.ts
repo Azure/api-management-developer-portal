@@ -4,16 +4,16 @@ import { test, expect } from '../playwright-test';
 import { Templating } from "../../templating";
 
 test.describe("products-page", async () => {
-    test("published-products-visible-to-guests", async function ({page, configuration, cleanUp, mockedData, productService, testRunner})  { 
+    test("published-products-visible-to-guests @main", async function ({page, configuration, cleanUp, mockedData, productService, testRunner})  { 
         var product1: Product = Product.getRandomProduct("product1");
         var product2: Product = Product.getRandomProduct("product2");
 
-        mockedData.data = Templating.updateTemplate(JSON.stringify(mockedData.data), product1, product2);
+        async function populateData(): Promise<any>{     
+            mockedData.data = Templating.updateTemplate(configuration['isLocalRun'], JSON.stringify(mockedData.data), product1, product2);
 
-        async function populateData(): Promise<any>{            
-            await productService.putProduct("products/"+product1.productId, product1.getContract());
+            await productService.putProduct("products/"+product1.productId, product1.getRequestContract());
             await productService.putProductGroup("products/"+product1.productId, "groups/guests");
-            await productService.putProduct("products/"+product2.productId, product2.getContract());
+            await productService.putProduct("products/"+product2.productId, product2.getRequestContract());
             await productService.putProductGroup("products/"+product2.productId, "groups/guests");
             cleanUp.push(async () => productService.deleteProduct("products/"+product1.productId, true));
             cleanUp.push(async () => productService.deleteProduct("products/"+product2.productId, true));

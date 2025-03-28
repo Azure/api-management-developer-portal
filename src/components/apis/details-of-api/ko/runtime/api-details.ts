@@ -44,8 +44,9 @@ export class ApiDetails {
     @OnMounted()
     public async initialize(): Promise<void> {
         const apiName = this.routeHelper.getApiName();
+
         this.router.addRouteChangeListener(this.onRouteChange);
-        
+
         if (!apiName) {
             return;
         }

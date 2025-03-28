@@ -5,6 +5,18 @@ export interface SmapiErrorDetails {
     message: string;
 }
 
+export const MapiErrorCodes = {
+    TooManyRequest: "TooManyRequests",
+    IdentityNotConfirmed: "identity_not_confirmed",
+    InvalidIdentity: "invalid_identity",
+    Unhandled: "Unhandled",
+    Unauthorized: "Unauthorized",
+    Forbidden: "Forbidden",
+    NotFound: "ResourceNotFound",
+    Timeout: "RequestTimeout",
+    ServerError: "ServerError",
+}
+
 export class MapiError extends Error {
     constructor(
         public readonly code: string,

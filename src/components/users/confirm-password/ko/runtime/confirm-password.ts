@@ -39,7 +39,7 @@ export class ConfirmPassword {
             decorateInputElement: true
         });
 
-        this.password.extend(<any>{ required: { message: ValidationMessages.passwordRequired }, minLength: 8 }); // TODO: password requirements should come from Management API.
+        this.password.extend(<any>{ required: { message: ValidationMessages.passwordRequired }, minLength: 8, passwordValidator:{}});
         this.passwordConfirmation.extend(<any>{ equal: { message: ValidationMessages.passwordConfirmationMustMatch, params: this.password } });
     }
 
@@ -58,6 +58,7 @@ export class ConfirmPassword {
         const queryParams = new URLSearchParams(location.search);
 
         if (!queryParams.has("userid") || !queryParams.has("ticketid") || !queryParams.has("ticket")) {
+            this.isResetPasswordDisabled(true);
             dispatchErrors(this.eventManager, ErrorSources.confirmpassword, ["Required params not found"]);
             return;
         }
@@ -70,6 +71,7 @@ export class ConfirmPassword {
                 throw new Error("User not found.");
             }
         } catch (error) {
+            this.isResetPasswordDisabled(true);
             dispatchErrors(this.eventManager, ErrorSources.confirmpassword, ["Activate user error: " + error.message]);
         }
 

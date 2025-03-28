@@ -72,7 +72,6 @@ export const OperationDetailsGql = ({
     logger,
     enableConsole,
     useCorsProxy,
-    includeAllHostnames,
     enableScrollTo,
     defaultSchemaView,
 }: OperationDetailsRuntimeProps & {
@@ -174,8 +173,8 @@ export const OperationDetailsGql = ({
     };
 
     const loadGatewayInfo = async (): Promise<string[]> => {
-        return await apiService.getApiHostnames(apiName, includeAllHostnames);
-    };
+        return await apiService.getApiHostnames(apiName);
+    }
 
     const getGraphType = (
         type: GraphQLOutputType | GraphQLInputType

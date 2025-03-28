@@ -1,7 +1,10 @@
 import { Resource } from "./mocks/collection/resource";
 
 export class Templating {
-    public static updateTemplate(templateData: string, ...resources: Resource[]): object{
+    public static updateTemplate(isLocalRun: boolean, templateData: string, ...resources: Resource[]): object{
+        if (!isLocalRun){
+            return {};
+        }
         for(let i = 0; i < resources.length; i++){
             let objectKeys = Object.keys(resources[i]);
 

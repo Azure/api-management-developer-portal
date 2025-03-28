@@ -8,14 +8,14 @@ import { eventTypes } from "../../../logging/clientLogger";
 export function parseAndDispatchError(
     eventManager: EventManager,
     source: ErrorSources,
-    error: MapiError,
+    error: Error,
     logger: Logger,
     defaultMessage?: string,
-    errorDetailsMap: (detail: any) => string = detail => `${detail.message}`
+    errorDetailsMap: (detail: any) => string = detail => typeof detail.message === 'string' ? `${detail.message}` : `${Object.values(detail.message)[0]}`
 ): string[] {
     let errorDetails: string[];
 
-    if (error.code === "ValidationError" && error.details?.length > 0) {
+    if (error instanceof MapiError && error.code === "ValidationError" && error.details?.length > 0) {
         errorDetails = error.details.map(errorDetailsMap); // Prioritize errors from the error.details object.
     } else if (error.message) {
         errorDetails = [defaultMessage ?? error.message];

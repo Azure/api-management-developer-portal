@@ -1,6 +1,7 @@
 import * as ko from "knockout";
 import { Component, RuntimeComponent, OnMounted, OnDestroyed, Param } from "@paperbits/common/ko/decorators";
 import { Environment } from "@azure/api-management-custom-widgets-tools";
+import { Logger } from "@paperbits/common/logging";
 import { iframeAllows, iframeSandboxAllows, iframeSandboxAllowsBrowserSpecific } from "../../../../constants";
 import { widgetRuntimeSelector } from "../../constants";
 import template from "./customWidget.html";
@@ -17,7 +18,9 @@ export class CustomWidget {
     public iframeSandboxAllows: string = iframeSandboxAllows;
     private windowRef = window;
 
-    constructor() {
+    constructor(
+        private readonly logger: Logger
+    ) {
         this.src = ko.observable();
         this.name = ko.observable();
         this.instanceId = ko.observable();
@@ -51,6 +54,8 @@ export class CustomWidget {
 
         this.propagateHashchange();
         this.windowRef.addEventListener("hashchange", this.propagateHashchange);
+
+        this.logger.trackEvent("CustomWidgetInitialize", { message: `Custom widget runtime was Mounted. name: ${this.name()} instanceId: ${this.instanceId()}` });
     }
 
     @OnDestroyed()

@@ -1,8 +1,8 @@
 import * as fs from "fs";
 import * as path from "path";
-import { IBlobStorage } from "@paperbits/common/persistence";
+import { IStreamBlobStorage } from "../persistence/IStreamBlobStorage";
 
-export class FileSystemBlobStorage implements IBlobStorage {
+export class FileSystemBlobStorage implements IStreamBlobStorage {
     private basePath: string;
 
     constructor(basePath: string) {
@@ -15,6 +15,17 @@ export class FileSystemBlobStorage implements IBlobStorage {
         try {
             await fs.promises.mkdir(path.dirname(fullpath), { recursive: true });
             await fs.promises.writeFile(fullpath, Buffer.from(content.buffer));
+        }
+        catch (error) {
+            console.error(error);
+        }
+    }
+
+    public async uploadStreamToBlob(blobPath: string, contentStream: fs.ReadStream): Promise<void> {
+        const fullpath = `${this.basePath}/${blobPath}`.replace("//", "/");
+        try {
+            await fs.promises.mkdir(path.dirname(fullpath), { recursive: true });
+            await fs.promises.writeFile(fullpath, contentStream);
         }
         catch (error) {
             console.error(error);

@@ -1,13 +1,32 @@
-import { ArmResource } from "./armResource";
+export interface VersionSetContract {
 
-export interface VersionSetPropertiesContract {
-    displayName?: string;
+    /**
+     *  API Version Set identifier
+     */
+    id?: string;
+
+    /**
+     * API Version Set name. Must be 1 to 100 characters long.
+     */
+    name?: string;
+
+    /**
+     *  API Version Set description
+     */
     description?: string;
-    versioningScheme?: string;
-    versionQueryName?: string;
-    versionHeaderName?: string;
-}
 
-export interface VersionSetContract extends ArmResource {
-    properties: VersionSetPropertiesContract;
+    /**
+     *  Versioning scheme
+     */
+    versioningScheme?: string;
+
+    /**
+     * Version query name. Must be 1 to 100 characters long.
+     */
+    versionQueryName?: string;
+
+    /**
+     * Version header name. Must be 1 to 100 characters long.
+     */
+    versionHeaderName?: string;
 }

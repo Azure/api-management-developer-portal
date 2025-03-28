@@ -3,6 +3,7 @@ import { EventManager } from "@paperbits/common/events";
 import { HttpClient } from "@paperbits/common/http";
 import { ISettingsProvider } from "@paperbits/common/configuration";
 import { SessionManager } from "@paperbits/common/persistence/sessionManager";
+import { ConfigEndpoints, SettingNames } from "../constants";
 
 export class ApimSettingsProvider implements ISettingsProvider {
     private configuration: Object;
@@ -22,17 +23,21 @@ export class ApimSettingsProvider implements ISettingsProvider {
     }
 
     private async loadSettings(): Promise<void> {
-        const commonConfigurationResponse = await this.httpClient.send<any>({ url: "/config.json" });
+        const commonConfigurationResponse = await this.httpClient.send<any>({ url: ConfigEndpoints.backend });
         const commonConfiguration = commonConfigurationResponse.toObject();
 
-        const searializedDesignTimeSettings = await this.sessionManager?.getItem("designTimeSettings");
+        const serializedDesignTimeSettings = await this.sessionManager?.getItem("designTimeSettings");
 
-        if (searializedDesignTimeSettings) {
-            const designTimeSettings = searializedDesignTimeSettings;
+        if (serializedDesignTimeSettings) {
+            const designTimeSettings = serializedDesignTimeSettings;
             Object.assign(commonConfiguration, designTimeSettings);
-        }
-        else {
-            const apimsConfigurationResponse = await this.httpClient.send<any>({ url: "/config-apim.json" });
+            // TODO: check it in self-hosted case
+            const accessTokenFromEditor = designTimeSettings[SettingNames.managementApiAccessToken];
+            if(accessTokenFromEditor) {
+                sessionStorage.setItem("accessToken", accessTokenFromEditor);
+            }
+        } else {
+            const apimsConfigurationResponse = await this.httpClient.send<any>({ url: ConfigEndpoints.service });
 
             if (apimsConfigurationResponse.statusCode === 200) {
                 const apimConfiguration = apimsConfigurationResponse.toObject();

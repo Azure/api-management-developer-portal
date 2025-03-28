@@ -10,6 +10,7 @@ export class CustomHtmlModelBinder implements IModelBinder<CustomHtmlModel> {
         const model = new CustomHtmlModel();
         model.htmlCode = contract.htmlCode ?? htmlCodeInitial;
         model.inheritStyling = contract.inheritStyling ?? true;
+        model.addCustomFonts = contract.addCustomFonts ?? false;
         model.styles = contract.styles || {};
         return model;
     }
@@ -19,6 +20,7 @@ export class CustomHtmlModelBinder implements IModelBinder<CustomHtmlModel> {
             type: widgetName,
             htmlCode: model.htmlCode,
             inheritStyling: model.inheritStyling,
+            addCustomFonts: model.addCustomFonts,
             styles: model.styles
         };
         return contract;

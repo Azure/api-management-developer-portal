@@ -8,6 +8,7 @@ export class HTMLInjectionHandlers implements IWidgetHandler<CustomHtmlModel> {
         const model = new CustomHtmlModel();
         model.htmlCode = htmlCodeInitial;
         model.inheritStyling = true;
+        model.addCustomFonts = false;
         StyleHelper.setPluginConfigForLocalStyles(model.styles, "size", htmlCodeSizeStylesInitial);
         return model;
     }

@@ -22,7 +22,7 @@ addEventListener("fetch", (event: FetchEvent) => {
                 return response;
             }
 
-            const cleanedUrl = request.url.indexOf("#code=") > -1 ? cleanUpUrlParams(request) : request.url;
+            const cleanedUrl = sanitizeUrl(request.url);
 
             const telemetryData = {
                 url: cleanedUrl,
@@ -49,8 +49,19 @@ addEventListener("fetch", (event: FetchEvent) => {
 
 console.log("Telemetry worker started.");
 
-function cleanUpUrlParams(request: Request): string {
-    const url = new URL(request.url);
+function sanitizeUrl(requestUrl: string): string {
+    let url = requestUrl;
+
+    // Clean hash parameters if they exist
+    if (url.match(/#.*=/)) {
+        return cleanUpUrlParams(url);
+    } else {
+        return cleanUrlSensitiveDataFromQuery(url);
+    }
+}
+
+function cleanUpUrlParams(requestUrl: string): string {
+    const url = new URL(requestUrl);
     const hash = url.hash.substring(1); // Remove the leading '#'
     const params = new URLSearchParams(hash);
 
@@ -64,4 +75,11 @@ function cleanUpUrlParams(request: Request): string {
 
     url.hash = params.toString();
     return url.toString();
+}
+
+function cleanUrlSensitiveDataFromQuery(requestUrl: string): string {
+    if (requestUrl) {
+        requestUrl = requestUrl.replace(/([?|&])(client_secret|salt|sig|signature|key|secret|(access_)?token|user(_)?(name)?|password)=([^&]+)/ig, "$1$2=***");
+    }
+    return requestUrl;
 }
