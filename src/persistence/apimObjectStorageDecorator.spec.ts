@@ -101,7 +101,7 @@ describe("ApimObjectStorageDecorator", () => {
                 cloneObject.permalink = cloneObject.permalink.replace(/[png]|[jpg]/, "txt");
 
                 const originalUrl = cloneObject.downloadUrl;
-                expect(originalUrl).to.be.a('string').satisfy(m => m.startsWith(`https://apimdeveloperportal.blob.core.windows.net/`));
+                expect(originalUrl).to.be.a("string").satisfy(m => m.startsWith(`https://apimdeveloperportal.blob.core.windows.net/`));
 
                 await storageDecorator.updateObject(`uploads/${file.name}`, cloneObject);
 

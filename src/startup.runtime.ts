@@ -50,9 +50,9 @@ function initFeatures() {
             logger.trackEvent("FeatureFlag", {
                 feature: FEATURE_CLIENT_TELEMETRY,
                 enabled: isEnabled.toString(),
-                message: `Feature flag '${FEATURE_CLIENT_TELEMETRY}' - ${isEnabled ? 'enabled' : 'disabled'}`
+                message: `Feature flag '${FEATURE_CLIENT_TELEMETRY}' - ${isEnabled ? "enabled" : "disabled"}`
             });
-            let telemetryConfigurator = new TelemetryConfigurator(injector);
+            const telemetryConfigurator = new TelemetryConfigurator(injector);
             if (isEnabled) {
                 telemetryConfigurator.configure();
             } else {
@@ -64,7 +64,7 @@ function initFeatures() {
             logger.trackEvent("FeatureFlag", {
                 feature: isRedesignEnabledSetting,
                 enabled: isEnabled.toString(),
-                message: `Feature flag '${isRedesignEnabledSetting}' - ${isEnabled ? 'enabled' : 'disabled'}`
+                message: `Feature flag '${isRedesignEnabledSetting}' - ${isEnabled ? "enabled" : "disabled"}`
             });
         });
 }

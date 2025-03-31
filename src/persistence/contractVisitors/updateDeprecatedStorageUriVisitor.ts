@@ -20,7 +20,7 @@ export class UpdateDeprecatedStorageUriVisitor implements IObjectContractVisitor
         }
         const match = contract.downloadUrl.match(/https:\/\/apimdeveloperportal\.blob\.core\.windows\.net\/content\/([^\.]+)(\.[\w]{3,4})?/);
         if (match) {
-            const extension = match[2] ?? this.fileExtensionMap.get(match[1]) ?? `.${contract.permalink?.split('.').pop()}`;
+            const extension = match[2] ?? this.fileExtensionMap.get(match[1]) ?? `.${contract.permalink?.split(".").pop()}`;
             contract.downloadUrl = `https://apimdeveloperportal.z22.web.core.windows.net/${match[1]}${extension}`;
         }
     }

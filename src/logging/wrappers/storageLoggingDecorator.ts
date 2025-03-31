@@ -76,9 +76,9 @@ export class StorageLoggingDecorator implements IStreamBlobStorage {
             if (succeeded && !!additionalMessageFunc) {
                 additionalMessage = await additionalMessageFunc();
             }
-            this.logger.trackEvent(this.getLoggingEvent(), { message: `${action} of ${key} completed ${succeeded ? 'successfully' : 'with failure'}. ${additionalMessage}` });
+            this.logger.trackEvent(this.getLoggingEvent(), { message: `${action} of ${key} completed ${succeeded ? "successfully" : "with failure"}. ${additionalMessage}` });
         }
     }
 
-    private getLoggingEvent() { return this.loggingEventProvider?.getLogEventType() ?? "BlobStorage" };
+    private getLoggingEvent() { return this.loggingEventProvider?.getLogEventType() ?? "BlobStorage" }
 }

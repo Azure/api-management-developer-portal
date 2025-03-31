@@ -96,7 +96,6 @@ export class ApimMediaPermalinkResolver implements IPermalinkResolver {
             return null;
         }
 
-        let hyperlinkModel: HyperlinkModel;
 
         if (hyperlinkContract.targetKey) {
             const mediaContract = await this.mediaService.getMediaByKey(hyperlinkContract.targetKey);
@@ -106,7 +105,7 @@ export class ApimMediaPermalinkResolver implements IPermalinkResolver {
             }
         }
 
-        hyperlinkModel = new HyperlinkModel();
+        const hyperlinkModel = new HyperlinkModel();
         hyperlinkModel.title = "Unset link";
         hyperlinkModel.target = hyperlinkContract.target;
         hyperlinkModel.targetKey = hyperlinkContract.targetKey;

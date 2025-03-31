@@ -136,7 +136,7 @@ describe("Product service", async () => {
         const delegationService = new DelegationService(apiClient, settingsProvider);
         const productService = new ProductService(apiClient, delegationService);
 
-        var searchQuery: SearchQuery = { pattern: "test" }
+        const searchQuery: SearchQuery = { pattern: "test" }
         await productService.getSubscriptions("/users/1234", "/products/starter", searchQuery);
 
         const expectedUrl = "/users/1234/subscriptions?$top=50&$skip=0&$filter=(endswith(scope,'/products/starter')) and (contains(name,'test'))";
@@ -149,7 +149,7 @@ describe("Product service", async () => {
         const delegationService = new DelegationService(apiClient, settingsProvider);
         const productService = new ProductService(apiClient, delegationService);
 
-        var searchQuery: SearchQuery = { pattern: "test" }
+        const searchQuery: SearchQuery = { pattern: "test" }
         await productService.getSubscriptions("/users/1234", "starter", searchQuery);
 
         const expectedUrl = "/users/1234/subscriptions?$top=50&$skip=0&$filter=(endswith(scope,'/products/starter')) and (contains(name,'test'))";
@@ -196,7 +196,7 @@ describe("Product service", async () => {
         const delegationService = new DelegationService(apiClient, settingsProvider);
         const productService = new ProductService(apiClient, delegationService);
 
-        var searchQuery: SearchQuery = { pattern: "test" }
+        const searchQuery: SearchQuery = { pattern: "test" }
         await productService.getProductsAllSubscriptions("book-store-api", [starterProduct], "/users/1234", searchQuery);
 
         const expectedUrl = "/users/1234/subscriptions?$top=100&$skip=0&$filter=(contains(name,'test'))";

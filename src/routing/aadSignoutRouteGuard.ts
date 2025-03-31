@@ -60,7 +60,7 @@ export class AadSignOutRouteGuard implements RouteGuard {
 
         this.authenticator.clearAccessToken();
         sessionStorage.removeItem(Constants.loginClientConfigType);
-        let eventType = loginClientConfigType === Constants.SettingNames.aadB2CClientConfig ? eventTypes.aadB2CLogin : eventTypes.aadLogin;
+        const eventType = loginClientConfigType === Constants.SettingNames.aadB2CClientConfig ? eventTypes.aadB2CLogin : eventTypes.aadLogin;
         msalInstance.setActiveAccount(signedInUserAccount);
         const response = await msalInstance.acquireTokenSilent({scopes: ["openid"]});
 

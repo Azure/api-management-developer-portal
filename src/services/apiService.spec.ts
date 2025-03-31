@@ -15,7 +15,7 @@ import { AccessToken } from "../authentication";
 import { MapiClientSelfhosted } from "../clients/mapiClientSelfhosted";
 
 describe("API service", async () => {
-    var runs = [
+    const runs = [
         { it: "Authenticated", options: { accessToken: "SharedAccessSignature 123&220001010000&000000000000000000000000000==", userId: "123" } },
         { it: "Anonymous", options: { accessToken: null, userId: null } }
     ];
@@ -165,7 +165,7 @@ describe("API service", async () => {
         })
 
         function buildResourceUri(userId: string | null, resource: string, mapi: boolean = false) {
-            let result = !!mapi ? "/mapi" : "/developer";
+            let result = mapi ? "/mapi" : "/developer";
             if (userId)
                 result += `/users/${userId}`;
             result += `/${resource}`;

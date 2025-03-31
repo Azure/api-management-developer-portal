@@ -15,14 +15,14 @@ export class RequestRetryStrategy implements IRetryStrategy {
 
     // get the delay in milliseconds for the next request attempt based on an error
     private getDelay(error: MapiError): number {
+        let delayMs = this.defaultDelayMs;
         switch (error.code) {
             case MapiErrorCodes.TooManyRequest:
-                let delayMs = this.defaultDelayMs;
                 if (error.details) {
                     const retryAfterHeader = error.details.find(h => {
                         return AllRetryAfterHeaders.indexOf(h.message.toLowerCase()) >= 0
                     });
-                    let retryAfterValue = parseInt(retryAfterHeader?.target);
+                    const retryAfterValue = parseInt(retryAfterHeader?.target);
                     if (!isNaN(retryAfterValue)) {
                         let multiplyingFactor = 1;
                         // "Retry-After" header ==> seconds

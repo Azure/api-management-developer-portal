@@ -139,8 +139,8 @@ describe("Mapi Client", async () => {
 
     describe("Send method", async () => {
         const testsData = [
-            { httpMethod: 'GET', body: undefined },
-            { httpMethod: 'POST', body: { name: 'test' } }
+            { httpMethod: "GET", body: undefined },
+            { httpMethod: "POST", body: { name: "test" } }
         ];
         testsData.forEach(testData => {
             it(`Should return the response from the ${testData.httpMethod} send method`, async () => {
@@ -149,10 +149,10 @@ describe("Mapi Client", async () => {
                 const response = <HttpResponse<any>><any>{
                     statusCode: 200,
                     headers: [],
-                    body: { message: 'Success' }
+                    body: { message: "Success" }
                 };
                 const httpClient: HttpClient = <any>{
-                    send: async () => { }
+                    send: async () => { return response; }
                 };
                 const authenticator = new StaticAuthenticator();
                 const settingsProviderMock = new StaticSettingsProvider({
@@ -166,7 +166,7 @@ describe("Mapi Client", async () => {
                 const mockUrl = `${Utils.getBaseUrlWithMapiSuffix(settings[Constants.SettingNames.backendUrl])}${url}?api-version=${Constants.managementApiVersion}`;
                 const apiClient = new MapiClient(undefined, httpClient, authenticator, settingsProviderMock, new NoRetryStrategy(), new ConsoleLogger());
 
-                const sendStub = stub(httpClient, 'send').resolves(response);
+                const sendStub = stub(httpClient, "send").resolves(response);
 
                 const result = await apiClient.send(url, httpMethod, undefined, testData.body);
 

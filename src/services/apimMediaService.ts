@@ -42,8 +42,8 @@ export class ApimMediaService implements IMediaService {
 
     public async createMedia(name: string, content: Uint8Array, contentType?: string): Promise<MediaContract> {
         const formData = new FormData();
-        let blob = new Blob([content], { type: contentType ?? 'application/octet-stream' });
-        formData.append('file', blob, name);
+        const blob = new Blob([content], { type: contentType ?? "application/octet-stream" });
+        formData.append("file", blob, name);
 
         const accessToken = await this.authenticator.getAccessToken();
 
@@ -61,13 +61,12 @@ export class ApimMediaService implements IMediaService {
             return result.toObject()[0];
         }
 
-        switch (result.statusCode) {
-            case 400:
-                const reason = JSON.parse(new TextDecoder().decode(result.body));
-                this.viewManager.notifyError(`Could not upload file ${name}`, reason.message);
-                return null;
-            default:
-                throw new Error("Unable to upload file.");
+        if (result.statusCode === 400 && result.body) {
+            const reason = JSON.parse(new TextDecoder().decode(result.body));
+            this.viewManager.notifyError(`Could not upload file ${name}`, reason.message);
+            return null;
+        } else {
+            throw new Error("Unable to upload file.");
         }
     }
 

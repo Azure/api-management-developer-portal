@@ -15,15 +15,15 @@ describe("StorageLoggingDecorator", () => {
 
     beforeEach(() => {
         outputBlobStorage = {
-            uploadBlob: async (blobKey: string, content: Uint8Array, contentType?: string) => { },
-            deleteBlob: async (blobKey: string) => { },
-            uploadStreamToBlob: async (blobKey: string, contentStream: ReadStream, contentType?: string) => { },
+            uploadBlob: async (blobKey: string, content: Uint8Array, contentType?: string) => { console.log("uploadBlob called"); },
+            deleteBlob: async (blobKey: string) => { console.log("deleteBlob called"); },
+            uploadStreamToBlob: async (blobKey: string, contentStream: ReadStream, contentType?: string) => { console.log("uploadStreamToBlob called"); },
         } as IStreamBlobStorage;
         loggingEventProvider = {
             getLogEventType: () => null
         } as IDefaultLogEventTypeProvider;
         logger = {
-            trackEvent: async (eventName: string, properties?: { [key: string]: string }) => { }
+            trackEvent: async (eventName: string, properties?: { [key: string]: string }) => {console.log("trackEvent called"); },
         } as Logger;
         storageLoggingDecorator = new StorageLoggingDecorator(outputBlobStorage, loggingEventProvider, logger);
     });

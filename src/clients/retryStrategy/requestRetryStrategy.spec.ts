@@ -1,6 +1,6 @@
 import { describe, it } from "mocha";
 import { expect } from "chai";
-import { spy } from 'sinon';
+import { spy } from "sinon";
 import { Logger, ConsoleLogger } from "@paperbits/common/logging";
 import { createStubInstance, SinonStubbedInstance, stub } from "sinon";
 import { RequestRetryStrategy } from "./requestRetryStrategy";
@@ -14,7 +14,7 @@ describe("RequestRetryStrategy", async () => {
         logger = createStubInstance(ConsoleLogger);
     });
 
-    it('it should not repeat if there is not MapiError', async () => {
+    it("it should not repeat if there is not MapiError", async () => {
         //setup
         const retryStrategy = new RequestRetryStrategy(logger);
         const sampleApiResponse = { "hello": "world" };
@@ -28,10 +28,10 @@ describe("RequestRetryStrategy", async () => {
         expect(response).to.eq(sampleApiResponse);
     });``
 
-    it('it should re-throw the same error if a api call throws one', async () => {
+    it("it should re-throw the same error if a api call throws one", async () => {
         //setup
         const retryStrategy = new RequestRetryStrategy(logger);
-        const error = new Error('test');
+        const error = new Error("test");
         let reThrow = false;
 
         //run
@@ -54,7 +54,7 @@ describe("RequestRetryStrategy", async () => {
         //setup
         const retryStrategy = new RequestRetryStrategy(logger);
         retryStrategy.maxRetries = 10;
-        const notFoundError = new MapiError(MapiErrorCodes.NotFound, 'Not found should not retry');
+        const notFoundError = new MapiError(MapiErrorCodes.NotFound, "Not found should not retry");
         const requestCallSpy = spy(async () => {
             throw notFoundError;
         });
@@ -78,8 +78,8 @@ describe("RequestRetryStrategy", async () => {
         const retryStrategy = new RequestRetryStrategy(logger);
         retryStrategy.maxRetries = 4; // should try to max 4 retries
         retryStrategy.defaultDelayMs = 5; // should delay between each retry for 5 millisecods
-        const error429 = new MapiError(MapiErrorCodes.TooManyRequest, 'Slow down bro!');
-        const sleepSpy = spy(retryStrategy, 'sleep');
+        const error429 = new MapiError(MapiErrorCodes.TooManyRequest, "Slow down bro!");
+        const sleepSpy = spy(retryStrategy, "sleep");
         const requestCallSpy = spy(async () => {
             throw error429;
         })
@@ -105,8 +105,8 @@ describe("RequestRetryStrategy", async () => {
         const retryStrategy = new RequestRetryStrategy(logger);
         retryStrategy.defaultDelayMs = 6; // lets not wait for too long
         retryStrategy.maxRetries = 2;
-        const sleepSpy = spy(retryStrategy, 'sleep');
-        const error429 = new MapiError(MapiErrorCodes.TooManyRequest, 'Slow down bro!', [
+        const sleepSpy = spy(retryStrategy, "sleep");
+        const error429 = new MapiError(MapiErrorCodes.TooManyRequest, "Slow down bro!", [
             //no headers
         ]);
         const requestCallSpy = spy(async () => {
@@ -132,8 +132,8 @@ describe("RequestRetryStrategy", async () => {
         const retryStrategy = new RequestRetryStrategy(logger);
         retryStrategy.maxRetries = 1;
         retryStrategy.defaultDelayMs = 6;
-        const sleepSpy = spy(retryStrategy, 'sleep');
-        const error429 = new MapiError(MapiErrorCodes.TooManyRequest, 'Slow down bro!', [
+        const sleepSpy = spy(retryStrategy, "sleep");
+        const error429 = new MapiError(MapiErrorCodes.TooManyRequest, "Slow down bro!", [
             { message: "Retry-After", target: "1" }
         ]);
         const requestCallSpy = spy(async () => {
@@ -158,8 +158,8 @@ describe("RequestRetryStrategy", async () => {
         let retryStrategy = new RequestRetryStrategy(logger);
         retryStrategy.maxRetries = 4;
         retryStrategy.defaultDelayMs = 3;
-        let sleepSpy = spy(retryStrategy, 'sleep');
-        let error429 = new MapiError(MapiErrorCodes.TooManyRequest, 'Slow down bro!', [
+        let sleepSpy = spy(retryStrategy, "sleep");
+        let error429 = new MapiError(MapiErrorCodes.TooManyRequest, "Slow down bro!", [
             { message: "Retry-After-Ms", target: "10" }
         ]);
         let requestCallSpy = spy(async () => {
@@ -185,8 +185,8 @@ describe("RequestRetryStrategy", async () => {
         retryStrategy = new RequestRetryStrategy(logger);
         retryStrategy.maxRetries = 3;
         retryStrategy.defaultDelayMs = 3;
-        sleepSpy = spy(retryStrategy, 'sleep');
-        error429 = new MapiError(MapiErrorCodes.TooManyRequest, 'Slow down bro!', [
+        sleepSpy = spy(retryStrategy, "sleep");
+        error429 = new MapiError(MapiErrorCodes.TooManyRequest, "Slow down bro!", [
             { message: "X-Ms-Retry-After-Ms", target: "11" }
         ]);
         requestCallSpy = spy(async () => {
@@ -209,13 +209,13 @@ describe("RequestRetryStrategy", async () => {
     });
 
 
-    it('it should stop the retries if there is no error', async () => {
+    it("it should stop the retries if there is no error", async () => {
         //setup
         const retryStrategy = new RequestRetryStrategy(logger);
         retryStrategy.defaultDelayMs = 9; // lets not wait for too long
         retryStrategy.maxRetries = 4;
-        const sleepSpy = spy(retryStrategy, 'sleep');
-        const error429 = new MapiError(MapiErrorCodes.TooManyRequest, 'Slow down bro!', [
+        const sleepSpy = spy(retryStrategy, "sleep");
+        const error429 = new MapiError(MapiErrorCodes.TooManyRequest, "Slow down bro!", [
             //no headers
         ]);
 

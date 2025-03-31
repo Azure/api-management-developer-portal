@@ -38,7 +38,7 @@ export class CompressedAssetsPublisherPlugin implements HtmlPagePublisherPlugin 
 
     private replaceToCompressed(element: HTMLScriptElement |  HTMLLinkElement, supportedExtensions: string[]): void {
         const originalSrc = this.getSrcElement(element);
-        const originalExtension = originalSrc.split('.').pop();
+        const originalExtension = originalSrc.split(".").pop();
         if (supportedExtensions.includes(originalExtension)) {
             const newValue = this.setSrcElement(element, `${originalSrc}.${this.compressedExtension()}`);
             this.logger.trackEvent(WellKnownEventTypes.Publishing, { message: `Path replaced to compressed asset: ${newValue}` });

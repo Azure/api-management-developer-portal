@@ -1,11 +1,11 @@
-import { FontFace, StyleSheet } from '@paperbits/common/styles';
-import { ApimDefaultStyleCompiler } from '../../../styles/apimDefaultStyleCompiler';
-import { CustomHtmlPublishViewModelBinder } from './customHtmlPublishViewModelBinder';
-import { ConsoleLogger } from '@paperbits/common/logging/consoleLogger';
-import { SinonStub, SinonStubbedInstance, createStubInstance, stub } from 'sinon';
-import { IBlobStorage } from '@paperbits/common/persistence';
-import { expect } from 'chai';
-import { CustomHtmlModel } from '../customHtmlModel';
+import { FontFace, StyleSheet } from "@paperbits/common/styles";
+import { ApimDefaultStyleCompiler } from "../../../styles/apimDefaultStyleCompiler";
+import { CustomHtmlPublishViewModelBinder } from "./customHtmlPublishViewModelBinder";
+import { ConsoleLogger } from "@paperbits/common/logging/consoleLogger";
+import { SinonStub, SinonStubbedInstance, createStubInstance, stub } from "sinon";
+import { IBlobStorage } from "@paperbits/common/persistence";
+import { expect } from "chai";
+import { CustomHtmlModel } from "../customHtmlModel";
 
 const htmlCode = `<html>
 <head>
@@ -67,23 +67,23 @@ describe("CustomHtmlPublishViewModelBinder", () => {
         styleCompiler = createStubInstance(ApimDefaultStyleCompiler);
         styleCompiler.getStyleSheet.returns(Promise.resolve(globalStyleSheet));
         storage = {
-            uploadBlob: async (blobKey: string, content: Uint8Array, contentType?: string) => { },
-            deleteBlob: async (blobKey: string) => { },
+            uploadBlob: async (blobKey: string, content: Uint8Array, contentType?: string) => { console.log("uploadBlob", blobKey); },
+            deleteBlob: async (blobKey: string) => {console.log("deleteBlob", blobKey);},
             downloadBlob: async (blobKey: string) => Promise.resolve(null),
             getDownloadUrl: async (blobKey: string) => Promise.resolve("")
         };
         binder = new CustomHtmlPublishViewModelBinder(styleCompiler, storage, storage, new ConsoleLogger());
     });
 
-    it('should bind the view model correctly with custom font', async () => {
+    it("should bind the view model correctly with custom font", async () => {
         await testModelToState(true, true);
     });
 
-    it('should bind the view model correctly with NO custom font', async () => {
+    it("should bind the view model correctly with NO custom font", async () => {
         await testModelToState(false, true);
     });
 
-    it('should bind the view model correctly with NO global styles', async () => {
+    it("should bind the view model correctly with NO global styles", async () => {
         await testModelToState(false, false);
     });
 

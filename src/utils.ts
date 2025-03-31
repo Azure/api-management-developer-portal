@@ -536,15 +536,15 @@ export class Utils {
             return null;
         }
 
-        const cookieValue = parts.pop().split(';').shift();
-        const cookieParts = document.cookie.split(';').map(cookie => cookie.trim());
+        const cookieValue = parts.pop().split(";").shift();
+        const cookieParts = document.cookie.split(";").map(cookie => cookie.trim());
         const cookieString = cookieParts.find(cookie => cookie.startsWith(`${name}=`));
         let expiresInDays: number | undefined;
 
         if (cookieString) {
-            const expiresPart = cookieString.split(';').find(part => part.trim().startsWith('expires='));
+            const expiresPart = cookieString.split(";").find(part => part.trim().startsWith("expires="));
             if (expiresPart) {
-                const expiresDate = new Date(expiresPart.split('=')[1]);
+                const expiresDate = new Date(expiresPart.split("=")[1]);
                 const currentDate = new Date();
                 expiresInDays = Math.ceil((expiresDate.getTime() - currentDate.getTime()) / (1000 * 60 * 60 * 24));
             }

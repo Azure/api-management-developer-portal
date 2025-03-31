@@ -1,14 +1,14 @@
-import { expect } from 'chai';
-import * as mock from 'sinon';4
+import { expect } from "chai";
+import * as mock from "sinon";4
 import { MediaContract } from "@paperbits/common/media";
-import { ApimMediaService } from './apimMediaService';
-import { ConsoleLogger } from '@paperbits/common/logging';
-import { fail } from 'assert';
-import { ISettingsProvider } from '@paperbits/common/configuration/ISettingsProvider';
+import { ApimMediaService } from "./apimMediaService";
+import { ConsoleLogger } from "@paperbits/common/logging";
+import { fail } from "assert";
+import { ISettingsProvider } from "@paperbits/common/configuration/ISettingsProvider";
 
 const sandbox = mock.createSandbox();
 
-describe('ApimMediaService', () => {
+describe("ApimMediaService", () => {
   let service: ApimMediaService;
 
   let httpClientMock: any;
@@ -34,7 +34,7 @@ describe('ApimMediaService', () => {
     };
 
     viewManagerMock = {
-        notifyError: () => {}
+        notifyError: () => {console.log("Error notification"); }
     };
 
     settingsProviderMock = {
@@ -57,24 +57,24 @@ describe('ApimMediaService', () => {
     sandbox.restore();
  });
 
-  it('Create media - should send upload request.', async () => {
+  it("Create media - should send upload request.", async () => {
     const resultBlobKey = "test_blob_key";
     sandbox.stub(httpClientMock, "send").resolves({ statusCode: 200, toObject: () => [ <MediaContract>{ blobKey: resultBlobKey }] });
 
-    const mediaContract: MediaContract = await service.createMedia('test_name', new Uint8Array(), 'test_type');
+    const mediaContract: MediaContract = await service.createMedia("test_name", new Uint8Array(), "test_type");
 
     expect(mediaContract).to.not.be.null;
     expect(mediaContract.blobKey).to.equal(resultBlobKey);
   });
 
-  it('Create media - should show error messages. ', async () => {
+  it("Create media - should show error messages. ", async () => {
     const viewManagerStub = sandbox.stub(viewManagerMock, "notifyError")
         .returns(Promise.resolve());
 
     sandbox.stub(httpClientMock, "send").resolves({ statusCode: 400, body: new TextEncoder().encode(JSON.stringify({ message: "Test error message" })) });
 
     try {
-        await service.createMedia('test_name', new Uint8Array(), 'test_type');
+        await service.createMedia("test_name", new Uint8Array(), "test_type");
         fail("Error was expected");
     } catch (error) {
         expect(error).to.not.be.null;

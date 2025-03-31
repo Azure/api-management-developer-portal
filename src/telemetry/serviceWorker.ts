@@ -50,7 +50,7 @@ addEventListener("fetch", (event: FetchEvent) => {
 console.log("Telemetry worker started.");
 
 function sanitizeUrl(requestUrl: string): string {
-    let url = requestUrl;
+    const url = requestUrl;
 
     // Clean hash parameters if they exist
     if (url.match(/#.*=/)) {

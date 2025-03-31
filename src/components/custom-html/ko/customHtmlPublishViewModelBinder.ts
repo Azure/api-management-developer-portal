@@ -64,7 +64,7 @@ export class CustomHtmlPublishViewModelBinder implements ViewModelBinder<CustomH
                 if (fontFace.source?.startsWith("/fonts/")) {
                     const fontData = await this.blobStorage.downloadBlob(fontFace.source);
                     this.logger.trackEvent(WellKnownEventTypes.Publishing, { message: `CustomHtmlPublish: Adding ${fontFace.source} font as base64` });
-                    const fontDataString = Buffer.from(fontData).toString('base64');
+                    const fontDataString = Buffer.from(fontData).toString("base64");
                     fontFace.source = `data:font/truetype;charset=utf-8;base64,${fontDataString}`
                     styleSheet.fontFaces.push(fontFace);
                 }

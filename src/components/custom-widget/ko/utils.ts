@@ -38,7 +38,7 @@ export async function buildWidgetSource(
 
     if (environment === "publishing") {
         urlString = `${PUBLISHING_HOST}/content/${BLOB_ROOT}/${name}/${filePath}`;
-    } else {;
+    } else {
         // check is necessary during publishing as window.sessionStorage.getItem throws "DOMException {}  node:internal/process/promises:279"
         developmentSrc = window.sessionStorage.getItem(Constants.overrideConfigSessionKeyPrefix + name);
     }

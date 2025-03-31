@@ -11,7 +11,7 @@ export function parseAndDispatchError(
     error: Error,
     logger: Logger,
     defaultMessage?: string,
-    errorDetailsMap: (detail: any) => string = detail => typeof detail.message === 'string' ? `${detail.message}` : `${Object.values(detail.message)[0]}`
+    errorDetailsMap: (detail: any) => string = detail => typeof detail.message === "string" ? `${detail.message}` : `${Object.values(detail.message)[0]}`
 ): string[] {
     let errorDetails: string[];
 
