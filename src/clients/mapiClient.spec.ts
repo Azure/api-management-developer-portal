@@ -30,27 +30,58 @@ describe("Mapi Client", async () => {
         clear: () => { global.sessionStorage._values.clear(); }
     }
 
-    const settingsProvider = new StaticSettingsProvider({
-        managementApiUrl: "https://contoso.management.azure-api.net",
-        backendUrl: "https://contoso.developer.azure-api.net",
-        managementApiAccessToken: createMockToken()
-    });
-    const authenticator = new SelfHostedArmAuthenticator();
-    // {
-    //     isArmAuthEnabled: true,
-    //     editorArmEndpoint: "management.azure.com",
-    //     editorAadClientId: "a962e1ed-5694-4abe-9e9b-d08d35877efc",
-    //     editorAadAuthority: "https://login.windows.net/72f988bf-86f1-41af-91ab-2d7cd011db47"
-    // }, new ConsoleLogger()
+    const userAdminToken = {
+        "value": createMockToken()
+    };
 
-    it("setBaseUrl - Appends /mapi", async () => {
+    const serviceDescriptor = {
+        "properties": {
+            "developerPortalUrl": "https://test-service.developer.azure-api.net",
+            "dataApiUrl": null,
+            "managementApiUrl": "https://test-service.management.azure-api.net"
+        },
+        "sku": {
+            "name": "Developer",
+            "capacity": 1
+        },
+        "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test-rg/providers/Microsoft.ApiManagement/service/test-service",
+        "name": "test-service",
+        "type": "Microsoft.ApiManagement/service"
+    };
+
+    const armAuthSettings = {
+        "armEndpoint": "management.azure.com",
+        "subscriptionId": "00000000-0000-0000-0000-000000000000",
+        "resourceGroupName": "test-rg",
+        "serviceName": "test-service"
+    };
+    const settingsProvider = new StaticSettingsProvider(armAuthSettings);
+
+    const managementApiUrl = "https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test-rg/providers/Microsoft.ApiManagement/service/test-service";
+    const userMapiUrl = `${managementApiUrl}/users/${Constants.adminUserId}/token?api-version=${Constants.managementApiVersion}`
+    const serviceUrl = `${managementApiUrl}?api-version=${Constants.managementApiVersion}`
+
+    sessionStorage.setItem("armAccessToken", createMockToken());
+    const authenticator = new SelfHostedArmAuthenticator();
+
+    it("setBaseUrl - Initialized with full ARM url", async () => {
 
         //arrange
         const httpClient = new MockHttpClient();
         const sessionManager = new DefaultSessionManager();
-        const settings = await settingsProvider.getSettings<object>();
         const armService = new ArmService(httpClient, authenticator, sessionManager, new ConsoleLogger());
+
+        httpClient.mock()
+            .post(userMapiUrl)
+            .reply(200, userAdminToken);
+        httpClient.mock()
+            .get(serviceUrl)
+            .reply(200, serviceDescriptor);
+
+        await armService.loadSessionSettings(settingsProvider);
+
         const path = "isValid";
+        const settings = await settingsProvider.getSettings<object>();
         const mockUrl = `${settings[Constants.SettingNames.managementApiUrl]}/${path}`
         httpClient.mock()
             .get(mockUrl)
@@ -67,60 +98,24 @@ describe("Mapi Client", async () => {
         assert.isTrue(result.isValid);
     });
 
-
-    it("Localhost calls - replace https to http", async () => {
-        //arrange
-        const publisherSettingsProvider = new StaticSettingsProvider({
-            backendUrl: "http://localhost:10000",
-            managementApiAccessToken: createMockToken()
-        });
-
-        const httpClient = new MockHttpClient();
-        const sessionManager = new DefaultSessionManager();
-        const armService = new ArmService(httpClient, authenticator, sessionManager, new ConsoleLogger());
-
-        const baseHost = "http://localhost:10000"
-        const basePath = "/0/isValid";
-        const expectedPath = "/mapi" + basePath;
-        const expectedNextLinkPath = "/mapi/1/isValid"
-
-        httpClient.mock()
-            .get(baseHost + expectedPath)
-            .reply(200, {
-                value: [{
-                    isValid: true,
-                }],
-                nextLink: "https://localhost:10000" + expectedNextLinkPath
-            });
-
-        httpClient.mock()
-            .get(baseHost + expectedNextLinkPath)
-            .reply(200, {
-                value: [{
-                    isValid: true,
-                }],
-                nextLink: null
-            });
-
-        const apiClient = new MapiClient(armService, httpClient, authenticator, publisherSettingsProvider, new NoRetryStrategy(), new ConsoleLogger());
-
-        //act
-        const result = await apiClient.getAll<Validity>(basePath, []);
-
-        //assert
-        assert.equal(result.length, 2);
-        assert.isTrue(result[0].isValid);
-        assert.isTrue(result[1].isValid);
-    });
-
     it("Mapi client should never prefix user using header & token", async () => {
 
         //arrange
         const httpClient = new MockHttpClient();
         const sessionManager = new DefaultSessionManager();
-        const settings = await settingsProvider.getSettings();
         const path = "isValid";
+
         const armService = new ArmService(httpClient, authenticator, sessionManager, new ConsoleLogger());
+        httpClient.mock()
+            .post(userMapiUrl)
+            .reply(200, userAdminToken);
+        httpClient.mock()
+            .get(serviceUrl)
+            .reply(200, serviceDescriptor);
+
+        await armService.loadSessionSettings(settingsProvider);
+
+        const settings = await settingsProvider.getSettings();
         const mockUrl = `${settings[Constants.SettingNames.managementApiUrl]}/${path}`
         httpClient.mock()
             .get(mockUrl)
@@ -138,6 +133,16 @@ describe("Mapi Client", async () => {
     });
 
     describe("Send method", async () => {
+        const httpClient = new MockHttpClient();
+        const sessionManager = new DefaultSessionManager();
+        const armService = new ArmService(httpClient, authenticator, sessionManager, new ConsoleLogger());
+        httpClient.mock()
+            .post(userMapiUrl)
+            .reply(200, userAdminToken);
+        httpClient.mock()
+            .get(serviceUrl)
+            .reply(200, serviceDescriptor);
+
         const testsData = [
             { httpMethod: "GET", body: undefined },
             { httpMethod: "POST", body: { name: "test" } }
@@ -155,16 +160,12 @@ describe("Mapi Client", async () => {
                     send: async () => { return response; }
                 };
                 const authenticator = new StaticAuthenticator();
-                const settingsProviderMock = new StaticSettingsProvider({
-                    backendUrl: "https://contoso.developer.azure-api.net",
-                    managementApiAccessToken: "SharedAccessSignature integration&220001010000&000000000000000000000000000=="
-                });
 
-                const settings = await settingsProviderMock.getSettings();
+                const settings = await settingsProvider.getSettings();
 
                 const url = "/users";
-                const mockUrl = `${Utils.getBaseUrlWithMapiSuffix(settings[Constants.SettingNames.backendUrl])}${url}?api-version=${Constants.managementApiVersion}`;
-                const apiClient = new MapiClient(undefined, httpClient, authenticator, settingsProviderMock, new NoRetryStrategy(), new ConsoleLogger());
+                const mockUrl = `${settings[Constants.SettingNames.managementApiUrl]}${url}?api-version=${Constants.managementApiVersion}`;
+                const apiClient = new MapiClient(armService, httpClient, authenticator, settingsProvider, new NoRetryStrategy(), new ConsoleLogger());
 
                 const sendStub = stub(httpClient, "send").resolves(response);
 
