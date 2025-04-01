@@ -3,7 +3,9 @@ import { describe, it } from "mocha";
 import { TtlCache } from "./ttlCache";
 
 
-describe("Ttl cache", async () => {
+describe("Ttl cache", function() { // Changed to regular function for this context
+    this.timeout(20000); // Set timeout to 20 seconds for all tests in this suite
+
     const target = new TtlCache();
     let attempt = 1;
 

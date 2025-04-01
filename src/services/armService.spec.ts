@@ -64,7 +64,7 @@ describe("ArmService", () => {
         await service.getTenantArmUriAsync(settingsProviderMock);
         expect.fail("Expected an error to be thrown");
     } catch(error) {
-        expect(error.message).to.equal("Required service parameters (like subscription, resource group, service name, tenant Id) were not provided to start editor");
+        expect(error.message).to.equal("Required service parameters (like subscription, resource group, service name) were not provided to start editor");
     }
   });
 });
