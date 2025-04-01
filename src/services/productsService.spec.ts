@@ -143,7 +143,7 @@ describe("Product service", async () => {
         expect(apiClient.get.getCall(0).calledWith(expectedUrl)).to.be.true;
     });
 
-    it("Automaticaly add products prefix filter", async () => {
+    it("Automatically add products prefix filter", async () => {
         const apiClient: SinonStubbedInstance<IApiClient> = createStubInstance(DataApiClient);
         apiClient.get.resolves(new Page<Subscription>());
         const delegationService = new DelegationService(apiClient, settingsProvider);

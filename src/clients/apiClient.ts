@@ -55,7 +55,15 @@ export default abstract class ApiClient implements IApiClient {
 
         this.developerPortalType = settings[Constants.SettingNames.developerPortalType] || Constants.DeveloperPortalType.selfHosted;
 
-        const managementApiAccessToken = await this.authenticator.getAccessToken();
+        let managementApiAccessToken = await this.authenticator.getAccessTokenAsString();
+
+        if(!managementApiAccessToken) {
+            managementApiAccessToken = settings[Constants.SettingNames.managementApiAccessToken] || settings[Constants.SettingNames.armAccessToken];
+            if(managementApiAccessToken) {
+                const accessToken = AccessToken.parse(managementApiAccessToken);
+                await this.authenticator.setAccessToken(accessToken);
+            }
+        }
 
         if (!managementApiAccessToken) {
             console.warn(`Development mode: Please check token for ${this.environment} environment.`);
