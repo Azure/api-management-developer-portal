@@ -2825,5 +2825,50 @@
             "value": "application/json; charset=utf-8"
           }
         ]
+    },
+    "https://contoso.developer.azure-api.net/mapi/portalConfigs/default": {
+        "headers": [
+            {
+                "name": "content-type",
+                "value": "application/json; charset=utf-8"
+            }
+        ],
+        "statusCode": 200,
+        "statusText": "OK",
+        "body": {
+            "id": "/subscriptions/000/resourceGroups/000/providers/Microsoft.ApiManagement/service/contoso/portalConfigs/default",
+            "type": "Microsoft.ApiManagement/service/portalConfigs",
+            "name": "default",
+            "properties": {
+              "enableBasicAuth": true,
+              "signin": {
+                "require": false
+              },
+              "signup": {
+                "termsOfService": {
+                  "text": null,
+                  "enabled": false,
+                  "requireConsent": false
+                }
+              },
+              "delegation": {
+                "delegateRegistration": false,
+                "delegateSubscription": false,
+                "delegationUrl": null,
+                "validationKey": null,
+                "validationSecondaryKey": null
+              },
+              "cors": {
+                "allowedOrigins": [
+                  "http://localhost:8080/"
+                ]
+              },
+              "csp": {
+                "mode": "disabled",
+                "reportUri": [],
+                "allowedSources": []
+              }
+            }
+          }
     }
 }

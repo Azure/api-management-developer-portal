@@ -35,7 +35,8 @@ if (process.env.NODE_ENV === staticDataEnvironment || process.env.NODE_ENV === m
         "environment": "publishing",
         "backendUrl": "https://contoso.developer.azure-api.net",
         "managementApiAccessToken": "SharedAccessSignature&1&",
-        "useHipCaptcha": false
+        "useHipCaptcha": false,
+        "managementApiUrl": "https://contoso.developer.azure-api.net/mapi"
     });
 }
 else {
