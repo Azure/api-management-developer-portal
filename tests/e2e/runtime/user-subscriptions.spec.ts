@@ -7,17 +7,18 @@ import { User } from "../../mocks/collection/user";
 import { Subscription } from "../../mocks/collection/subscription";
 import { Templating } from "../../templating";
 import { Product } from "../../mocks/collection/product";
-import { TestUtils } from "../../testUtils";
 
 test.describe("user-resources", async () => {
-    test("user-can-subscribe-to-product-and-see-subscription-key @main", async function ({page, configuration, cleanUp, mockedData, productService, userService, testRunner})  {
+    test("user-can-subscribe-to-product-and-see-subscription-key", async function ({page, configuration, cleanUp, mockedData, productService, userService, testRunner})  {
         // data init
         var userInfo: User = User.getRandomUser("user1");
         var product1: Product = Product.getRandomProduct("product1");
         var subscription: Subscription = Subscription.getRandomSubscription("subscription1", userInfo, product1);
 
+        //mocked data for local runtime
+        mockedData.data = Templating.updateTemplate(configuration['isLocalRun'], JSON.stringify(mockedData.data), userInfo, product1, subscription);
+
         async function populateData(): Promise<any>{
-            mockedData.data = Templating.updateTemplate(configuration['isLocalRun'], JSON.stringify(mockedData.data), userInfo, product1, subscription);
             await userService.putUser("users/"+userInfo.publicId, userInfo.getRequestContract());
             cleanUp.push(async () => userService.deleteUser("users/"+userInfo.publicId, true));
 
@@ -53,6 +54,9 @@ test.describe("user-resources", async () => {
             await profileWidget.toggleSecondarySubscriptionKey(subscription.displayName);
             var subscriptionSecondaryKeyShown = await profileWidget.getSubscriptioSecondarynKey(subscription.displayName);
             expect(subscriptionSecondaryKeyHidden).not.toBe(subscriptionSecondaryKeyShown);
+
+            // check profile page screenshot with mocked data for profile page
+            expect(await page.screenshot({ type: "jpeg", fullPage: true, mask: await profileWidget.getListOfLocatorsToHide(), maskColor: '#ffffff'})).toMatchSnapshot({name: [configuration['isLocalRun'] === true ? 'self-hosted': 'deployed', 'user-resources.jpeg'],  threshold: 0.02});
         }
 
         await testRunner.runTest(validate, populateData, mockedData.data);

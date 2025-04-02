@@ -1,6 +1,6 @@
 {
     "products-page-published-products-visible-to-guests": {
-        "/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid/products":{
+        "/developer/products":{
             "statusCode": 200,
             "body": {
                 "value": [
@@ -12,7 +12,7 @@
         }
     },
     "user-sign-in-user-can-sign-in-with-basic-credentials": {
-        "/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid/identity":{
+        "/developer/identity":{
             "headers": [
                 {
                     "name": "ocp-apim-sas-token",
@@ -21,12 +21,13 @@
             ],
             "statusCode": 200,
             "body": {
-                "id": "test-contoso-com"
+                "id": "{{user1.publicId}}",
+                "provider": "Basic"
             }
         }
     },
     "user-sign-in-user-can-visit-his-profile-page": {
-        "/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid/identity":{
+        "/developer/identity":{
             "headers": [
                 {
                     "name": "ocp-apim-sas-token",
@@ -35,16 +36,24 @@
             ],
             "statusCode": 200,
             "body": {
-                "id": "{{user1.publicId}}"
+                "id": "{{user1.publicId}}",
+                "provider": "Basic"
             }
         },
-        "/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid/users/{{user1.publicId}}":{
+        "/developer/users/{{user1.publicId}}":{
             "statusCode": 200,
             "body": "object{{user1.responseContract}}"
+        },
+        "/developer/users/{{user1.publicId}}/subscriptions":{
+            "statusCode": 200,
+            "body": {
+                "value": [],
+                "count": 0
+            }
         }
     },
     "apis-page-published-apis-visible-to-guests": {
-        "/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid/apis":{
+        "/developer/apis":{
             "statusCode": 200,
             "body": {
                 "value": [
@@ -52,10 +61,26 @@
                 ],
                 "count": 1
             }
+        },
+        "/developer/tags":{
+            "statusCode": 200,
+            "body": {
+                "value": [
+                    {
+                        "id": "cars",
+                        "name": "Cars"
+                    },
+                    {
+                        "id": "pets",
+                        "name": "Pets"
+                    }
+                ],
+                "nextLink": null
+            }
         }
     },
     "user-resources-user-can-subscribe-to-product-and-see-subscription-key":{
-        "/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid/identity":{
+        "/developer/identity":{
             "headers": [
                 {
                     "name": "ocp-apim-sas-token",
@@ -64,18 +89,19 @@
             ],
             "statusCode": 200,
             "body": {
-                "id": "{{user1.publicId}}"
+                "id": "{{user1.publicId}}",
+                "provider": "Basic"
             }
         },
-        "/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid/users/{{user1.publicId}}":{
+        "/developer/users/{{user1.publicId}}":{
             "statusCode": 200,
             "body": "object{{user1.responseContract}}"
         },
-        "/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid/products/{{product1.productId}}":{
+        "/developer/users/{{user1.publicId}}/products/{{product1.productId}}":{
             "statusCode": 200,
             "body": "object{{product1.responseContract}}"
         },
-        "/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid/products":{
+        "/developer/users/{{user1.publicId}}/products":{
             "statusCode": 200,
             "body": {
                 "value": [
@@ -84,19 +110,19 @@
                 "count": 1
             }
         },
-        "/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid/products/{{product1.productId}}/apis":{
+        "/developer/users/{{user1.publicId}}/products/{{product1.productId}}/apis":{
             "statusCode": 200,
             "body": {
                 "value": [
-                    
+
                 ],
                 "count": 0
             }
         },
-        "/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid/tenant/settings":{
+        "/developer/delegation/settings":{
             "statusCode": 200,
             "body": {
-                
+
                 "id": "/settings/public",
                 "settings": {
                     "CustomPortalSettings.UserRegistrationTerms": null,
@@ -108,7 +134,7 @@
                 }
             }
         },
-        "/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid/users/{{user1.publicId}}/subscriptions":{
+        "/developer/users/{{user1.publicId}}/subscriptions":{
             "statusCode": 200,
             "body": {
                 "value": [
@@ -117,15 +143,15 @@
                 "count": 1
             }
         },
-        "/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid/users/{{user1.publicId}}/subscriptions/{{subscription1.id}}/listSecrets":{
+        "/developer/users/{{user1.publicId}}/subscriptions/{{subscription1.id}}/listSecrets":{
             "statusCode": 200,
             "body": {
                 "primaryKey": "primaryKey",
                 "secondaryKey": "secondaryKey"
             }
         },
-        "/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid/users/{{user1.publicId}}/subscriptions/.*":{
-            "methods": ["PUT", "OPTIONS"],
+        "/developer/users/{{user1.publicId}}/subscriptions/.*":{
+            "methods": ["PUT","POST","OPTIONS"],
             "statusCode": 201,
             "body": {}
         }
