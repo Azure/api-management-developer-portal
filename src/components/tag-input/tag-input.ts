@@ -7,7 +7,6 @@ import { Tag } from "../../models/tag";
 import { TagService } from "../../services/tagService";
 import { RouteHelper } from "../../routing/routeHelper";
 import { TagContract } from "../../contracts/tag";
-import { Utils } from "../../utils";
 
 @Component({
     selector: "tag-input",
@@ -76,10 +75,10 @@ export class TagInput {
 
         if (tags && tags.length > 0) {
             for (const tag of tags) {
-                const tagContract: TagContract = Utils.armifyContract("tags", {
+                const tagContract: TagContract = {
                     id: `/tags/${tag}`,
                     name: tag
-                });
+                };
                 tagItems.push(new Tag(tagContract));
 
             }

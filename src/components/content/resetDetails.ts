@@ -28,8 +28,8 @@ export class ResetDetailsWorkshop {
 
     public async reset(applyNewTheme: boolean = true): Promise<void> {
         try {
-            this.logger.trackEvent("Click: Reset website");
-            
+            this.logger.trackEvent("ResetWebsite", { message: "Click: Reset website" });
+
             localStorage.clear();
             this.offlineObjectStorage.discardChanges();
             this.viewManager.clearJourney();
@@ -40,13 +40,13 @@ export class ResetDetailsWorkshop {
             await this.provisioningService.cleanup();
             localStorage.setItem(isApplyNewThemeEnabledSetting, applyNewTheme ? "true" : "false");
 
-            this.logger.trackEvent("Success: Website reset");
+            this.logger.trackEvent("ResetWebsite", { message: "Success: Website reset" });
 
             window.location.reload();
-        } 
+        }
         catch (error) {
             this.viewManager.notifyError("Confirm", `Unable to reset website. Please try again later.`);
-            this.logger.trackError(error);
+            this.logger.trackError(error, { message: "Unable to reset website" });
         }
     }
 }

@@ -18,14 +18,13 @@ export class AuthorizationServer {
         if (!contract) {
             return;
         }
-
-        this.name = contract.name;
-        this.displayName = contract.displayName;
+        this.name = contract.id;
+        this.displayName = contract.name;
         this.description = contract.description;
         this.clientId = contract.clientId;
         this.authorizationEndpoint = contract.authorizationEndpoint;
         this.tokenEndpoint = contract.tokenEndpoint;
-        this.scopes = contract.scopes;
+        this.scopes = contract.defaultScope?.split(" ") || [];
         this.useInApiDocumentation = contract.useInApiDocumentation;
         this.useInTestConsole = contract.useInTestConsole;
 
@@ -34,15 +33,12 @@ export class AuthorizationServer {
         }
 
         this.grantTypes = this.convertGrantTypes(contract.grantTypes);
-
         this.SetDisplayedGrantTypes();
         this.SetDisplayedScopes();
     }
-
     public SetDisplayedGrantTypes(): void {
         this.displayedGrantTypes = this.grantTypes.join(", ").toString();
     }
-    
     public SetDisplayedScopes(): void {
         this.displayedScopes = this.scopes?.join(", ").toString();
     }

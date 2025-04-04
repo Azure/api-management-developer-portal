@@ -6,6 +6,11 @@ const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const runtimeConfig = require("./webpack.runtime");
 
 
+const publisherRuntimeConfig = merge(runtimeConfig, {
+    entry: { "styles/theme": ["./src/themes/website/styles/styles.scss"] },
+    output: { "path": path.resolve(__dirname, "dist/publisher/assets") }
+});
+
 const publisherConfig = {
     mode: "development",
     target: "node",
@@ -15,7 +20,7 @@ const publisherConfig = {
     },
     entry: {
         "index": ["./src/startup.publish.ts"]
-    },    
+    },
     output: {
         filename: "./[name].js",
         path: path.resolve(__dirname, "dist/publisher")
@@ -84,11 +89,6 @@ const publisherConfig = {
         }
     }
 };
-
-const publisherRuntimeConfig = merge(runtimeConfig, {
-    entry: { "styles/theme": `./src/themes/website/styles/styles.scss` },
-    output: { "path": path.resolve(__dirname, "dist/publisher/assets") }
-});
 
 module.exports = {
     default: [publisherConfig, publisherRuntimeConfig],

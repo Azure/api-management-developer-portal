@@ -11,14 +11,20 @@ import { ComponentBinder } from "@paperbits/common/components";
 import { ReactModule } from "@paperbits/react/react.module";
 import { LeftPanel } from "./admin/leftPanel";
 import { RightPanel } from "./admin/rightPanel";
+import { SelfHostedArmAuthenticator } from "./authentication/armAuthenticator";
+import { MapiClient } from "./clients/mapiClient";
 
 
 /* Initializing dependency injection container */
 const injector = new InversifyInjector();
 injector.bindToCollection("autostart", SessionExpirationErrorHandler);
+
+injector.bindSingleton("authenticator", SelfHostedArmAuthenticator);
 injector.bindModule(new CoreDesignModule());
 injector.bindModule(new StylesDesignModule());
 injector.bindModule(new FormsDesignModule());
+
+injector.bindSingleton("apiClient", MapiClient);
 injector.bindModule(new ApimDesignModule());
 injector.bindModule(new ReactModule());
 injector.bindModule(new OfflineModule({ autosave: false }));

@@ -27,7 +27,7 @@ export class RuntimeConfigPublisher implements IPublisher {
             this.logger?.trackError(error, { message: `Failed to get setting: ${isRedesignEnabledSetting} - RuntimeConfigPublisher` });
         }
 
-        this.logger.trackEvent(WellKnownEventTypes.Publishing, { message: `Preview components ${isRedesignEnabled ? 'enabled' : 'disabled'}.`});
+        this.logger.trackEvent(WellKnownEventTypes.Publishing, { message: `Preview components ${isRedesignEnabled ? "enabled" : "disabled"}.`});
 
         const configuration = this.runtimeConfigBuilder.build();
         const content = Utils.stringToUnit8Array(JSON.stringify(configuration));

@@ -9,8 +9,8 @@ import { OperationDetailsViewModelBinder } from "./operationDetailsViewModelBind
 
 export class OperationDetailsPublishModule implements IInjectorModule {
     public register(injector: IInjector): void {
-        injector.bindToCollection("modelBinders", OperationDetailsModelBinder);
-        injector.bindToCollection("viewModelBinders", OperationDetailsViewModelBinder);
+        injector.bindSingleton("operationDetailsModelBinder", OperationDetailsModelBinder);
+        injector.bindSingleton("operationDetailsViewModelBinder", OperationDetailsViewModelBinder);
 
         const widgetService = injector.resolve<IWidgetService>("widgetService");
 

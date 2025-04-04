@@ -13,7 +13,6 @@ import { ApiService } from "../../../../../services/apiService";
 import { OAuthService } from "../../../../../services/oauthService";
 import { UsersService } from "../../../../../services/usersService";
 import { ProductService } from "../../../../../services/productService";
-import { TenantService } from "../../../../../services/tenantService";
 import { RouteHelper } from "../../../../../routing/routeHelper";
 import { MarkdownProcessor } from "../../../../utils/react/MarkdownProcessor";
 import { getRequestUrl, scrollToOperation } from "./utils";
@@ -26,7 +25,6 @@ export const OperationDetailsWebsocket = ({
     usersService,
     productService,
     oauthService,
-    tenantService,
     routeHelper,
     settingsProvider,
     sessionManager,
@@ -41,7 +39,6 @@ export const OperationDetailsWebsocket = ({
     usersService: UsersService,
     productService: ProductService,
     oauthService: OAuthService,
-    tenantService: TenantService,
     routeHelper: RouteHelper,
     settingsProvider: ISettingsProvider,
     sessionManager: SessionManager,
@@ -111,7 +108,7 @@ export const OperationDetailsWebsocket = ({
     }
 
     const loadGatewayInfo = async (): Promise<string[]> => {
-        return await apiService.getApiHostnames(apiName, includeAllHostnames);
+        return await apiService.getApiHostnames(apiName);
     }
 
     return (
@@ -133,7 +130,6 @@ export const OperationDetailsWebsocket = ({
                             usersService={usersService}
                             productService={productService}
                             oauthService={oauthService}
-                            tenantService={tenantService}
                             routeHelper={routeHelper}
                             settingsProvider={settingsProvider}
                             sessionManager={sessionManager}

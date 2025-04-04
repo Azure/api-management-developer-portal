@@ -81,7 +81,7 @@ export class AadServiceV2 implements IAadService {
             throw new Error(`Parameter "signinTenant" not specified.`);
         }
 
-        const authorityUrl = `https://${authority}/${signinTenant}`;
+        const authorityUrl = AadServiceV2.getAuthorityUrl(Constants.SettingNames.aadClientConfig, authority, signinTenant);
         const metadataResponse = await this.httpClient.send({ url: `${authorityUrl}/.well-known/openid-configuration` });
         const metadata = metadataResponse.toText();
 
@@ -108,6 +108,7 @@ export class AadServiceV2 implements IAadService {
 
         if (response.idToken) {
             await this.exchangeIdToken(response.idToken, Constants.IdentityProviders.aad, eventTypes.aadLogin);
+            sessionStorage.setItem(Constants.loginClientConfigType, Constants.SettingNames.aadClientConfig);
             this.logger.trackEvent(eventTypes.aadLogin, { message: "Login successful." });
         }
     }
@@ -115,36 +116,36 @@ export class AadServiceV2 implements IAadService {
     /**
      * Runc Azure Active Directory B2C user flow.
      * @param {string} clientId - Azure Active Directory B2C client ID.
-     * @param {string} tenant - Tenant, e.g. `contoso.b2clogin.com`.
-     * @param {string} instance - Instance, e.g. `contoso.onmicrosoft.com`.
+     * @param {string} authority - Tenant, e.g. `contoso.b2clogin.com`.
+     * @param {string} signinTenant - Instance, e.g. `contoso.onmicrosoft.com`.
      * @param {string} userFlow - User flow, e.g. `B2C_1_signinsignup`.
      * @param {string} replyUrl - Reply URL, e.g. `https://contoso.com/signin`.
      */
-    public async runAadB2CUserFlow(clientId: string, tenant: string, instance: string, userFlow: string, replyUrl?: string): Promise<void> {
+    public async runAadB2CUserFlow(clientId: string, authority: string, signinTenant: string, userFlow: string, replyUrl?: string): Promise<void> {
         console.log("Msal v2");
         if (!clientId) {
             throw new Error(`Parameter "clientId" not specified.`);
         }
 
-        if (!tenant) {
-            throw new Error(`Parameter "tenant" not specified.`);
+        if (!authority) {
+            throw new Error(`Parameter "authority" not specified.`);
         }
 
-        if (!instance) {
-            throw new Error(`Parameter "instance" not specified.`);
+        if (!signinTenant) {
+            throw new Error(`Parameter "signinTenant" not specified.`);
         }
 
         if (!userFlow) {
             throw new Error(`Parameter "userFlow" not specified.`);
         }
 
-        const auth = `https://${tenant}/tfp/${instance}/${userFlow}`;
+        const auth = AadServiceV2.getAuthorityUrl(Constants.SettingNames.aadB2CClientConfig, authority, signinTenant, userFlow);
 
         const msalConfig: msal.Configuration = {
             auth: {
                 clientId: clientId,
                 authority: auth,
-                knownAuthorities: [tenant]
+                knownAuthorities: [authority]
             }
         };
 
@@ -162,11 +163,21 @@ export class AadServiceV2 implements IAadService {
 
         if (response.idToken) {
             await this.exchangeIdToken(response.idToken, Constants.IdentityProviders.aadB2C, eventTypes.aadB2CLogin);
+            sessionStorage.setItem(Constants.loginClientConfigType, Constants.SettingNames.aadB2CClientConfig);
             this.logger.trackEvent(eventTypes.aadB2CLogin, { message: "Login successful." });
         }
         else {
             this.logger.trackEvent(eventTypes.aadB2CLogin, { message: "AadB2C Login failed: ID token not found in response." });
         }
+    }
+
+    public static getAuthorityUrl(loginClientConfig: string, authority: string, signinTenant: string, userFlow?: string) {
+        if (loginClientConfig === Constants.SettingNames.aadClientConfig) {
+            return `https://${authority}/${signinTenant}`;
+        } else if (loginClientConfig === Constants.SettingNames.aadB2CClientConfig) {
+            return `https://${authority}/tfp/${signinTenant}/${userFlow}`;
+        }
+        throw new Error(`Invalid loginClientConfig: ${loginClientConfig}`);
     }
 
     /**

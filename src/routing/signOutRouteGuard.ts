@@ -1,19 +1,17 @@
 import { RouteGuard, Route } from "@paperbits/common/routing";
 import { IAuthenticator } from "../authentication";
 import * as Constants from "../constants";
-import { MapiClient } from "../services/mapiClient";
+import { IApiClient } from "../clients";
 import { Identity } from "../contracts/identity";
-import { TenantService } from "../services/tenantService";
-import { BackendService } from "../services/backendService";
 import { DelegationAction, DelegationParameters } from "../contracts/tenantSettings";
 import { clear } from "idb-keyval";
+import { IDelegationService } from "../services/IDelegationService";
 
 export class SignOutRouteGuard implements RouteGuard {
     constructor(
-        private readonly mapiClient: MapiClient,
+        private readonly apiClient: IApiClient,
         private readonly authenticator: IAuthenticator,
-        private readonly tenantService: TenantService,
-        private readonly backendService: BackendService
+        private readonly delegationService: IDelegationService
     ) { }
 
     public async canActivate(route: Route): Promise<boolean> {
@@ -24,19 +22,19 @@ export class SignOutRouteGuard implements RouteGuard {
         const isSignOutAfterClose = sessionStorage.getItem(Constants.closeAccount);
 
         if (isSignOutAfterClose !== "true") {
-            const isDelegationEnabled = await this.tenantService.isDelegationEnabled();
+            const isDelegationEnabled = await this.delegationService.isUserRegistrationDelegationEnabled();
 
             if (isDelegationEnabled) {
                 const token = await this.authenticator.getAccessTokenAsString();
 
                 if (token) {
                     try {
-                        const identity = await this.mapiClient.get<Identity>("/identity", [await this.mapiClient.getPortalHeader("delegationSignOut")]);
+                        const identity = await this.apiClient.get<Identity>("/identity", [await this.apiClient.getPortalHeader("delegationSignOut")]);
 
                         if (identity) {
                             const delegationParam = {};
-                            delegationParam[DelegationParameters.UserId] =  identity.id;
-                            const redirectUrl = await this.backendService.getDelegationString(DelegationAction.signOut, delegationParam);
+                            delegationParam[DelegationParameters.UserId] = identity.id;
+                            const redirectUrl = await this.delegationService.getUserDelegationUrl(identity.id, DelegationAction.signOut, delegationParam);
                             if (redirectUrl) {
                                 this.authenticator.clearAccessToken();
                                 await clear(); // clear cache in indexedDB

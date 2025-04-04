@@ -35,9 +35,8 @@ import { KnownMimeTypes } from "../../../../../models/knownMimeTypes";
 import { ApiService } from "../../../../../services/apiService";
 import { OAuthService } from "../../../../../services/oauthService";
 import { ProductService } from "../../../../../services/productService";
-import { TenantService } from "../../../../../services/tenantService";
 import { UsersService } from "../../../../../services/usersService";
-import { RequestBodyType, ServiceSkuName, TypeOfApi } from "../../../../../constants";
+import { RequestBodyType, TypeOfApi } from "../../../../../constants";
 import { ConsoleAuthorization, ProductSubscriptionKeys } from "./operation-console/ConsoleAuthorization";
 import { ConsoleBody } from "./operation-console/ConsoleBody";
 import { ConsoleHeaders } from "./operation-console/ConsoleHeaders";
@@ -57,7 +56,6 @@ type OperationConsoleProps = {
     usersService: UsersService;
     productService: ProductService;
     oauthService: OAuthService;
-    tenantService: TenantService;
     routeHelper: RouteHelper;
     settingsProvider: ISettingsProvider;
     sessionManager: SessionManager;
@@ -75,7 +73,6 @@ export const OperationConsole = ({
     usersService,
     productService,
     oauthService,
-    tenantService,
     routeHelper,
     settingsProvider,
     sessionManager,
@@ -85,7 +82,6 @@ export const OperationConsole = ({
     const [authorizationServers, setAuthorizationServers] = useState<AuthorizationServer[]>([]);
     const [products, setProducts] = useState<ProductSubscriptionKeys[]>([]);
     const [selectedSubscriptionKey, setSelectedSubscriptionKey] = useState<string>(null);
-    const [isConsumptionMode, setIsConsumptionMode] = useState<boolean>(false);
     const [backendUrl, setBackendUrl] = useState<string>("");
 
     const consoleOperation = useRef(new ConsoleOperation(api, operation));
@@ -110,7 +106,6 @@ export const OperationConsole = ({
                     setSelectedSubscriptionKey(products[0].subscriptionKeys[0]?.value);
                 }
             }),
-            getSkuName().then(skuName => setIsConsumptionMode(skuName === ServiceSkuName.Consumption)),
             getBackendUrl(settingsProvider).then(url => setBackendUrl(url))
         ])
         .catch(error => new Error(`Unable to load the console details. Error: ${error.message}`))
@@ -120,13 +115,13 @@ export const OperationConsole = ({
     }, [api, operation, consoleOperation]);
 
     useEffect(() => {
-        if (!isConsumptionMode && api.type !== TypeOfApi.webSocket) {
+        if (api.type !== TypeOfApi.webSocket) {
             if (!consoleOperation.current.request.headers()?.some(header => header.name() === KnownHttpHeaders.CacheControl)) {
                 consoleOperation.current.setHeader(KnownHttpHeaders.CacheControl, "no-cache", "string", "Disable caching.");
             }
         }
         rerender();
-    }, [api, isConsumptionMode, consoleOperation, rerender]);
+    }, [api, consoleOperation, rerender]);
 
     useEffect(() => {
         if (api.type === TypeOfApi.soap) setSoapHeaders();
@@ -135,10 +130,6 @@ export const OperationConsole = ({
     useEffect(() => {
         api.subscriptionRequired && setSubscriptionKeyHeader(selectedSubscriptionKey || "");
     }, [selectedSubscriptionKey]);
-
-    const getSkuName = async (): Promise<string> => {
-        return await tenantService.getServiceSkuName();
-    }
 
     const setSoapHeaders = (): void => {
         const representation = consoleOperation.current.request.representations?.[0];

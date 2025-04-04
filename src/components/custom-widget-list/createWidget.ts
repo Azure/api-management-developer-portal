@@ -14,6 +14,7 @@ import template from "./createWidget.html";
 import fallbackUi from "!!raw-loader!./fallbackUi.html";
 import { KnockoutComponentBinder } from "@paperbits/core/ko/knockoutComponentBinder";
 import { CustomWidgetEditorViewModel, CustomWidgetViewModel, CustomWidgetViewModelBinder } from "../custom-widget/ko";
+import { customWidgetPrefixName } from "../custom-widget/ko/utils";
 
 const techToName: Record<ScaffoldTech, string> = {
     typescript: "TypeScript",
@@ -102,7 +103,7 @@ export class CreateWidget {
         await this.blobStorage.uploadBlob(`/${dataPath}index.html`, fallbackUiUnit8);
         await this.blobStorage.uploadBlob(`/${dataPath}editor.html`, fallbackUiUnit8);
 
-        this.widgetService.registerWidget(name, {
+        this.widgetService.registerWidget(customWidgetPrefixName(name), {
             modelDefinition: CustomWidgetModel,
             componentBinder: KnockoutComponentBinder,
             componentDefinition: CustomWidgetViewModel,
@@ -110,7 +111,7 @@ export class CreateWidget {
             viewModelBinder: CustomWidgetViewModelBinder
         });
 
-        this.widgetService.registerWidgetEditor(name, {
+        this.widgetService.registerWidgetEditor(customWidgetPrefixName(name), {
             displayName: displayName,
             category: widgetCategory,
             iconClass: "widget-icon widget-icon-component",
@@ -128,7 +129,7 @@ export class CreateWidget {
     public async deleteWidget(): Promise<void> {
         if (!this.config) return alert("Didn't found config to delete.")
 
-        if (!confirm(`This operation is in-reversible, are you sure you want to delete custom widget '${this.config.displayName}'?`)) return;
+        if (!confirm(`This operation is in-reversible, are you sure you want to delete custom widget '${this.config.displayName}' (ID: ${this.config.name})?`)) return;
 
         const blobsToDelete = await this.blobStorage.listBlobs(buildBlobDataPath(this.config.name));
         blobsToDelete.push(buildBlobConfigPath(this.config.name));
@@ -140,10 +141,10 @@ export class CreateWidget {
     }
 
     public logCreateWidget(config: { name: string, displayName: string, technology: ScaffoldTech }): void {
-        this.logger.trackEvent("CustomWidgetCreate", config);
+        this.logger.trackEvent("CustomWidgetCreate", { message: `Custom widget ${config.name} created. Config: ${JSON.stringify(config)}` });
     }
 
     public logDeleteWidget(config: { name: string, displayName: string, technology: ScaffoldTech }): void {
-        this.logger.trackEvent("CustomWidgetDelete", config);
+        this.logger.trackEvent("CustomWidgetDelete", { message: `Deletion of Custom widget ${config.name}. Config: ${JSON.stringify(config)}` });
     }
 }

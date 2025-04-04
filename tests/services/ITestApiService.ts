@@ -1,7 +1,7 @@
-import { ApiContract } from "../../src/contracts/api";
+import { ApiContract as SmapiApiContract } from "../models/apiContract";
 export interface ITestApiService {
     
-    putApi(apiId: string, apiContract: ApiContract): Promise<ApiContract> ;
+    putApi(apiId: string, apiContract: SmapiApiContract): Promise<SmapiApiContract> ;
 
     putApiProduct(productId: string, apiId: string): Promise<any> ;
 

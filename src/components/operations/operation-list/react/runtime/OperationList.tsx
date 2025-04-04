@@ -99,7 +99,7 @@ export const OperationList = ({
 
                     setHasNextPage(!!loadedOperations.nextLink);
 
-                    if (allowSelection && loadedOperations.count > 0) {
+                    if (allowSelection && loadedOperations.value?.length > 0) {
                         if (!operationName) {
                             selectOperation(loadedOperations.value[0].items[0]);
                         } else {
@@ -119,7 +119,7 @@ export const OperationList = ({
                     }
                     setHasNextPage(!!loadedOperations.nextLink);
 
-                    if (allowSelection && loadedOperations.count > 0) {
+                    if (allowSelection && loadedOperations.value?.length > 0) {
                         if (!operationName) {
                             selectOperation(loadedOperations.value[0]);
                         } else {

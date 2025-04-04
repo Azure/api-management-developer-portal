@@ -15,7 +15,7 @@ export class SigninViewModel extends React.Component {
 
     public render(): JSX.Element {
         return this.state.isRedesignEnabled
-            ? <fui-signin-runtime props={JSON.stringify(this.state.runtimeConfig)} ></fui-signin-runtime>
+            ? <fui-signin-runtime props={JSON.stringify(this.state.runtimeConfig)}></fui-signin-runtime>
             : <signin-runtime params={JSON.stringify(this.state.runtimeConfig)}></signin-runtime>;
     }
 }

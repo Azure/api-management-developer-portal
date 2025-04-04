@@ -73,9 +73,9 @@ export class Signin {
     @OnMounted()
     public async initialize(): Promise<void> {
         try {
-            const userId = await this.usersService.getCurrentUserId();
+            const isUserSignedIn = await this.usersService.isUserSignedIn();
 
-            if (userId) {
+            if (isUserSignedIn) {
                 this.navigateToHome();
             }
             else {

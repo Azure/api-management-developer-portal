@@ -2,14 +2,13 @@ import { KnownHttpHeaders } from "./../models/knownHttpHeaders";
 import { AccessToken } from "./../authentication/accessToken";
 import * as Constants from "./../constants";
 import { Router } from "@paperbits/common/routing";
-import { HttpHeader, HttpClient, HttpResponse, HttpMethod } from "@paperbits/common/http";
-import { ISettingsProvider } from "@paperbits/common/configuration";
+import { HttpHeader, HttpResponse, HttpMethod } from "@paperbits/common/http";
 import { IAuthenticator } from "../authentication";
-import { MapiClient } from "./mapiClient";
+import { IApiClient } from "../clients";
 import { User } from "../models/user";
 import { Utils } from "../utils";
 import { Identity } from "../contracts/identity";
-import { UserContract, UserPropertiesContract, } from "../contracts/user";
+import { UserContract } from "../contracts/user";
 import { MapiSignupRequest } from "../contracts/signupRequest";
 import { MapiError } from "../errors/mapiError";
 import { KnownMimeTypes } from "../models/knownMimeTypes";
@@ -22,11 +21,9 @@ import { eventTypes } from "../logging/clientLogger";
  */
 export class UsersService {
     constructor(
-        private readonly mapiClient: MapiClient,
+        private readonly apiClient: IApiClient,
         private readonly router: Router,
         private readonly authenticator: IAuthenticator,
-        private readonly httpClient: HttpClient,
-        private readonly settingsProvider: ISettingsProvider,
         private readonly logger: Logger
     ) { }
 
@@ -53,19 +50,14 @@ export class UsersService {
      * @returns {string} User identifier.
      */
     public async authenticate(credentials: string): Promise<string> {
-        let managementApiUrl = await this.settingsProvider.getSetting<string>(Constants.SettingNames.managementApiUrl);
-        managementApiUrl = Utils.ensureUrlArmified(managementApiUrl);
-
-        const request = {
-            url: `${managementApiUrl}/identity?api-version=${Constants.managementApiVersion}`,
-            method: "GET",
-            headers: [
+        const response = await this.apiClient.send<Identity>(
+            "/identity",
+            HttpMethod.get,
+            [
                 { name: KnownHttpHeaders.Authorization, value: credentials },
-                await this.mapiClient.getPortalHeader("authenticate")
+                await this.apiClient.getPortalHeader("authenticate")
             ]
-        };
-
-        const response = await this.httpClient.send<Identity>(request);
+        );
 
         if (response.statusCode === 400) {
             throw new UnauthorizedError("This authentication method has been disabled by website administrator.");
@@ -105,35 +97,33 @@ export class UsersService {
         const ticket = parameters.get("ticket");
         const ticketId = parameters.get("ticketid");
         const identity = parameters.get("identity");
-        const requestUrl = `/users/${userId}/identities/Basic/${identity}?appType=${Constants.AppType}`;
+        const requestUrl = `/users/${userId}/identities/Basic/${identity}`;
         const token = `Ticket id="${ticketId}",ticket="${ticket}"`;
 
-        let managementApiUrl = await this.settingsProvider.getSetting<string>("managementApiUrl");
-        managementApiUrl = Utils.ensureUrlArmified(managementApiUrl);
-
-        const response = await this.httpClient.send({
-            url: `${managementApiUrl}${requestUrl}&api-version=${Constants.managementApiVersion}`,
-            method: "PUT",
-            headers: [{ name: KnownHttpHeaders.Authorization, value: token }, await this.mapiClient.getPortalHeader("activateUser")]
-        });
+        const response = await this.apiClient.send(
+            `${requestUrl}`,
+            HttpMethod.put,
+            [{ name: KnownHttpHeaders.Authorization, value: token }, Utils.getIsUserResourceHeader(), await this.apiClient.getPortalHeader("activateUser")]
+        );
 
         await this.getTokenFromResponse(response);
     }
 
     public async updatePassword(userId: string, newPassword: string, token: string): Promise<void> {
         const headers = [];
-
         if (token) {
-            headers.push({ name: KnownHttpHeaders.Authorization, value: token }, await this.mapiClient.getPortalHeader("updatePassword"));
+            headers.push(
+                { name: KnownHttpHeaders.Authorization, value: token },
+                Utils.getIsUserResourceHeader(),
+                await this.apiClient.getPortalHeader("updatePassword"),
+                { name: KnownHttpHeaders.IfMatch, value: "*" });
         }
 
         const payload = {
-            properties: {
-                password: newPassword
-            }
+            password: newPassword
         };
 
-        await this.mapiClient.patch(`${userId}?appType=${Constants.AppType}`, headers, payload);
+        await this.apiClient.patch(userId, headers, payload);
     }
 
     /**
@@ -147,20 +137,40 @@ export class UsersService {
      * Returns currently authenticated user ID.
      */
     public async getCurrentUserId(): Promise<string> {
-        const token = await this.authenticator.getAccessTokenAsString();
+        try {
+            const identityId = await this.getCurrentUserIdentityId();
 
+            if (!identityId) {
+                return null;
+            }
+
+            return `/users/${identityId}`;
+        }
+        catch (error) {
+            return null;
+        }
+    }
+
+    /**
+     * Returns currently authenticated user ID with the provider.
+     */
+    public async getCurrentUserIdWithProvider(): Promise<Identity> {
+        const token = await this.authenticator.getAccessTokenAsString();
         if (!token) {
             return null;
         }
 
         try {
-            const identity = await this.mapiClient.get<Identity>("/identity", [await this.mapiClient.getPortalHeader("getCurrentUserId")]);
+            const identity = await this.apiClient.get<Identity>("/identity", [await this.apiClient.getPortalHeader("getCurrentUserId")]);
 
             if (!identity || !identity.id) {
                 return null;
             }
 
-            return `/users/${identity.id}`;
+            return {
+                id: `/users/${identity.id}`,
+                provider: identity.provider
+            }
         }
         catch (error) {
             return null;
@@ -185,7 +195,7 @@ export class UsersService {
                 return null;
             }
 
-            const user = await this.mapiClient.get<UserContract>(userId, [await this.mapiClient.getPortalHeader("getCurrentUser")]);
+            const user = await this.apiClient.get<UserContract>(userId, [Utils.getIsUserResourceHeader(), await this.apiClient.getPortalHeader("getCurrentUser")]);
 
             return new User(user);
         }
@@ -200,15 +210,14 @@ export class UsersService {
      * @param updateUserData
      */
     public async updateUser(userId: string, firstName: string, lastName: string): Promise<User> {
-        const headers: HttpHeader[] = [{ name: "If-Match", value: "*" }, await this.mapiClient.getPortalHeader("updateUser")];
+        const headers: HttpHeader[] = [{ name: "If-Match", value: "*" }, await this.apiClient.getPortalHeader("updateUser")];
         const payload = {
-            properties: {
-                firstName: firstName,
-                lastName: lastName
-            }
+            firstName: firstName,
+            lastName: lastName
         };
-        await this.mapiClient.patch<string>(`${userId}?appType=${Constants.AppType}`, headers, payload);
-        const user = await this.mapiClient.get<UserContract>(userId);
+        const resouce = `users/${userId}`;
+        await this.apiClient.patch<string>(resouce, headers, payload);
+        const user = await this.apiClient.get<UserContract>(resouce);
 
         if (user) {
             return new User(user);
@@ -229,9 +238,7 @@ export class UsersService {
                 value: "*"
             };
 
-            const query = Utils.addQueryParameter(userId, `deleteSubscriptions=true&notify=true&appType=${Constants.AppType}`);
-
-            await this.mapiClient.delete<string>(query, [header, await this.mapiClient.getPortalHeader("deleteUser")]);
+            await this.apiClient.delete<string>(`users/${userId}`, [header, await this.apiClient.getPortalHeader("deleteUser")]);
 
             sessionStorage.setItem(Constants.closeAccount, "true");
             this.signOut();
@@ -267,56 +274,53 @@ export class UsersService {
     }
 
     public async createSignupRequest(signupRequest: MapiSignupRequest): Promise<void> {
-        await this.mapiClient.post("/users", [await this.mapiClient.getPortalHeader("createSignupRequest")], signupRequest);
+        await this.apiClient.post("/users", [await this.apiClient.getPortalHeader("createSignupRequest"), Utils.getIsUserResourceHeader()], signupRequest);
     }
 
     public async createResetPasswordRequest(email: string): Promise<void> {
-        const payload = { to: email, appType: Constants.AppType };
-        await this.mapiClient.post(`/confirmations/password?appType=${Constants.AppType}`, [await this.mapiClient.getPortalHeader("createResetPasswordRequest")], payload);
+        const payload = { to: email };
+        await this.apiClient.post(`/confirmations/password`, [await this.apiClient.getPortalHeader("createResetPasswordRequest")], payload);
     }
 
     public async changePassword(userId: string, newPassword: string, token: string): Promise<void> {
         const headers = [
             { name: KnownHttpHeaders.Authorization, value: token },
             { name: KnownHttpHeaders.IfMatch, value: "*" },
-            await this.mapiClient.getPortalHeader("changePassword")
+            await this.apiClient.getPortalHeader("changePassword"),
+            Utils.getIsUserResourceHeader()
         ];
 
         const payload = {
-            properties: {
-                password: newPassword
-            }
+            password: newPassword
         };
 
-        await this.mapiClient.patch(`${userId}?appType=${Constants.AppType}`, headers, payload);
+        await this.apiClient.patch(userId, headers, payload);
     }
 
     public async createUserWithOAuth(provider: string, idToken: string, firstName: string, lastName: string, email: string): Promise<void> {
-        let managementApiUrl = await this.settingsProvider.getSetting<string>("managementApiUrl");
-        managementApiUrl = Utils.ensureUrlArmified(managementApiUrl);
         const jwtToken = Utils.parseJwt(idToken);
 
-        const user: UserPropertiesContract = {
+        const user: UserContract = {
             firstName: firstName,
             lastName: lastName,
             email: email,
             identities: [{
                 id: jwtToken.oid,
                 provider: provider
-            }],
-            appType: Constants.AppType
+            }]
         };
 
-        const response = await this.httpClient.send({
-            url: `${managementApiUrl}/users?api-version=${Constants.managementApiVersion}`,
-            method: HttpMethod.post,
-            headers: [
+        const response = await this.apiClient.send(
+            `/users`,
+            HttpMethod.post,
+            [
                 { name: KnownHttpHeaders.ContentType, value: KnownMimeTypes.Json },
                 { name: KnownHttpHeaders.Authorization, value: `${provider} id_token="${idToken}"` },
-                await this.mapiClient.getPortalHeader("createUserWithOAuth")
+                await this.apiClient.getPortalHeader("createUserWithOAuth"),
+                Utils.getIsUserResourceHeader()
             ],
-            body: JSON.stringify(user)
-        });
+            JSON.stringify(user)
+        );
 
         await this.getTokenFromResponse(response);
         this.logger.trackEvent(eventTypes.trace, { message: "User successfully created with OAuth." });
@@ -336,5 +340,21 @@ export class UsersService {
 
         const accessToken = AccessToken.parse(sasTokenHeader.value);
         await this.authenticator.setAccessToken(accessToken);
+    }
+
+    private async getCurrentUserIdentityId(): Promise<string | null> {
+        const token = await this.authenticator.getAccessTokenAsString();
+
+        if (!token) {
+            return null;
+        }
+
+        try {
+            const result = await this.apiClient.get<Identity>("/identity", [await this.apiClient.getPortalHeader("getCurrentUserId")]);
+            return result?.id;
+        }
+        catch (error) {
+            return null;
+        }
     }
 }

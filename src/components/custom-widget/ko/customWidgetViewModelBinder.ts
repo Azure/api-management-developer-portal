@@ -6,12 +6,14 @@ import { MapiBlobStorage } from "../../../persistence";
 import { CustomWidgetModel } from "../customWidgetModel";
 import { CustomWidgetViewModel } from "./customWidgetViewModel";
 import { buildWidgetSource } from "./utils";
+import { Logger } from "@paperbits/common/logging";
 
 export class CustomWidgetViewModelBinder implements ViewModelBinder<CustomWidgetModel, CustomWidgetViewModel>  {
     constructor(
         private readonly styleCompiler: StyleCompiler,
         private readonly settingsProvider: ISettingsProvider,
         private readonly blobStorage: MapiBlobStorage,
+        private readonly logger: Logger
     ) { }
 
     public stateToInstance(state: WidgetState, componentInstance: CustomWidgetViewModel): void {
@@ -21,9 +23,8 @@ export class CustomWidgetViewModelBinder implements ViewModelBinder<CustomWidget
 
     public async modelToState(model: CustomWidgetModel, state: WidgetState): Promise<void> {
         const config: Record<string, unknown> = {}
-        const environment = await this.settingsProvider.getSetting<Environment>("environment");
-        const widgetSource = await buildWidgetSource(this.blobStorage, model, environment, "index.html");
-        config.environment = environment;
+        const widgetSource = await buildWidgetSource(this.blobStorage, model, this.settingsProvider, "index.html", this.logger);
+        config.environment = await this.settingsProvider.getSetting<Environment>("environment");
         config.src = widgetSource.src;
         config.instanceId = model.instanceId;
         config.name = model.name;

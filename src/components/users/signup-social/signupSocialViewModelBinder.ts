@@ -19,8 +19,8 @@ export class SignupSocialViewModelBinder implements ViewModelBinder<SignupSocial
     ) { }
 
     public async getTermsOfService(): Promise<TermsOfService> {
-        const identitySetting = await this.identityService.getIdentitySetting();
-        return identitySetting.properties.termsOfService;
+        const termsOfService = await this.identityService.getTermsOfService();
+        return termsOfService;
     }
 
     public stateToInstance(state: WidgetState, componentInstance: SignUpSocialViewModel): void {
@@ -45,7 +45,7 @@ export class SignupSocialViewModelBinder implements ViewModelBinder<SignupSocial
         const settings = await this.settingsProvider.getSettings();
         state.mode = settings["environment"];
 
-        const termsOfService = await this.getTermsOfService();
+        const termsOfService = await this.identityService.getTermsOfService();
         state.termsOfUse = termsOfService.text;
         state.isConsentRequired = termsOfService.consentRequired;
         state.termsEnabled = termsOfService.enabled;

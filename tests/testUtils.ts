@@ -6,17 +6,43 @@ export class TestUtils {
     public static async getConfigAsync(): Promise<object> {
         const configFile = await fs.promises.readFile("./src/config.validate.json", { encoding: "utf-8" });
         const validationConfig = JSON.parse(configFile);
+
+        Object.entries(process.env).map(([key, value]) => {
+            validationConfig[key] = value;
+        });
+
         Object.keys(validationConfig.urls).forEach(key => {
             validationConfig.urls[key] = validationConfig.root + validationConfig.urls[key];
         });
 
+        // Convert string to boolean
+        validationConfig["isMultitenant"] = String(validationConfig["isMultitenant"]).toLowerCase() == "true";
+
+        console.log(`Configuration loaded: ${this.printConfiguration(validationConfig)}`);
+
         return validationConfig;
+    }
+
+    public static resolveScreenshotPath(configuration: Object, baseFileName: string): string[] {
+        const result = new Array<string>();
+
+        result.push(configuration["isLocalRun"] === true ? "self-hosted" : "deployed");
+
+        // For skuv2 we use different folder
+        if (configuration["isMultitenant"] === true) {
+            console.log("Using multitenant in screenshot path");
+            result.push("multitenant");
+        }
+
+        result.push(baseFileName);
+
+        return result;
     }
 
     public static getTestData(testKey: string): object {
         const configFile = fs.readFileSync("./tests/mocks/mockServerData.json", { encoding: "utf-8" });
         const validationConfig = JSON.parse(configFile);
-        if(validationConfig[testKey] == undefined){
+        if (validationConfig[testKey] == undefined) {
             throw new Error(`Test data not found for ${testKey}`);
         }
         return validationConfig[testKey];
@@ -50,7 +76,7 @@ export class TestUtils {
     public static randomIdentifier(length: number = 8, includeNumers = true): string {
         let result = "";
         let characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
-        if (includeNumers){
+        if (includeNumers) {
             characters = characters + "0123456789";
         }
 
@@ -64,14 +90,14 @@ export class TestUtils {
     }
 
     public static createMockServer(responses?: Object) {
-        var obj = {...responses} ?? {};
+        var obj = { ...responses } ?? {};
         for (const key in obj) {
             var newKey = key;
 
-            if (obj[key]["methods"] && obj[key]["methods"].length > 0){
+            if (obj[key]["methods"] && obj[key]["methods"].length > 0) {
                 const methods = `(${obj[key]["methods"].join("|")})`;
-                newKey = `${methods}/${key}`;    
-            }else{
+                newKey = `${methods}/${key}`;
+            } else {
                 newKey = `(GET|POST|PUT|DELETE|OPTIONS)/${key}`;
             }
             obj[key]['regex'] = new RegExp("^" + newKey + "$");
@@ -91,22 +117,22 @@ export class TestUtils {
 
                 for (const key in obj) {
                     if (obj[key]['regex'].test(urlToSearch)) {
-                        response = {...obj[key]};
+                        response = { ...obj[key] };
                         delete response['regex'];
                         break;
                     }
                 }
 
                 if (response != null && response != undefined) {
-                    // default header response, the specified header 
+                    // default header response, the specified header
                     res.setHeader("Content-Type", "application/json");
 
-                    if (response.headers && response.headers.length > 0){
+                    if (response.headers && response.headers.length > 0) {
                         response.headers.forEach(element => {
                             res.setHeader(element.name, element.value);
                         });
                     }
-                    
+
                     res.writeHead(response.statusCode);
                     res.write(Buffer.from(JSON.stringify(response.body)));
                     res.end();
@@ -116,12 +142,25 @@ export class TestUtils {
                     res.end();
                 }
             });
-        
+
         return server;
     }
-    public static closeServer(server){
-        if (server != null){
+    public static closeServer(server) {
+        if (server != null) {
             server.close();
         }
+    }
+
+    private static printConfiguration(configuration: object): string {
+        const copy = { ...configuration };
+        Object.keys(copy).forEach(key => {
+            if (key.toLowerCase().includes("password")
+                || key.toLowerCase().includes("key")
+                || key.toLowerCase().includes("token")
+                || key.toLowerCase().includes("certificate")) {
+                copy[key] = "********";
+            }
+        })
+        return JSON.stringify(copy);
     }
 }

@@ -38,7 +38,7 @@ export const getAllValues = async (page: any, values: any) => {
     return values;
 }
 
-export const createSearchQuery = (searchPattern: string, fieldName: string = 'title') => {
+export const createSearchQuery = (searchPattern: string, fieldName: string = "title") => {
     const patternProcessed = searchPattern.replaceAll("#", "%23"); // TODO: Remove this when the issue with # in search is fixed on the Paperbits side
     const query = Query.from().orderBy(fieldName);
     if (patternProcessed) {

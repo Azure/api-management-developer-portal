@@ -43,17 +43,16 @@
 
             <!-- ko if:  apiDocumentationAuthServers()?.length > 0 -->
             <div class="animation-fade-in">
-                <h4>Authorization</h4>
-                <oauth-server-configuration params="{authorizationServers: apiDocumentationAuthServers}">
-                </oauth-server-configuration>
+                <h4>Security Schemes</h4>
+                <security-schemes params="{authorizationServers: apiDocumentationAuthServers, apiKeyDetails: apiKeyDetails}">
+                </security-schemes>
             </div>
             <!-- /ko -->
 
             <!-- ko if: operation().parameters.length > 0 -->
             <h4>Request parameters</h4>
 
-            <div role="table" class="table-preset"
-                data-bind="css: { 'table-preset-params': !showExamples(), 'table-preset-params-examples': showExamples }">
+            <div role="table" class="table-preset" data-bind="css: { 'table-preset-params': !showExamples(), 'table-preset-params-examples': showExamples }">
                 <div class="d-contents" role="rowgroup">
                     <div class="d-contents" role="row">
                         <div role="columnheader" class="table-preset-head text-truncate">Name</div>
@@ -95,8 +94,7 @@
             <!-- ko if: operation().request && operation().request.headers && operation().request.headers.length > 0 -->
             <h4>Request headers</h4>
 
-            <div role="table" class="table-preset"
-                data-bind="css: { 'table-preset-headers-request': !showExamples(), 'table-preset-headers-request-examples': showExamples }">
+            <div role="table" class="table-preset" data-bind="css: { 'table-preset-headers-request': !showExamples(), 'table-preset-headers-request-examples': showExamples }">
                 <div class="d-contents" role="rowgroup">
                     <div class="d-contents" role="row">
                         <div role="columnheader" class="table-preset-head text-truncate">Name</div>
@@ -186,24 +184,21 @@
 
                     <!-- ko if: representation.examples -->
                     <!-- ko if: representation.examples.length > 1 -->
-                    <div class="row flex flex-row example-form-control">
-                        <div class="col-12">
-                            <label
-                                data-bind="attr : { for: 'select' + representation.contentType + '_' + $index() }, text: 'Examples'"></label>
-                        </div>
-                        <div class="col-4">
-                            <div class="form-group">
-                                <select class="form-control"
-                                    data-bind="options: representation.examples, value: $component.selectedRepresentatnionsValue()[representation.contentType] ,optionsValue: 'title', optionsText: 'title', attr : {title: 'Representation examples selector', id: 'select-' + representation.contentType + '_' + $index() }"></select>
+                        <div class="row flex flex-row example-form-control">
+                            <div class="col-12">
+                                <label data-bind="attr : { for: 'select' + representation.contentType + '_' + $index() }, text: 'Examples'"></label>
+                            </div>
+                            <div class="col-4">
+                                <div class="form-group">
+                                    <select class="form-control" data-bind="options: representation.examples, value: $component.selectedRepresentatnionsValue()[representation.contentType] ,optionsValue: 'title', optionsText: 'title', attr : {title: 'Representation examples selector', id: 'select-' + representation.contentType + '_' + $index() }"></select>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <!-- ko foreach: { data: representation.examples, as: 'example' } -->
-                    <code-snippet
-                        data-bind="visible: $component.selectedRepresentatnionsValue()[representation.contentType]() == example.title"
-                        params="{ title: example.title, content: example.value, language: example.format, description: example.description }">
-                    </code-snippet>
-                    <!-- /ko -->
+                        <!-- ko foreach: { data: representation.examples, as: 'example' } -->
+                        <code-snippet data-bind="visible: $component.selectedRepresentatnionsValue()[representation.contentType]() == example.title"
+                            params="{ title: example.title, content: example.value, language: example.format, description: example.description }">
+                        </code-snippet>
+                        <!-- /ko -->
                     <!-- /ko -->
 
                     <!-- ko if: representation.examples.length == 1 -->

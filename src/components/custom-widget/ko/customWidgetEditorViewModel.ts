@@ -13,6 +13,7 @@ import { CustomWidgetModel } from "../customWidgetModel";
 import { widgetEditorSelector } from "..";
 import template from "./customWidgetEditorView.html";
 import { buildWidgetSource } from "./utils";
+import { Logger } from "@paperbits/common/logging";
 
 @Component({
     selector: widgetEditorSelector,
@@ -32,6 +33,7 @@ export class CustomWidgetEditorViewModel implements WidgetEditor<CustomWidgetMod
         private readonly eventManager: EventManager,
         private readonly settingsProvider: ISettingsProvider,
         private readonly blobStorage: MapiBlobStorage,
+        private readonly logger: Logger
     ) {
         this.sizeStyleConfig = ko.observable();
         this.customInputValue = ko.observable();
@@ -66,9 +68,7 @@ export class CustomWidgetEditorViewModel implements WidgetEditor<CustomWidgetMod
         this.allowSameOrigin.subscribe(this.applyChanges);
         this.customInputValue.subscribe(this.applyCustomInputValueChanges);
         this.eventManager.addEventListener(Events.ViewportChange, this.updateResponsiveObservables);
-
-        const environment = await this.settingsProvider.getSetting<string>("environment") as Environment;
-        const widgetSource = await buildWidgetSource(this.blobStorage, this.model, environment, "editor.html");
+        const widgetSource = await buildWidgetSource(this.blobStorage, this.model, this.settingsProvider, "editor.html", this.logger);
         this.src(widgetSource.src);
     }
 

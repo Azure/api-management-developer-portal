@@ -17,8 +17,6 @@ export interface OpenIdAuthenticationSettings {
 }
 
 export interface AuthenticationSettings {
-    oAuth2?: OAuth2AuthenticationSettings;
-    openid?: OpenIdAuthenticationSettings;
     oAuth2AuthenticationSettings: OAuth2AuthenticationSettings[];
     openidAuthenticationSettings: OpenIdAuthenticationSettings[];
 }

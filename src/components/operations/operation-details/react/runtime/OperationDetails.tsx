@@ -22,7 +22,6 @@ import { ApiService } from "../../../../../services/apiService";
 import { UsersService } from "../../../../../services/usersService";
 import { ProductService } from "../../../../../services/productService";
 import { OAuthService } from "../../../../../services/oauthService";
-import { TenantService } from "../../../../../services/tenantService";
 import { Api } from "../../../../../models/api";
 import { Operation } from "../../../../../models/operation";
 import { Tag } from "../../../../../models/tag";
@@ -59,14 +58,12 @@ export const OperationDetails = ({
     usersService,
     productService,
     oauthService,
-    tenantService,
     routeHelper,
     settingsProvider,
     sessionManager,
     httpClient,
     enableConsole,
     useCorsProxy,
-    includeAllHostnames,
     enableScrollTo,
     showExamples,
     defaultSchemaView,
@@ -77,7 +74,6 @@ export const OperationDetails = ({
     usersService: UsersService;
     productService: ProductService;
     oauthService: OAuthService;
-    tenantService: TenantService;
     routeHelper: RouteHelper;
     settingsProvider: ISettingsProvider;
     sessionManager: SessionManager;
@@ -156,12 +152,8 @@ export const OperationDetails = ({
         try {
             if (operationName) {
                 [operation, tags] = await Promise.all([
-                    apiService.getOperation(
-                        `apis/${apiName}/operations/${operationName}`
-                    ),
-                    apiService.getOperationTags(
-                        `apis/${apiName}/operations/${operationName}`
-                    ),
+                    apiService.getOperation(apiName, operationName),
+                    apiService.getOperationTags(`apis/${apiName}/operations/${operationName}`)
                 ]);
                 operation && (definitions = await loadDefinitions(operation));
             } else {
@@ -187,8 +179,8 @@ export const OperationDetails = ({
     };
 
     const loadGatewayInfo = async (): Promise<string[]> => {
-        return await apiService.getApiHostnames(apiName, includeAllHostnames);
-    };
+        return await apiService.getApiHostnames(apiName);
+    }
 
     const loadDefinitions = async (
         operation: Operation
@@ -372,7 +364,6 @@ export const OperationDetails = ({
                             usersService={usersService}
                             productService={productService}
                             oauthService={oauthService}
-                            tenantService={tenantService}
                             routeHelper={routeHelper}
                             settingsProvider={settingsProvider}
                             sessionManager={sessionManager}

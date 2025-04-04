@@ -1,5 +1,6 @@
 import { MapiClient } from "../mapiClient";
 import { UserContract } from "../../src/contracts/user";
+import { UserContract as SmapiUserContract } from "../models/userContract";
 import { ITestUserService } from "./ITestUserService";
 
 export class TestUserService implements ITestUserService {
@@ -8,7 +9,7 @@ export class TestUserService implements ITestUserService {
         this.mapiClient = MapiClient.Instance;
     }
 
-    public async putUser(userId: string, userContract: UserContract): Promise<UserContract> {
+    public async putUser(userId: string, userContract: SmapiUserContract): Promise<any> {
         if (!userId) {
             throw new Error(`Parameter "userId" not specified.`);
         }

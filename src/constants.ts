@@ -41,9 +41,12 @@ export enum IdentityProviders {
     aadB2C = "AadB2C"
 }
 
-export enum AadEndpoints {
-    primary = "login.microsoftonline.com",
-    legacy = "login.windows.net"
+export const AadLoginRequest = { "scopes": ["openid", "profile", "https://management.azure.com/user_impersonation"], "account": null };
+
+export enum ConfigEndpoints {
+    backend = "/config.json",
+    service = "/config-apim.json",
+    editor = "/editor-config.json"
 }
 
 export enum AadClientLibrary {
@@ -245,11 +248,32 @@ export const graphqlSubProtocol = "graphql-transport-ws";
  */
 export enum SettingNames {
     backendUrl = "backendUrl",
+    dataApiUrl = "dataApiUrl",
     managementApiUrl = "managementApiUrl",
     managementApiAccessToken = "managementApiAccessToken",
     aadClientConfig = "aad",
     aadB2CClientConfig = "aadB2C",
-    developerPortalType = "developerPortalType"
+    developerPortalType = "developerPortalType",
+    subscriptionId ="subscriptionId",
+    resourceGroupName = "resourceGroupName",
+    serviceName = "serviceName",
+    authTenantId = "authTenantId",
+    directDataApi = "directDataApi",
+    isMultitenant = "isMultiTenant",
+    armAccessToken = "armAccessToken",
+
+// Should be equal to IEditorSettings property names
+    armEndpoint = "armEndpoint",
+    aadClientId = "editorAadClientId",
+    aadAuthority = "editorAadAuthority",
+
+    designTimeSettings = "designTimeSettings",
+}
+
+export enum PortalEnvironment {
+    development = "development",
+    publishing = "publishing",
+    runtime = "runtime"
 }
 
 export enum DeveloperPortalType {
@@ -294,12 +318,25 @@ export enum GrantTypes {
     password = "password"
 }
 
-export const managementApiVersion = "2022-04-01-preview";
+export const loginClientConfigType = "loginClientConfig";
+
+export const managementApiVersion = "2023-03-01-preview";
+export const dataApiVersion = "2022-04-01-preview";
 
 /**
  * Header name to track developer portal type.
  */
 export const portalHeaderName = "x-ms-apim-client";
+
+/**
+ * Header name to know if it is a user resource.
+ */
+export const isUserResourceHeaderName = "IsUserResource";
+
+export enum DeveloperPortalTypes {
+    SelfHostedPortal = "self-hosted-portal",
+    Managed = "managed"
+}
 
 export const releaseNameFormat = "YYYYMMDDHHmmss";
 
@@ -341,6 +378,7 @@ export const overrideToastSessionKeyPrefix = "MS_APIM_CW_override_toast_dismisse
  */
 export const mobileBreakpoint = 768;
 export const smallMobileBreakpoint = 400;
+export const adminUserId = "1";
 
 /**
  * Maximum number of characters to display in markdown
@@ -386,7 +424,7 @@ export const isApplyNewThemeEnabledSetting = "isApplyNewThemeEnabled";
 /**
  * Key of the default admin user
  */
-export const integrationUserId = '/users/integration';
+export const integrationUserId = "/users/integration";
 
 /**
   * This is used to store the unique user in local storage and identify the user session in client telemetry.
@@ -399,3 +437,4 @@ export const USER_ACTION = "data-action";
 export const FEATURE_FLAGS = "featureFlags";
 export const FEATURE_CLIENT_TELEMETRY = "clientTelemetry";
 export const FEATURE_OLD_THEME = "oldDefaultTheme";
+export const USE_COMPRESSED_ASSETS = "useCompressedAssets";

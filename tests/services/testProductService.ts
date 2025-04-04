@@ -1,20 +1,20 @@
 import { MapiClient } from "../mapiClient";
-import { ProductContract } from "../../src/contracts/product";
+import { ProductContract as SmapiProductContract } from "../models/productContract";
 import { ITestProductService } from "./ITestProductService";
+import { SubscriptionContract as SmapiSubscriptionContract } from "../models/subscriptionContract";
 
 export class TestProductService implements ITestProductService {
     private readonly mapiClient: MapiClient
-    constructor() { 
+    constructor() {
         this.mapiClient = MapiClient.Instance;
     }
 
-    public async putProduct(productId: string, productContract: ProductContract): Promise<ProductContract> {
+    public async putProduct(productId: string, productContract: SmapiProductContract): Promise<any> {
         if (!productId) {
             throw new Error(`Parameter "productId" not specified.`);
         }
 
-        const contract = await this.mapiClient.put<ProductContract>(productId, undefined, productContract);
-        return contract;
+        return await this.mapiClient.put<SmapiProductContract>(productId, undefined, productContract);
     }
 
     public async putProductGroup(productId: string, groupId: string): Promise<any> {
@@ -35,11 +35,21 @@ export class TestProductService implements ITestProductService {
             throw new Error(`Parameter "productId" not specified.`);
         }
 
-        if (deleteSubs){
+        if (deleteSubs) {
             productId = productId + "?deleteSubscriptions=True";
         }
 
         var result = await this.mapiClient.delete<any>(productId, undefined);
+        return result;
+    }
+    
+    public async putProductSubscription(id: string, subscriptionContract: SmapiSubscriptionContract): Promise<any> {
+
+        if (!id) {
+            throw new Error(`Parameter "Id" not specified.`);
+        }
+
+        const result = await this.mapiClient.put<any>(id, undefined, subscriptionContract);
         return result;
     }
 }

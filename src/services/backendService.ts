@@ -1,4 +1,4 @@
-import { MapiError } from "./../errors/mapiError";
+import { MapiError, MapiErrorCodes } from "./../errors/mapiError";
 import { HttpClient, HttpRequest, HttpResponse, HttpMethod } from "@paperbits/common/http";
 import { CaptchaChallenge, CaptchaParams, CaptchaSettings } from "../contracts/captchaParams";
 import { SignupRequest } from "../contracts/signupRequest";
@@ -96,7 +96,7 @@ export class BackendService {
             throw new MapiError(responseObj.code, responseObj.message, responseObj.details);
         }
 
-        throw new MapiError("Unhandled", "Unable to complete sign up request.");
+        throw new MapiError(MapiErrorCodes.Unhandled, "Unable to complete sign up request.");
     }
 
     public async sendResetRequest(resetRequest: ResetRequest): Promise<void> {
@@ -116,7 +116,7 @@ export class BackendService {
             throw new MapiError(responseObj.code, responseObj.message, responseObj.details);
         }
 
-        throw new MapiError("Unhandled", "Unable to complete reset password request.");
+        throw new MapiError(MapiErrorCodes.Unhandled, "Unable to complete reset password request.");
     }
 
     public async sendChangePassword(changePasswordRequest: ChangePasswordRequest, token: string): Promise<void> {
@@ -136,50 +136,7 @@ export class BackendService {
             throw new MapiError(responseObj.code, responseObj.message, responseObj.details);
         }
 
-        throw new MapiError("Unhandled", "Unable to complete change password request.");
-    }
-
-    public async getDelegationString(action: DelegationAction, delegationParameters: Bag<string>): Promise<string> {
-        if (this.developerPortalType === DeveloperPortalType.managed) {
-            const queryParams = new URLSearchParams();
-            Object.keys(delegationParameters).map(key => {
-                const val = delegationParameters[key];
-                queryParams.append(key, val);
-            });
-            return `/${DelegationActionPath[action]}?${queryParams.toString()}`;
-        } else {
-            const delegationUrl = await this.getDelegationUrlFromServer(action, delegationParameters);
-            return delegationUrl;
-        }
-    }
-
-    public async getDelegationUrlFromServer(action: DelegationAction, delegationParameters: Bag<string>): Promise<string> {
-        const authToken = await this.authenticator.getAccessTokenAsString();
-
-        if (!authToken) {
-            throw Error("Auth token not found");
-        }
-
-        const payload = {
-            delegationAction: action,
-            delegationParameters: delegationParameters
-        };
-
-        const response = await this.httpClient.send(
-            {
-                url: await this.getUrl("/delegation-url"),
-                method: HttpMethod.post,
-                headers: [{ name: KnownHttpHeaders.Authorization, value: authToken }, { name: KnownHttpHeaders.ContentType, value: KnownMimeTypes.Json }],
-                body: JSON.stringify(payload)
-            });
-
-        if (response.statusCode === 200) {
-            const result = response.toObject();
-            return result["url"];
-        }
-        else {
-            throw Error(response.toText());
-        }
+        throw new MapiError(MapiErrorCodes.Unhandled, "Unable to complete change password request.");
     }
 
     public async getAuthorizationServer(authorizationServerId: string): Promise<AuthorizationServer> {
@@ -216,41 +173,6 @@ export class BackendService {
 
         const contract = this.handleResponse<AuthorizationServerForClient>(response, httpRequest.url);
         return new AuthorizationServer(contract);
-    }
-
-    public async getOpenIdConnectProvidersByApi(apiId: string): Promise<AuthorizationServerForClient[]> {
-        let response: HttpResponse<AuthorizationServerForClient[]>;
-        const httpRequest: HttpRequest = {
-            method: HttpMethod.get,
-            url: await this.getUrl(`${apiId}/openidConnectProviders`)
-        };
-
-        try {
-            response = await this.httpClient.send<any>(httpRequest);
-        }
-        catch (error) {
-            throw new Error(`Unable to complete request. Error: ${error.message}`);
-        }
-
-        return this.handleResponse<AuthorizationServerForClient[]>(response, httpRequest.url);
-    }
-
-    public async getAuthorizationServersByApi(apiId: string): Promise<AuthorizationServerForClient[]> {
-        let response: HttpResponse<AuthorizationServerForClient[]>;
-        const httpRequest: HttpRequest = {
-            method: HttpMethod.get,
-            url: await this.getUrl(`${apiId}/authorizationServers`)
-        };
-
-        try {
-            response = await this.httpClient.send<any>(httpRequest);
-        }
-        catch (error) {
-            throw new Error(`Unable to complete request. Error: ${error.message}`);
-        }
-
-        return this.handleResponse<AuthorizationServerForClient[]>(response, httpRequest.url);
-
     }
 
     private async getUrl(path: string): Promise<string> {

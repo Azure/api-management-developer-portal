@@ -52,7 +52,7 @@
         "heading-block-1": {
             "type": "layout-section",
             "key": "blocks/heading-block-1",
-            "title": "Feature block 5",
+            "title": "New main menu popup template",
             "description": "",
             "contentKey": "files/heading-block-1",
             "imports": [

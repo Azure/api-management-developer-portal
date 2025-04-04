@@ -6,8 +6,8 @@ import { Component } from "@paperbits/common/ko/decorators";
 import { Logger } from "@paperbits/common/logging";
 import { IAuthenticator } from "../../authentication/IAuthenticator";
 import { AppError } from "./../../errors/appError";
-import { MapiError } from "../../errors/mapiError";
-import { MapiClient } from "../../services";
+import { MapiError, MapiErrorCodes } from "../../errors/mapiError";
+import { IApiClient } from "../../clients";
 
 
 @Component({
@@ -17,22 +17,22 @@ import { MapiClient } from "../../services";
 export class ContentWorkshop {
     constructor(
         private readonly viewManager: ViewManager,
-        private readonly mapiClient: MapiClient,
+        private readonly apiClient: IApiClient,
         private readonly authenticator: IAuthenticator,
         private readonly logger: Logger
     ) { }
 
     public async publish(): Promise<void> {
-        this.logger.trackEvent("Click: Publish website");
+        this.logger.trackEvent("Publish", { message: "Click: Publish website" });
 
         if (!await this.authenticator.isAuthenticated()) {
-            throw new AppError("Cannot publish website", new MapiError("Unauthorized", "You're not authorized."));
+            throw new AppError("Cannot publish website", new MapiError(MapiErrorCodes.Unauthorized, "You're not authorized."));
         }
 
         try {
             const revisionName = moment.utc().format(Constants.releaseNameFormat);
 
-            await this.mapiClient.put(`/portalRevisions/${revisionName}`, null, {
+            await this.apiClient.put(`/portalRevisions/${revisionName}`, null, {
                 properties: { description: "", isCurrent: true }
             });
 
@@ -41,7 +41,7 @@ export class ContentWorkshop {
         }
         catch (error) {
             this.viewManager.notifyError("Operations", `Unable to schedule publishing. Please try again later.`);
-            this.logger.trackError(error);
+            this.logger.trackError(error, { message: "Unable to publish" });
         }
     }
 

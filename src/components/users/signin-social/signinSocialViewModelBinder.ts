@@ -1,7 +1,7 @@
-import { ISettingsProvider } from "@paperbits/common/configuration";
 import { StyleCompiler } from "@paperbits/common/styles";
 import { ViewModelBinder, WidgetState } from "@paperbits/common/widgets";
 import { ISiteService } from "@paperbits/common/sites/ISiteService";
+import { ISettingsProvider } from "@paperbits/common/configuration";
 import { Logger } from "@paperbits/common/logging";
 import { TermsOfService } from "../../../contracts/identitySettings";
 import { IdentityService } from "../../../services/identityService";
@@ -19,8 +19,8 @@ export class SigninSocialViewModelBinder implements ViewModelBinder<SigninSocial
     ) { }
 
     public async getTermsOfService(): Promise<TermsOfService> {
-        const identitySetting = await this.identityService.getIdentitySetting();
-        return identitySetting.properties.termsOfService;
+        const termsOfService = await this.identityService.getTermsOfService();
+        return termsOfService;
     }
 
     public stateToInstance(state: WidgetState, componentInstance: SignInSocialViewModel): void {
@@ -65,6 +65,8 @@ export class SigninSocialViewModelBinder implements ViewModelBinder<SigninSocial
                 termsOfUse
             };
         }
+
+        state.security = model.security;
 
         const settings = await this.settingsProvider.getSettings();
         state.mode = settings["environment"];

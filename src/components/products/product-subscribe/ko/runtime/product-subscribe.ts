@@ -7,10 +7,9 @@ import { Product } from "../../../../../models/product";
 import { ProductService } from "../../../../../services/productService";
 import { UsersService } from "../../../../../services/usersService";
 import { SubscriptionState } from "../../../../../contracts/subscription";
-import { TenantService } from "../../../../../services/tenantService";
 import { DelegationParameters, DelegationAction } from "../../../../../contracts/tenantSettings";
 import { RouteHelper } from "../../../../../routing/routeHelper";
-import { BackendService } from "../../../../../services/backendService";
+import { IDelegationService } from "../../../../../services/IDelegationService";
 
 @RuntimeComponent({
     selector: "product-subscribe-runtime"
@@ -35,8 +34,7 @@ export class ProductSubscribe {
 
     constructor(
         private readonly usersService: UsersService,
-        private readonly tenantService: TenantService,
-        private readonly backendService: BackendService,
+        private readonly delegationService: IDelegationService,
         private readonly productService: ProductService,
         private readonly router: Router,
         private readonly routeHelper: RouteHelper
@@ -50,14 +48,14 @@ export class ProductSubscribe {
         this.limitReached = ko.observable(false);
         this.working = ko.observable(true);
         this.isUserSignedIn = ko.observable(false);
-		this.showTermsByDefault = ko.observable(false);
+        this.showTermsByDefault = ko.observable(false);
 
         this.canSubscribe = ko.pureComputed((): boolean => {
             return (this.delegationEnabled || this.subscriptionName().length > 0) && ((this.termsOfUse() && this.consented()) || !this.termsOfUse());
         });
     }
-	
-	@Param()
+
+    @Param()
     public showTermsByDefault: ko.Observable<boolean>;
 
     @OnMounted()
@@ -71,11 +69,11 @@ export class ProductSubscribe {
         const userId = await this.usersService.getCurrentUserId();
         this.isUserSignedIn(!!userId);
 
-        try {						
+        try {
             this.showTermsOfUse(this.showTermsByDefault());
             this.working(true);
 
-            this.delegationEnabled = await this.isDelegationEnabled();
+            this.delegationEnabled = await this.isSubscriptionDelegationEnabled();
 
             const productName = this.routeHelper.getProductName();
 
@@ -93,8 +91,8 @@ export class ProductSubscribe {
             this.termsOfUse(product.terms);
 
             if (product.terms) {
-				const termsLabel = this.showTermsByDefault() ? "Hide" : "Show";
-				this.showHideLabel(termsLabel);
+                const termsLabel = this.showTermsByDefault() ? "Hide" : "Show";
+                this.showHideLabel(termsLabel);
             }
 
             if (userId) {
@@ -120,15 +118,15 @@ export class ProductSubscribe {
 
     private async loadSubscriptions(userId: string): Promise<void> {
         const product = this.product();
-        const subscriptions = await this.productService.getSubscriptionsForProduct(userId, product.id);
+        const subscriptions = await this.productService.getSubscriptionsForProduct(userId, `/products/${product.id}`);
         const activeSubscriptions = subscriptions.value.filter(item => item.state === SubscriptionState.active || item.state === SubscriptionState.submitted) || [];
         const numberOfSubscriptions = activeSubscriptions.length;
         const limitReached = (product.subscriptionsLimit || product.subscriptionsLimit === 0) && product.subscriptionsLimit <= numberOfSubscriptions;
         this.limitReached(limitReached);
     }
 
-    private async isDelegationEnabled(): Promise<boolean> {
-        const isDelegationEnabled = await this.tenantService.isSubscriptionDelegationEnabled();
+    private async isSubscriptionDelegationEnabled(): Promise<boolean> {
+        const isDelegationEnabled = await this.delegationService.isSubscriptionDelegationEnabled();
         return isDelegationEnabled;
     }
 
@@ -154,10 +152,11 @@ export class ProductSubscribe {
 
         try {
             if (this.delegationEnabled) {
+                const userIdentifier = Utils.getResourceName("users", userId);
                 const delegationParam = {};
-                delegationParam[DelegationParameters.ProductId] =  productName;
-                delegationParam[DelegationParameters.UserId] =  Utils.getResourceName("users", userId);
-                const delegationUrl = await this.backendService.getDelegationString(DelegationAction.subscribe, delegationParam);
+                delegationParam[DelegationParameters.ProductId] = productName;
+                delegationParam[DelegationParameters.UserId] = userIdentifier;
+                const delegationUrl = await this.delegationService.getUserDelegationUrl(userIdentifier, DelegationAction.subscribe, delegationParam);
                 if (delegationUrl) {
                     location.assign(delegationUrl);
                     return;

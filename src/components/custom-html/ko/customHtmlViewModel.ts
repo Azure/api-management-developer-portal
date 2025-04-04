@@ -12,11 +12,13 @@ import { iframeAllows, iframeSandboxAllows } from "../../../constants";
 export class CustomHtmlViewModel {
     public readonly styles: ko.Observable<StyleModel>;
     public readonly htmlCode: ko.Observable<string>;
+    public readonly src: ko.Observable<string>;
     public readonly iframeAllows: string = iframeAllows;
     public readonly iframeSandboxAllows: string = iframeSandboxAllows;
 
     constructor() {
         this.htmlCode = ko.observable();
+        this.src = ko.observable();
         this.styles = ko.observable();
     }
 }

@@ -9,28 +9,28 @@ test.describe("apis-page", async () => {
         var product1: Product = Product.getRandomProduct("product1");
         var api: Api = Api.getRandomApi("api1");
 
-        mockedData.data = Templating.updateTemplate(JSON.stringify(mockedData.data), api);
-        
+        mockedData.data = Templating.updateTemplate(configuration['isLocalRun'], JSON.stringify(mockedData.data), api);
+
         async function populateData(): Promise<any>{
-            await productService.putProduct("products/"+product1.productId, product1.getContract());
+            await productService.putProduct("products/"+product1.productId, product1.getRequestContract());
             await productService.putProductGroup("products/"+product1.productId, "groups/guests");
             cleanUp.push(async () => productService.deleteProduct("products/"+product1.productId, true));
 
-            await apiService.putApi("apis/"+api.apiId, api.getContract());
+            await apiService.putApi("apis/"+api.apiId, api.getRequestContract());
             await apiService.putApiProduct("products/"+product1.productId, "apis/"+api.apiId);
             cleanUp.push(async () => apiService.deleteApi("apis/"+api.apiId));
         }
-        
-        async function validate(){  
+
+        async function validate(){
             await page.goto(configuration['urls']['apis'], { waitUntil: 'domcontentloaded' });
-            
+
             const apiWidget = new ApisWidget(page);
             await apiWidget.waitRuntimeInit();
-            
+
             var apiHtml = await apiWidget.getApiByName(api.apiName);
             expect(apiHtml).not.toBe(null);
         }
-        
+
         await testRunner.runTest(validate, populateData, mockedData.data);
     });
 });

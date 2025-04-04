@@ -16,6 +16,7 @@ import { EventManager, Events } from "@paperbits/common/events";
 export class CustomHtmlEditorViewModel implements WidgetEditor<CustomHtmlModel> {
     public readonly htmlCode: ko.Observable<string>;
     public readonly inheritStyling: ko.Observable<boolean>;
+    public readonly addCustomFonts: ko.Observable<boolean>;
     public readonly sizeStyleConfig: ko.Observable<SizeStylePluginConfig>;
 
     constructor(
@@ -24,6 +25,7 @@ export class CustomHtmlEditorViewModel implements WidgetEditor<CustomHtmlModel> 
     ) {
         this.htmlCode = ko.observable();
         this.inheritStyling = ko.observable();
+        this.addCustomFonts = ko.observable();
         this.sizeStyleConfig = ko.observable();
     }
 
@@ -37,10 +39,12 @@ export class CustomHtmlEditorViewModel implements WidgetEditor<CustomHtmlModel> 
     public async initialize(): Promise<void> {
         this.htmlCode(this.model.htmlCode);
         this.inheritStyling(this.model.inheritStyling);
+        this.addCustomFonts(this.model.addCustomFonts);
         this.updateResponsiveObservables();
 
         this.htmlCode.subscribe(this.applyChanges);
         this.inheritStyling.subscribe(this.applyChanges);
+        this.addCustomFonts.subscribe(this.applyChanges);
         this.eventManager.addEventListener(Events.ViewportChange, this.updateResponsiveObservables);
     }
 
@@ -57,6 +61,7 @@ export class CustomHtmlEditorViewModel implements WidgetEditor<CustomHtmlModel> 
     private applyChanges(): void {
         this.model.htmlCode = this.htmlCode();
         this.model.inheritStyling = this.inheritStyling();
+        this.model.addCustomFonts = this.addCustomFonts();
         this.onChange(this.model);
     }
 

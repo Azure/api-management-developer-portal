@@ -1,4 +1,3 @@
-import { ISettingsProvider } from "@paperbits/common/configuration";
 import { IPublisher } from "@paperbits/common/publishing";
 import { SettingNames } from "../constants";
 import { IdentityService } from "../services";

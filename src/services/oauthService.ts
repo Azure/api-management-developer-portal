@@ -3,19 +3,20 @@ import { ISettingsProvider } from "@paperbits/common/configuration";
 import { HttpClient, HttpMethod } from "@paperbits/common/http";
 import { Logger } from "@paperbits/common/logging";
 import { AuthorizationServer } from "../models/authorizationServer";
-import { KnownHttpHeaders } from "../models/knownHttpHeaders";
-import { KnownMimeTypes } from "../models/knownMimeTypes";
 import { Utils } from "../utils";
 import { GrantTypes } from "./../constants";
 import { UnauthorizedError } from "./../errors/unauthorizedError";
-import { BackendService } from "./backendService";
+import { KnownHttpHeaders } from "../models/knownHttpHeaders";
+import { KnownMimeTypes } from "../models/knownMimeTypes";
+import { AuthorizationServerForClient } from "../contracts/authorizationServer";
+import { IApiClient } from "../clients";
 import { OAuthTokenResponse } from "../contracts/oauthTokenResponse";
-
+import { Page } from "../models/page";
 
 export class OAuthService {
     constructor(
         private readonly httpClient: HttpClient,
-        private readonly backendService: BackendService,
+        private readonly apiClient: IApiClient,
         private readonly settingsProvider: ISettingsProvider,
         private readonly logger: Logger
     ) { }
@@ -41,8 +42,8 @@ export class OAuthService {
 
     public async getOpenIdAuthServers(apiId: string): Promise<AuthorizationServer[]> {
         try {
-            const authServers = await this.backendService.getOpenIdConnectProvidersByApi(apiId);
-            return authServers.map(x => new AuthorizationServer(x));
+            const authServers = await this.apiClient.get<Page<AuthorizationServerForClient>>(`apis/${apiId}/authServers/openidconnect`, [Utils.getIsUserResourceHeader(), await this.apiClient.getPortalHeader("getOpenIdAuthServers")]);
+            return authServers.value.map(x => new AuthorizationServer(x));
         }
         catch (error) {
             throw new Error(`Unable to fetch configured authorization servers. ${error.stack}`);
@@ -51,8 +52,8 @@ export class OAuthService {
 
     public async getOauthServers(apiId: string): Promise<AuthorizationServer[]> {
         try {
-            const authServers = await this.backendService.getAuthorizationServersByApi(apiId);
-            return authServers.map(x => new AuthorizationServer(x));
+            const authServers = await this.apiClient.get<Page<AuthorizationServerForClient>>(`apis/${apiId}/authServers/oauth2`, [Utils.getIsUserResourceHeader(),  await this.apiClient.getPortalHeader("getOauthServers")]);
+            return authServers.value.map(x => new AuthorizationServer(x));
         }
         catch (error) {
             throw new Error(`Unable to fetch configured authorization servers. ${error.stack}`);
@@ -71,22 +72,22 @@ export class OAuthService {
 
         switch (grantType) {
             case GrantTypes.implicit:
-                this.logger.trackEvent("TestConsoleOAuth", { grantType: GrantTypes.implicit });
+                this.logger.trackEvent("TestConsoleOAuth", { grantType: GrantTypes.implicit, message: "Authenticating..." });
                 accessToken = await this.authenticateImplicit(backendUrl, authorizationServer);
                 break;
 
             case GrantTypes.authorizationCode:
-                this.logger.trackEvent("TestConsoleOAuth", { grantType: GrantTypes.authorizationCode });
+                this.logger.trackEvent("TestConsoleOAuth", { grantType: GrantTypes.authorizationCode, message: "Authenticating..." });
                 accessToken = await this.authenticateCode(backendUrl, authorizationServer);
                 break;
 
             case GrantTypes.authorizationCodeWithPkce:
-                this.logger.trackEvent("TestConsoleOAuth", { grantType: GrantTypes.authorizationCodeWithPkce });
+                this.logger.trackEvent("TestConsoleOAuth", { grantType: GrantTypes.authorizationCodeWithPkce, message: "Authenticating..." });
                 accessToken = await this.authenticateCodeWithPkce(backendUrl, authorizationServer);
                 break;
 
             case GrantTypes.clientCredentials:
-                this.logger.trackEvent("TestConsoleOAuth", { grantType: GrantTypes.clientCredentials });
+                this.logger.trackEvent("TestConsoleOAuth", { grantType: GrantTypes.clientCredentials, message: "Authenticating..." });
                 accessToken = await this.authenticateClientCredentials(backendUrl, authorizationServer, apiName);
                 break;
 
@@ -158,7 +159,7 @@ export class OAuthService {
             clientId: authorizationServer.clientId,
             accessTokenUri: authorizationServer.tokenEndpoint,
             authorizationUri: authorizationServer.authorizationEndpoint,
-            redirectUri: redirectUri,
+            redirectUri: redirectUri.toLowerCase(),
             scopes: authorizationServer.scopes,
             query: query
         });
@@ -193,7 +194,7 @@ export class OAuthService {
             client_id: authorizationServer.clientId,
             code_challenge_method: challengeMethod,
             code_challenge: codeChallenge,
-            redirect_uri: redirectUri,
+            redirect_uri: redirectUri.toLowerCase(),
             scope: authorizationServer.scopes.join(" ")
         });
 

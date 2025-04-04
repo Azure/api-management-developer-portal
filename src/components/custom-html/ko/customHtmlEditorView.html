@@ -10,6 +10,13 @@
             data-bind="tooltip: 'Select this setting to inherit developer portal styles for elements inside your custom HTML code and ensure consistency in how content is presented in the developer portal.'"></button>
     </label>
 
+    <label for="addCustomFonts" class="form-label">
+        <input type="checkbox" id="addCustomFonts" name="addCustomFonts" data-bind="checked: addCustomFonts, enable: inheritStyling" />
+        Include custom fonts in published portal
+        <button class="btn btn-info" type="button"
+            data-bind="tooltip: 'Select this setting to apply custom fonts for elements inside your custom HTML code.'"></button>
+    </label>
+
     <label class="form-label">
         HTML code
         <button class="btn btn-info" type="button" data-bind="tooltip: 'The provided HTML code will be rendered in an&nbsp;<code>iframe</code> element.'"></button>

@@ -149,11 +149,8 @@ export class Authorization {
         }
 
         const api = this.api();
-        const serverName = authorizationServer.name;
-
-        const scopeOverride = this.getSelectedAuthServerOverrideScope(serverName, api.authenticationSettings?.oAuth2AuthenticationSettings);
-        const storedCredentials = await this.getStoredCredentials(serverName, scopeOverride);
-
+        const scopeOverride = this.getSelectedAuthServerOverrideScope(authorizationServer.name, api.authenticationSettings?.oAuth2AuthenticationSettings);
+        const storedCredentials = await this.getStoredCredentials(authorizationServer.name, scopeOverride);
 
         if (storedCredentials) {
             this.selectedGrantType(storedCredentials.grantType);
@@ -299,7 +296,6 @@ export class Authorization {
     public async authenticateOAuth(grantType: string): Promise<void> {
         const api = this.api();
         const authorizationServer = this.selectedAuthorizationServer();
-
         if (!authorizationServer) {
             return;
         }
@@ -372,7 +368,6 @@ export class Authorization {
             this.authorizationError(null);
 
             const api = this.api();
-
             const authorizationServer = this.selectedAuthorizationServer();
             if (!authorizationServer) {
                 return;
@@ -380,7 +375,6 @@ export class Authorization {
 
             const serverName = authorizationServer.name;
             const scopeOverride = this.getSelectedAuthServerOverrideScope(serverName, api.authenticationSettings?.oAuth2AuthenticationSettings);
-
 
             if (scopeOverride) {
                 authorizationServer.scopes = [scopeOverride];
@@ -413,8 +407,8 @@ export class Authorization {
             pattern: this.subscriptionsPattern()
         };
 
-        const pageOfProducts = await this.apiService.getAllApiProducts(this.api().id);
-        const products = pageOfProducts && pageOfProducts.value ? pageOfProducts.value : [];
+        const pageOfProducts = await this.apiService.getAllApiProducts(`/apis/${this.api().id}`);
+        const products = pageOfProducts || [];
         const allSubscriptions = await this.productService.getProductsAllSubscriptions(this.api().name, products, userId, subscriptionsQuery);
         const subscriptions = allSubscriptions.filter(subscription => subscription.state === SubscriptionState.active);
         const availableProducts = [];

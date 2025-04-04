@@ -48,6 +48,11 @@ export interface ServiceProperties {
     gatewayUrl: string;
 
     /**
+     * Example: https://aztest.developer.azure-api.net
+     */
+    developerPortalUrl: string;
+
+    /**
      * Example: https://aztest.portal.azure-api.net
      */
     portalUrl: string;
@@ -56,6 +61,11 @@ export interface ServiceProperties {
      * Example: https://aztest.management.azure-api.net
      */
     managementApiUrl: string;
+
+    /**
+     * Example: https://aztest.data.current.azure-api.net
+     */
+    dataApiUrl: string;
 
     /**
      * Example: https://aztest.scm.azure-api.net
@@ -93,8 +103,8 @@ export interface ServiceDescriptionContract {
      */
     etag: string;
 
-    properties: ServiceProperties;    
-    
+    properties: ServiceProperties;
+
     sku: ServiceSku;
 
     name: string;
