@@ -369,6 +369,16 @@ export const fuiTheme: Theme = {
 export const isRedesignEnabledSetting = "isRedesignEnabled";
 
 /**
+ * Key for the theme setting
+ */
+export const themeSetting = "theme";
+
+/**
+ * Value of the new theme setting
+ */
+export const newTheme = "apim-v2";
+
+/**
  * Key for the setting that tracks if reset to the new theme is enabled
  */
 export const isApplyNewThemeEnabledSetting = "isApplyNewThemeEnabled";
