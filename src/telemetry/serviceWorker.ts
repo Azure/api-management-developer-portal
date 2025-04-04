@@ -4,7 +4,7 @@ declare const clients: any;
 declare const self: ServiceWorkerGlobalScope;
 
 // Check if running in a browser or Node.js environment
-const isServiceWorker = typeof self !== 'undefined' && typeof clients !== 'undefined';
+const isServiceWorker = typeof self !== "undefined" && typeof clients !== "undefined";
 
 const sensitiveParams = ["client_secret", "salt", "sig", "signature", "key", "secret", "token", "access_token", "username", "user_name", "user", "password"];
 const allowedList = new Set(["state", "session_state"]);
@@ -120,7 +120,7 @@ export function sanitizeUrl(requestUrl: string): string {
     if (!requestUrl) {
         return requestUrl;
     }
-    let url = requestUrl;
+    const url = requestUrl;
 
     // Clean hash parameters if they exist
     if (url.match(/#.*=/)) {
