@@ -475,4 +475,21 @@ export class Utils {
             return false;
         }
     }
+
+    public static async getFeatureValueOrNull(featureFlagName: string, settingsProvider: ISettingsProvider, logger: Logger): Promise<boolean|null> {
+        try {
+            const settingsObject = await settingsProvider.getSetting(FEATURE_FLAGS);
+
+            const featureFlags = new Map(Object.entries(settingsObject ?? {}));
+            if (!featureFlags || !featureFlags.has(featureFlagName)) {
+                return null;
+            }
+
+            const featureFlagValue = featureFlags.get(featureFlagName);
+            return Boolean(featureFlagValue);
+        } catch (error) {
+            logger?.trackEvent("FeatureFlag", { message: "Feature flag check failed", data: error.message });
+            return false;
+        }
+    }
 }
