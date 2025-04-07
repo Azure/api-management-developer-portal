@@ -17,7 +17,7 @@ import { MediaModal } from './media/mediaModal';
 import { CustomWidgets } from './custom-widgets/customWidgets';
 import { OnboardingModal } from './onboardingModal';
 import { lightTheme } from './utils/themes';
-import { isRedesignEnabledSetting, mobileBreakpoint } from '../constants';
+import { isRedesignEnabledSetting, mobileBreakpoint, newTheme, themeSetting } from '../constants';
 initializeIcons();
 
 const enum NavItem {
@@ -39,7 +39,8 @@ interface LeftPanelState {
     selectedNavItem: NavItem,
     isMobile: boolean,
     showOnboardingModal: boolean,
-    isRedesignEnabled: boolean
+    isRedesignEnabled: boolean,
+    isNewThemeEnabled: boolean
 }
 
 const pageIcon: IIconProps = { iconName: 'Page' };
@@ -79,7 +80,8 @@ export class LeftPanel extends React.Component<{}, LeftPanelState> {
             selectedNavItem: NavItem.Main,
             isMobile: window.innerWidth < mobileBreakpoint,
             showOnboardingModal: false,
-            isRedesignEnabled: false
+            isRedesignEnabled: false,
+            isNewThemeEnabled: false
         };
     }
 
@@ -101,7 +103,17 @@ export class LeftPanel extends React.Component<{}, LeftPanelState> {
         } catch (error) {
             this.logger?.trackError(error, { message: `Failed to get setting: ${isRedesignEnabledSetting} - admin panel` });
         }
+
+        let themeSettingValue = '';
+        try {
+            themeSettingValue = await this.siteService.getSetting(themeSetting);
+            console.log(themeSettingValue);
+        } catch (error) {
+            this.logger?.trackError(error, { message: `Failed to get setting: ${themeSetting} - admin panel` });
+        }
+
         this.setState({ isRedesignEnabled: !!redesignSetting });
+        this.setState({ isNewThemeEnabled: themeSettingValue === newTheme });
     }
 
     checkScreenSize = (): void => {
@@ -244,19 +256,21 @@ export class LeftPanel extends React.Component<{}, LeftPanelState> {
                     { this.state.selectedNavItem === NavItem.Media && <MediaModal onDismiss={this.handleBackButtonClick.bind(this)} /> }
                     { this.state.selectedNavItem === NavItem.Settings && <SettingsModal onDismiss={this.handleBackButtonClick.bind(this)} /> }
                     { this.state.selectedNavItem === NavItem.Help && <HelpModal onDismiss={this.handleBackButtonClick.bind(this)} /> }
-                    <Toggle
-                        label={"Preview new UI design"}
-                        onText={"On"}
-                        offText={"Off"}
-                        checked={this.state.isRedesignEnabled}
-                        onChange={async (_, checked) => {
-                            this.setState({ isRedesignEnabled: checked });
-                            await this.siteService.setSetting(isRedesignEnabledSetting, checked);
-                            this.logger.trackEvent(`${checked ? 'Checked' : 'Unchecked'}: Preview new UI design`);
-                            this.eventManager.dispatchEvent('onSaveChanges');
-                            this.eventManager.dispatchEvent('onDataPush'); // Needed to reload the runtime part
-                        }} 
-                    />
+                    {!this.state.isNewThemeEnabled &&
+                        <Toggle
+                            label={"Preview new UI design"}
+                            onText={"On"}
+                            offText={"Off"}
+                            checked={this.state.isRedesignEnabled}
+                            onChange={async (_, checked) => {
+                                this.setState({ isRedesignEnabled: checked });
+                                await this.siteService.setSetting(isRedesignEnabledSetting, checked);
+                                this.logger.trackEvent(`${checked ? 'Checked' : 'Unchecked'}: Preview new UI design`);
+                                this.eventManager.dispatchEvent('onSaveChanges');
+                                this.eventManager.dispatchEvent('onDataPush'); // Needed to reload the runtime part
+                            }} 
+                        />
+                    }
                 </div>
             </>
         )
