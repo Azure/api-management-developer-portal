@@ -17,6 +17,7 @@ import { Utils } from "../../../../../../utils";
 import { OAuth2AuthenticationSettings } from "../../../../../../contracts/authenticationSettings";
 import { GrantTypes, oauthSessionKey } from "../../../../../../constants";
 import { SearchQuery } from "../../../../../../contracts/searchQuery";
+import { noAuthFlow } from "./ConsoleAuthorization";
 
 interface SubscriptionOption {
     name: string;
@@ -235,7 +236,7 @@ export const onGrantTypeChange = async (
 ): Promise<ConsoleHeader[]> => {
     await clearStoredCredentials(sessionManager);
 
-    if (!grantType || grantType === GrantTypes.password) {
+    if (!grantType || grantType === GrantTypes.password || grantType === noAuthFlow) {
         const authHeader = headers?.find(header => header.name() === KnownHttpHeaders.Authorization);
         if (authHeader) {
             const newHeaders = headers.filter(header => header.id !== authHeader.id);
