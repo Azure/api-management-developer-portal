@@ -34,7 +34,7 @@ type ConsoleAuthorizationProps = {
     isGqlConsole?: boolean;
 }
 
-const noAuthFlow = "no-auth";
+export const noAuthFlow = "no-auth";
 
 export const ConsoleAuthorization = ({
     api,
