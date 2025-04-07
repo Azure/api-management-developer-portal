@@ -102,7 +102,11 @@ const ProductSubscribeRuntimeFC = ({ backendService, usersService, tenantService
     const hasToS = !!product?.terms;
     const subscribe: TSubscribe = useCallback(async (subscriptionName: string, consented?: boolean) => {
         const canSubscribe = (isDelegationEnabled || subscriptionName.length > 0) && (!hasToS || consented);
-        if (!productName || !userId || !canSubscribe) return;
+        if (!userId) {
+            usersService.navigateToSignin();
+            return;
+        }
+        if (!productName || !canSubscribe) return;
 
         return handleSubscribing(backendService, productService, productName, userId, subscriptionName, isDelegationEnabled)
             .then(() => usersService.navigateToProfile())
