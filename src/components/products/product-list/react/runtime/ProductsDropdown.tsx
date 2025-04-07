@@ -139,7 +139,7 @@ export const ProductsDropdown = ({
                         >
                             <button className={"button button-default show-more-options"} onClick={() => setPageNumber(prev => prev + 1)}>Show more</button>
                         </Option>
-                    )}
+                   )}
                 </>
             )}
         </Combobox>

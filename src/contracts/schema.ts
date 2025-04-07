@@ -1,6 +1,5 @@
 
 import { Bag } from "@paperbits/common";
-import { ArmResource } from "./armResource";
 
 export interface ReferenceObjectContract {
     $ref?: string;
@@ -92,7 +91,7 @@ export interface SchemaObjectContract extends ReferenceObjectContract {
  */
 export interface XmlObject {
     /**
-     * Replaces the name of the element/attribute used for the described schema property. 
+     * Replaces the name of the element/attribute used for the described schema property.
      * When defined within items, it will affect the name of the individual XML elements within the list.
      * When defined alongside type being array (outside the items), it will affect the wrapping element and only if wrapped is true.
      * If wrapped is false, it will be ignored.
@@ -122,7 +121,7 @@ export interface XmlObject {
 }
 
 /**
- * 
+ *
  */
 export interface SwaggerSchemaContract {
     definitions: Bag<SchemaObjectContract>;
@@ -143,18 +142,17 @@ export interface GraphQLSchemaContract {
 }
 
 /**
- * 
+ *
  */
-export interface SchemaContract extends ArmResource {
-    properties: {
-        contentType: string;
-        document?: SwaggerSchemaContract | OpenApiSchemaContract | XsdSchemaContract | GraphQLSchemaContract;
-    };
+export interface SchemaContract {
+    id: string;
+    contentType: string;
+    document?: SwaggerSchemaContract | OpenApiSchemaContract | XsdSchemaContract | GraphQLSchemaContract;
 }
 
 export enum SchemaType {
     swagger = "application/vnd.ms-azure-apim.swagger.definitions+json",
     openapi = "application/vnd.oai.openapi.components+json",
     xsd = "application/vnd.ms-azure-apim.xsd+xml",
-    graphQL  = "application/vnd.ms-azure-apim.graphql.schema"
+    graphQL = "application/vnd.ms-azure-apim.graphql.schema"
 }

@@ -3,10 +3,9 @@ import { OpenIdConnectProviderContract } from "../contracts/openIdConnectProvide
 export class OpenIdConnectProvider {
     constructor(contract: OpenIdConnectProviderContract) {
         this.name = contract.name;
-        this.displayName = contract.properties.displayName;
-        this.description = contract.properties.description;
-        this.clientId = contract.properties.clientId;
-        this.metadataEndpoint = contract.properties.metadataEndpoint;
+        this.displayName = contract.name;
+        this.description = contract.description;
+        this.metadataEndpoint = contract.metadataEndpoint;
     }
 
     /**
@@ -34,7 +33,6 @@ export class OpenIdConnectProvider {
      */
 
     public clientId: string;
-
     /**
      * Is this provider used for the test console?
      */

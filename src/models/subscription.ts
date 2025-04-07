@@ -21,22 +21,26 @@ export class Subscription {
     public isActive: boolean;
 
     constructor(contract?: SubscriptionContract) {
-        this.id = Utils.getResourceName("users", contract.id, "shortId");
-        this.name = contract.properties.displayName || "Unnamed";
-        this.createdDate = new Date(contract.properties.createdDate);
+        if (!contract) {
+            return;
+        }
 
-        this.endDate = (contract.properties.endDate && new Date(contract.properties.endDate)) || undefined;
-        this.expirationDate = (contract.properties.expirationDate && new Date(contract.properties.expirationDate)) || undefined;
-        this.notificationDate = (contract.properties.notificationDate && new Date(contract.properties.notificationDate)) || undefined;
+        this.id = contract.id;
+        this.name = contract.name || "Unnamed";
+        this.createdDate = new Date(contract.createdDate);
 
-        this.primaryKey = contract.properties.primaryKey;
-        this.scope = contract.properties.scope;
-        this.secondaryKey = contract.properties.secondaryKey;
-        this.startDate = (contract.properties.startDate && contract.properties.startDate.split("T")[0]) || undefined;
-        this.stateComment = contract.properties.stateComment;
-        this.userId = Utils.getResourceName("users", contract.properties.ownerId, "shortId");
+        this.endDate = (contract.endDate && new Date(contract.endDate)) || undefined;
+        this.expirationDate = (contract.expirationDate && new Date(contract.expirationDate)) || undefined;
+        this.notificationDate = (contract.notificationDate && new Date(contract.notificationDate)) || undefined;
 
-        this.state = SubscriptionState[contract.properties.state];
+        this.primaryKey = contract.primaryKey;
+        this.scope = contract.scope;
+        this.secondaryKey = contract.secondaryKey;
+        this.startDate = (contract.startDate && contract.startDate.split("T")[0]) || undefined;
+        this.stateComment = contract.stateComment;
+        this.userId = contract.ownerId;
+
+        this.state = SubscriptionState[contract.state];
         this.isExpired = this.state === SubscriptionState.expired;
         this.isAwaitingApproval = this.state === SubscriptionState.submitted;
         this.isActive = this.state === SubscriptionState.active;

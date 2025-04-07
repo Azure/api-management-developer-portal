@@ -12,6 +12,11 @@ export interface IAuthenticator {
     getAccessToken(): Promise<AccessToken>;
 
     /**
+     * Returns stored access token.
+     */
+    getStoredAccessToken(): AccessToken;
+
+    /**
      * Sets new token for the session.
      * @param accessToken {string} Access token in SharedAccessSignature or Bearer token format.
      */

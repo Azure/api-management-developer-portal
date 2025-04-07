@@ -11,6 +11,7 @@ export enum eventTypes {
     error = "Error",
     userError = "UserError",
     trace = "Trace",
+    clientRequest = "ClientRequest",
     aadB2CLogin = "AadB2CLogin",
     aadLogin = "AadLogin",
     click = "Click",

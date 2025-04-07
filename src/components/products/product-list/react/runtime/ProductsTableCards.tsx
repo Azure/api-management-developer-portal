@@ -91,9 +91,13 @@ export const ProductsTableCards = ({
             ) : (
                 <>
                     <div style={{ margin: "1rem auto 2rem" }}>
-                        <Pagination pageNumber={pageNumber} setPageNumber={setPageNumber} pageMax={Math.ceil(products?.count / defaultPageSize)} />
+                        <Pagination
+                            pageNumber={pageNumber}
+                            setPageNumber={setPageNumber}
+                            hasNextPage={!!products?.nextLink}
+                        />
                     </div>
-
+                    
                     <div>
                         {layout === TLayout.table ? (
                             <ProductsTable products={products.value} getReferenceUrl={getReferenceUrl} />
@@ -103,7 +107,11 @@ export const ProductsTableCards = ({
                     </div>
 
                     <div style={{ margin: "1rem auto" }}>
-                        <Pagination pageNumber={pageNumber} setPageNumber={setPageNumber} pageMax={Math.ceil(products?.count / defaultPageSize)} />
+                        <Pagination
+                            pageNumber={pageNumber}
+                            setPageNumber={setPageNumber}
+                            hasNextPage={!!products?.nextLink}
+                        />
                     </div>
                 </>
             )}

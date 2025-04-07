@@ -56,7 +56,7 @@ export class ConsoleParameter {
         }
 
         if (!contract.defaultValue) {
-            this.optionsCaption = 'Select value...';
+            this.optionsCaption = "Select value...";
         }
 
         this.value(contract.defaultValue);

@@ -1,9 +1,7 @@
-import { ArmResource } from "./armResource";
-
 /**
- *  Contract of API change log's property
+ *  Contract of API change log
  */
-export interface ChangeLogPropertyContract {
+export interface ChangeLogContract {
 
     /**
      *  The date when this API change log is created
@@ -19,11 +17,4 @@ export interface ChangeLogPropertyContract {
      *  The notes of this API change
      */
     notes?: string;
-}
-
-/**
- *  Contract of API change log
- */
-export interface ChangeLogContract extends ArmResource {
-    properties: ChangeLogPropertyContract;
 }

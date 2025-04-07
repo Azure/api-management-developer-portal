@@ -1,6 +1,6 @@
 const { merge } = require("webpack-merge");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
-const { designerConfig, designerRuntimeConfig } = require("./webpack.designer.js");
+const asyncDesignerConfig = require("./webpack.designer.arm.js");
 
 const developmentConfig = {
     mode: "development",
@@ -18,7 +18,10 @@ const developmentConfig = {
     ]
 }
 
-module.exports = [
-    merge(designerConfig, developmentConfig),
-    designerRuntimeConfig
-]
+module.exports = async () => {
+    const resolvedDesignerConfig = await asyncDesignerConfig();
+    return [
+      merge(resolvedDesignerConfig.designerConfig, developmentConfig),
+      resolvedDesignerConfig.designerRuntimeConfig
+    ];
+};

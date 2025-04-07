@@ -1,29 +1,38 @@
-import * as Constants from "../src/constants";
 import { TestUtils } from "./testUtils";
 import { HttpClient, HttpRequest, HttpResponse, HttpMethod, HttpHeader } from "@paperbits/common/http";
-import { XmlHttpRequestClient } from "@paperbits/common/http";
+
 import { KnownHttpHeaders } from "../src/models/knownHttpHeaders";
 import { KnownMimeTypes } from "../src/models/knownMimeTypes";
+import { CertificateOptions, TestsHttpClient } from "./testsHttpClient";
+import { AuthHeaderGenerator } from "./auth/azureTokenProvider";
+import * as Constants from "../src/constants";
 
 export class MapiClient {
+    private static readonly testsApiVersion: string = "2023-03-01-preview";
+
     private managementApiUrl: string;
     private static _instance: MapiClient;
-    private token: string;
-    private constructor(
-        private readonly httpClient: HttpClient
-    ) { 
-        
+
+    private constructor(private readonly httpClient: HttpClient) {
+
     }
 
     private async initialize(): Promise<void> {
         const settings = await TestUtils.getConfigAsync();
-        this.token = settings["accessToken"];
-        this.managementApiUrl = settings["managementUrl"];
+        if (!this.isArmUrl(settings["managementUrl"]) && !settings["managementUrl"].includes("/mapi")) {
+            this.managementApiUrl = `${settings["managementUrl"]}/subscriptions/000/resourceGroups/000/providers/Microsoft.ApiManagement/service/000/`;
+        } else {
+            this.managementApiUrl = `${settings["managementUrl"]}`;
+        }
     }
-    
-    public static get Instance()
-    {
-        return this._instance || (this._instance = new this(new XmlHttpRequestClient()));
+
+    private isArmUrl(resourceUrl: string): boolean {
+        const regex = /subscriptions\/.*\/resourceGroups\/.*\/providers\/microsoft.ApiManagement\/service/i;
+        return regex.test(resourceUrl);
+    }
+
+    public static get Instance() {
+        return this._instance || (this._instance = new this(new TestsHttpClient()));
     }
 
     private async requestInternal<T>(httpRequest: HttpRequest): Promise<T> {
@@ -39,7 +48,8 @@ export class MapiClient {
             httpRequest.headers.push({ name: KnownHttpHeaders.ContentType, value: KnownMimeTypes.Json });
         }
 
-        httpRequest.headers.push({ name: KnownHttpHeaders.Authorization, value: `${this.token}` });
+        const authHeader = await AuthHeaderGenerator.Instance.getAuthHeader();
+        httpRequest.headers.push({ name: KnownHttpHeaders.Authorization, value: `${authHeader}` });
 
         if (!httpRequest.headers.some(x => x.name === "Accept")) {
             httpRequest.headers.push({ name: "Accept", value: "*/*" });
@@ -62,9 +72,17 @@ export class MapiClient {
         let response: HttpResponse<T>;
 
         try {
-            response = await this.httpClient.send<T>(httpRequest);
+            const settings = await TestUtils.getConfigAsync();
+            let certificate: Buffer | undefined = undefined;
+            if (settings["certificate"]) {
+                certificate = Buffer.from(settings["certificate"], "base64");
+            }
+
+            console.log(`Sending ${httpRequest.method} request to ${httpRequest.url}`);
+            response = await (this.httpClient as TestsHttpClient).send<T>(httpRequest, <CertificateOptions>{ pfxCertificate: certificate });
         }
         catch (error) {
+            console.error(error);
             throw new Error(`Unable to complete request. Error: ${error.message}`);
         }
 
@@ -87,10 +105,9 @@ export class MapiClient {
             else {
                 return <any>text;
             }
-        }else{
+        } else {
             throw new Error(`Unable to complete request. Status: ${response.statusCode}. Error: ${text}`);
         }
-        return <any>null;
     }
 
     public async put<TResponse>(url: string, headers?: HttpHeader[], body?: any): Promise<TResponse> {
@@ -99,6 +116,14 @@ export class MapiClient {
             url: url,
             headers: headers,
             body: body
+        });
+    }
+
+    public async get<TResponse>(url: string, headers?: HttpHeader[]): Promise<TResponse> {
+        return await this.requestInternal<TResponse>({
+            method: HttpMethod.get,
+            url: url,
+            headers: headers,
         });
     }
 

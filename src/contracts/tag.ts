@@ -1,9 +1,11 @@
-import { ArmResource } from "./armResource";
+export interface TagContract {
+    /**
+     * Tag identifier.
+     */
+    id: string;
 
-export interface TagProperties {
-    displayName: string;
-}
-
-export interface TagContract extends ArmResource {
-    properties: TagProperties;
+    /**
+     * Tag name. Must be 1 to 160 characters long.
+     */
+    name: string;
 }

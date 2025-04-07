@@ -9,5 +9,6 @@ export enum KnownHttpHeaders {
     OcpApimSasToken = "Ocp-Apim-Sas-Token",
     SoapAction = "SOAPAction",
     IfMatch = "If-Match",
-    XMsApiName = "X-Ms-Api-Name"
+    XMsApiName = "X-Ms-Api-Name",
+    XMsApiDevPortal = "x-ms-api-devportal"
 }

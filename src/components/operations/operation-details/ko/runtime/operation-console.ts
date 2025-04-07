@@ -6,7 +6,7 @@ import { Component, OnMounted, Param } from "@paperbits/common/ko/decorators";
 import { Logger } from "@paperbits/common/logging";
 import { saveAs } from "file-saver";
 import { getExtension } from "mime";
-import { downloadableTypes, RequestBodyType, ServiceSkuName, TypeOfApi } from "../../../../../constants";
+import { downloadableTypes, RequestBodyType, TypeOfApi } from "../../../../../constants";
 import { HttpResponse } from "../../../../../contracts/httpResponse";
 import { Api } from "../../../../../models/api";
 import { AuthorizationServer } from "../../../../../models/authorizationServer";
@@ -22,13 +22,12 @@ import { Revision } from "../../../../../models/revision";
 import { RouteHelper } from "../../../../../routing/routeHelper";
 import { ApiService } from "../../../../../services/apiService";
 import { TemplatingService } from "../../../../../services/templatingService";
-import { TenantService } from "../../../../../services/tenantService";
 import { Utils } from "../../../../../utils";
-import template from "./operation-console.html";
 import { ResponsePackage } from "./responsePackage";
 import { templates } from "./templates/templates";
 import { LogItem, WebsocketClient } from "./websocketClient";
 import { RequestError } from "../../../../../errors/requestError";
+import template from "./operation-console.html";
 
 
 @Component({
@@ -53,8 +52,8 @@ export class OperationConsole {
     public readonly isHostnameWildcarded: ko.Computed<boolean>;
     public readonly hostnameSelectionEnabled: ko.Observable<boolean>;
     public readonly wildcardSegment: ko.Observable<string>;
-    public isConsumptionMode: boolean;
     public templates: Object;
+    public isConsumptionMode: boolean;
     public backendUrl: string;
     public requestLanguages: Object[];
 
@@ -71,7 +70,6 @@ export class OperationConsole {
 
     constructor(
         private readonly apiService: ApiService,
-        private readonly tenantService: TenantService,
         private readonly httpClient: HttpClient,
         private readonly routeHelper: RouteHelper,
         private readonly settingsProvider: ISettingsProvider,
@@ -150,8 +148,6 @@ export class OperationConsole {
 
     @OnMounted()
     public async initialize(): Promise<void> {
-        const skuName = await this.tenantService.getServiceSkuName();
-        this.isConsumptionMode = skuName === ServiceSkuName.Consumption;
         this.backendUrl = await this.settingsProvider.getSetting<string>("backendUrl");
         this.requestLanguages = (this.api().type === TypeOfApi.webSocket) ? this.loadRequestLanguagesWs() : this.loadRequestLanguagesRest();
 
@@ -165,7 +161,6 @@ export class OperationConsole {
 
             this.setHostname(hostname);
         });
-        this.api.subscribe(this.resetConsole);
         this.operation.subscribe(this.resetConsole);
         this.selectedLanguage.subscribe(this.updateRequestSummary);
         this.selectedRepresentation.subscribe(representation => {
@@ -195,7 +190,7 @@ export class OperationConsole {
         this.responseBody(null);
         this.requestError(null);
 
-        const operation = await this.apiService.getOperation(selectedOperation.id);
+        const operation = await this.apiService.getOperation(selectedApi.id, selectedOperation.id);
         const consoleOperation = new ConsoleOperation(selectedApi, operation);
         this.consoleOperation(consoleOperation);
 
@@ -222,7 +217,7 @@ export class OperationConsole {
             this.selectedLanguage("ws_wscat");
         }
 
-        if (!this.isConsumptionMode && this.api().type !== TypeOfApi.webSocket) {
+        if (this.api().type !== TypeOfApi.webSocket) {
             this.setNoCacheHeader();
         }
 
@@ -388,6 +383,7 @@ export class OperationConsole {
 
         const headersRequest: HeadersInit = {};
         request.headers.forEach(header => headersRequest[header.name] = header.value);
+        headersRequest[KnownHttpHeaders.XMsApiDevPortal] = this.api().id;
 
         let response: Response;
 
@@ -437,7 +433,7 @@ export class OperationConsole {
      */
     public async sendFromProxy(request: HttpRequest): Promise<HttpResponse> {
         if (request.body) {
-            request.body = Buffer.from(request.body);
+            request.body = Array.from(Buffer.from(request.body));
         }
 
         const formData = new FormData();
@@ -450,7 +446,7 @@ export class OperationConsole {
         const proxiedRequest: HttpRequest = {
             url: `${baseProxyUrl}/send`,
             method: HttpMethod.post,
-            headers: [{ name: KnownHttpHeaders.XMsApiName, value: apiName }],
+            headers: [{ name: KnownHttpHeaders.XMsApiName, value: apiName }, { name: KnownHttpHeaders.XMsApiDevPortal, value: this.api().id }],
             body: formData
         };
 

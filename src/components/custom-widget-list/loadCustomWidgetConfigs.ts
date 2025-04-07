@@ -16,6 +16,7 @@ export async function listConfigBlobs(blobStorage: MapiBlobStorage): Promise<TCu
             return null;
         }
     });
+
     const configs = await Promise.all(configsPromises);
     return configs.filter(config => config !== null);
 }

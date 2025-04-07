@@ -1,5 +1,5 @@
-import * as Constants from "./../constants";
-import { AccessToken, IAuthenticator } from "../authentication";
+import * as Constants from "../constants";
+import { AccessToken, IAuthenticator } from ".";
 import { Utils } from "../utils";
 
 export class DefaultAuthenticator implements IAuthenticator {
@@ -28,7 +28,21 @@ export class DefaultAuthenticator implements IAuthenticator {
             await this.runSsoFlow();
         }
 
-        const storedToken = sessionStorage.getItem("accessToken");
+        return this.getStoredAccessToken();
+    }
+
+    public getStoredAccessToken(): AccessToken {
+        let storedToken = sessionStorage.getItem("accessToken");
+        if (!storedToken) {
+            const designSettings = sessionStorage.getItem(Constants.SettingNames.designTimeSettings);
+            if (designSettings) {
+                const settings = JSON.parse(designSettings);
+                storedToken = settings[Constants.SettingNames.managementApiAccessToken];
+                if (storedToken) {
+                    sessionStorage.setItem("accessToken", storedToken);
+                }
+            }
+        }
 
         if (storedToken) {
             const accessToken = AccessToken.parse(storedToken);

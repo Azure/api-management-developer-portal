@@ -58,12 +58,12 @@ export const loadSubscriptionKeys = async (api: Api, apiService: ApiService, pro
     const userId = await usersService.getCurrentUserId();
     if (!userId) return;
 
+    const allProducts = await apiService.getAllApiProducts(`/apis/${api.id}`);
+    const products = allProducts || [];
     const subscriptionsQuery: SearchQuery = {
         pattern: subscriptionsPattern
     };
 
-    const pageOfProducts = await apiService.getAllApiProducts(api.id);
-    const products = pageOfProducts && pageOfProducts.value ? pageOfProducts.value : [];
     const allSubscriptions = await productService.getProductsAllSubscriptions(api.name, products, userId, subscriptionsQuery);
     const subscriptions = allSubscriptions.filter(subscription => subscription.state === SubscriptionState.active);
     const availableProducts = [];

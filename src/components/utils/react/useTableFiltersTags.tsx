@@ -9,7 +9,7 @@ const loadTags = async (tagService: TagService, pageNumber?: number) => {
     const skip = (pageNumber - 1) * Constants.defaultPageSize;
     const take = Constants.defaultPageSize;
 
-    return await tagService.getTags("apis", undefined, { skip, take });
+    return await tagService.getTags("apis");
 };
 
 export const useTableFiltersTags = (tagService: TagService): TFilterGroup => {

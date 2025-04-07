@@ -7,9 +7,8 @@ import { Product } from "../../../../../models/product";
 import { SubscriptionState } from "../../../../../contracts/subscription";
 import { RouteHelper } from "../../../../../routing/routeHelper";
 import { UsersService } from "../../../../../services/usersService";
-import { TenantService } from "../../../../../services/tenantService";
-import { BackendService } from "../../../../../services/backendService";
 import { ProductService } from "../../../../../services/productService";
+import { IDelegationService } from "../../../../../services/IDelegationService";
 import { DelegationAction, DelegationParameters } from "../../../../../contracts/tenantSettings";
 import { Utils } from "../../../../../utils";
 import { fuiTheme } from "../../../../../constants";
@@ -19,16 +18,15 @@ type ProductSubscribeRuntimeProps = {
     showTermsByDefault: boolean;
 }
 type ProductSubscribeRuntimeFCProps = ProductSubscribeRuntimeProps & {
-    backendService: BackendService;
+    delegationService: IDelegationService;
     usersService: UsersService;
-    tenantService: TenantService;
     productService: ProductService;
     productName: string;
 };
 
-const loadProduct = async (usersService: UsersService, tenantService: TenantService, productService: ProductService, productName: string) => {
+const loadProduct = async (usersService: UsersService, delegationService: IDelegationService, productService: ProductService, productName: string) => {
     const promises = [
-        await tenantService.isSubscriptionDelegationEnabled(),
+        await delegationService.isSubscriptionDelegationEnabled(),
         await productService.getProduct(`products/${productName}`),
         await usersService.getCurrentUserId(),
     ] as const;
@@ -46,7 +44,7 @@ const loadProduct = async (usersService: UsersService, tenantService: TenantServ
 };
 
 const handleSubscribing = async (
-    backendService: BackendService,
+    delegationService: IDelegationService,
     productService: ProductService,
     productName: string,
     userId: string,
@@ -54,10 +52,11 @@ const handleSubscribing = async (
     isDelegationEnabled: boolean,
 ) => {
     if (isDelegationEnabled) {
+        const userIdentifier = Utils.getResourceName("users", userId);
         const delegationParam = {};
         delegationParam[DelegationParameters.ProductId] = productName;
-        delegationParam[DelegationParameters.UserId] =  Utils.getResourceName("users", userId);
-        const delegationUrl = await backendService.getDelegationString(DelegationAction.subscribe, delegationParam);
+        delegationParam[DelegationParameters.UserId] = userIdentifier;
+        const delegationUrl = await delegationService.getUserDelegationUrl(userIdentifier, DelegationAction.subscribe, delegationParam);
         if (delegationUrl) {
             location.assign(delegationUrl);
             return;
@@ -70,7 +69,7 @@ const handleSubscribing = async (
     return productService.createSubscription(subscriptionId, userId, productId, subscriptionName);
 }
 
-const ProductSubscribeRuntimeFC = ({ backendService, usersService, tenantService, productService, productName, showTermsByDefault }: ProductSubscribeRuntimeFCProps) => {
+const ProductSubscribeRuntimeFC = ({ usersService, delegationService, productService, productName, showTermsByDefault }: ProductSubscribeRuntimeFCProps) => {
     const [working, setWorking] = useState(true);
     const [{ product, isLimitReached, isDelegationEnabled, userId }, setData] = useState<{
         product?: Product;
@@ -81,7 +80,7 @@ const ProductSubscribeRuntimeFC = ({ backendService, usersService, tenantService
 
     useEffect(() => {
         setWorking(true);
-        loadProduct(usersService, tenantService, productService, productName)
+        loadProduct(usersService, delegationService, productService, productName)
             .then(setData)
             .catch((error) => {
                 if (error.code === "Unauthorized") {
@@ -97,7 +96,7 @@ const ProductSubscribeRuntimeFC = ({ backendService, usersService, tenantService
                 throw new Error(`Unable to load products. Error: ${error.message}`);
             })
             .finally(() => setWorking(false));
-    }, [usersService, tenantService, productService, productName]);
+    }, [usersService, delegationService, productService, productName]);
 
     const hasToS = !!product?.terms;
     const subscribe: TSubscribe = useCallback(async (subscriptionName: string, consented?: boolean) => {
@@ -108,7 +107,7 @@ const ProductSubscribeRuntimeFC = ({ backendService, usersService, tenantService
         }
         if (!productName || !canSubscribe) return;
 
-        return handleSubscribing(backendService, productService, productName, userId, subscriptionName, isDelegationEnabled)
+        return handleSubscribing(delegationService, productService, productName, userId, subscriptionName, isDelegationEnabled)
             .then(() => usersService.navigateToProfile())
             .catch((error) => {
                 if (error.code === "Unauthorized") {
@@ -118,7 +117,7 @@ const ProductSubscribeRuntimeFC = ({ backendService, usersService, tenantService
                 // TODO better error handling & logging
                 throw new Error(`Unable to subscribe to a product. Error: ${error.message}`);
             })
-    }, [backendService, productService, productName, userId, isDelegationEnabled, hasToS]);
+    }, [delegationService, productService, productName, userId, isDelegationEnabled, hasToS]);
 
     if (working) return <Spinner size="extra-tiny" label={"Loading data"} labelPosition={"after"} />;
     if (isLimitReached) return <span className="strong" style={{ display: "block", padding: "1rem 0" }}>You've reached maximum number of subscriptions.</span>;
@@ -130,17 +129,14 @@ export class ProductSubscribeRuntime extends React.Component<
     ProductSubscribeRuntimeProps,
     { productName?: string | null }
 > {
-    @Resolve("backendService")
-    public backendService: BackendService;
+    @Resolve("delegationService")
+    public delegationService: IDelegationService;
 
     @Resolve("usersService")
     public usersService: UsersService;
 
     @Resolve("productService")
     public productService: ProductService;
-
-    @Resolve("tenantService")
-    public tenantService: TenantService;
 
     @Resolve("routeHelper")
     public routeHelper: RouteHelper;
@@ -174,10 +170,9 @@ export class ProductSubscribeRuntime extends React.Component<
             <FluentProvider theme={fuiTheme}>
                 <ProductSubscribeRuntimeFC
                     {...this.props}
-                    backendService={this.backendService}
+                    delegationService={this.delegationService}
                     usersService={this.usersService}
                     productService={this.productService}
-                    tenantService={this.tenantService}
                     productName={this.state.productName}
                 />
             </FluentProvider>

@@ -1,4 +1,5 @@
 import { UserContract } from "../../../src/contracts/user";
+import { UserContract as SmapiUserContract} from "../../models/userContract";
 import { TestUtils } from "../../testUtils";
 import { Resource } from "./resource";
 
@@ -24,42 +25,34 @@ export class User extends Resource{
         this.responseContract = this.getResponseContract();
     }
 
-    private getProperties(): any{
+    public getRequestContract(): SmapiUserContract{
         return {
-            email: this.email,
-            firstName: this.firstName,
-            lastName: this.lastName,
-            state: "active",
-            password: this.password,
-            appType: "developerPortal"
-        };
-    }
-
-    public getRequestContract(): UserContract{
-        return {
-            properties: this.getProperties()
-        };
-    }
-
-    public getResponseContract(): any{
-        return {
-            id: `/subscriptions/000/resourceGroups/000/providers/Microsoft.ApiManagement/service/sid/users/${this.publicId}`,
-            type: "Microsoft.ApiManagement/service/users",
-            name: this.publicId,
             properties: {
                 email: this.email,
                 firstName: this.firstName,
                 lastName: this.lastName,
                 state: "active",
-                registrationDate : "2021-01-17T19:07:23.67Z",
-                note: null,
-                identities: [
-                    {
-                        provider: "Basic",
-                        id: this.email
-                    }
-                ]
+                password: this.password,
+                appType: "developerPortal"
             }
+        };
+    }
+
+    public getResponseContract(): UserContract{
+        return {
+            id: this.publicId,
+            email: this.email,
+            firstName: this.firstName,
+            lastName: this.lastName,
+            state: "active",
+            registrationDate : new Date(),
+            note: "",
+            identities: [
+                {
+                    provider: "Basic",
+                    id: this.email
+                }
+            ]
         };
     }
 

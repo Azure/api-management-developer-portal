@@ -90,7 +90,6 @@ export const NewCaptcha = ({ backendService, onInitComplete }: TCaptchaProps) =>
                     <Tab icon={<ImageRegular />} value={ECaptchaType.visual}>Visual</Tab>
                     <Tab icon={<Speaker2Regular />} value={ECaptchaType.audio}>Audio</Tab>
                 </TabList>
-
                 <div className="captcha-challenge">
                     {working ? (
                         <div style={{ padding: "13px 0" }}>
@@ -110,7 +109,6 @@ export const NewCaptcha = ({ backendService, onInitComplete }: TCaptchaProps) =>
                         </audio>
                     )}
                 </div>
-
                 <Link onClick={() => generateCaptcha(captchaType)}>Generate new captcha</Link>
             </Stack>
             <Stack className="form-group">
