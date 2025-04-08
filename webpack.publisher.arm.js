@@ -5,6 +5,7 @@ const CopyWebpackPlugin = require("copy-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const runtimeConfig = require("./webpack.runtime");
 const { getArmToken } = require("./auth/arm-auth");
+const config = require("./src/config.publish.json");
 
 const publisherRuntimeConfig = merge(runtimeConfig, {
     entry: { "styles/theme": ["./src/themes/website/styles/styles.scss"] },
@@ -12,7 +13,16 @@ const publisherRuntimeConfig = merge(runtimeConfig, {
 });
 
 async function generateWebpackConfig() {
-    const armToken = await getArmToken();
+    const tokenOptions = {};
+    if (config.tenantId) {
+        console.log(`Using tenantId: ${config.tenantId}`);
+        tokenOptions.tenantId = config.tenantId;
+    }
+    if (config.clientId) {
+        console.log(`Using clientId: ${config.clientId}`);
+        tokenOptions.clientId = config.clientId;
+    }
+    const armToken = await getArmToken(tokenOptions);
 
     const publisherConfig = {
         mode: "development",
