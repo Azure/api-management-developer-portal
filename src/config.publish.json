@@ -4,5 +4,7 @@
     "subscriptionId":"<service subscription>",
     "resourceGroupName":"<service resource group>",
     "serviceName":"<service name>",
+    "clientId": "<Optional. The Client ID of the Microsoft Entra application that users will sign into>",
+    "tenantId": "<Optional. The Microsoft Entra tenant (directory) ID>",
     "useHipCaptcha": false
 }
