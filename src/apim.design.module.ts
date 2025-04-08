@@ -4,7 +4,7 @@ import "./bindingHandlers/codeEditor";
 import "./bindingHandlers/copyToClipboard";
 import { UnsavedChangesRouteGuard } from "./routing/unsavedChangesRouteGuard";
 import { MapiObjectStorage, MapiBlobStorage } from "./persistence";
-import { DefaultAuthenticator } from "./components/defaultAuthenticator";
+import { DefaultAuthenticator } from "./authentication/defaultAuthenticator";
 import { IInjector, IInjectorModule } from "@paperbits/common/injection";
 import { ConsoleLogger } from "@paperbits/common/logging";
 import { DefaultSessionManager } from "@paperbits/common/persistence/defaultSessionManager";
@@ -20,7 +20,7 @@ import { SignupDesignModule } from "./components/users/signup/signup.design.modu
 import { ProfileDesignModule } from "./components/users/profile/profile.design.module";
 import { SubscriptionsDesignModule } from "./components/users/subscriptions/subscriptions.design.module";
 import { ProductDetailsDesignModule } from "./components/products/product-details/productDetails.design.module";
-import { MapiClient, IdentityService } from "./services";
+import { IdentityService } from "./services";
 import { SetupModule } from "./components/setup/setup.module";
 import { ContentModule } from "./components/content";
 import { CustomWidgetListModule } from "./components/custom-widget-list";
@@ -46,12 +46,15 @@ import { ProvisionService } from "./services/provisioningService";
 import { PolicyService } from "./services/policyService";
 import { OAuthService } from "./services/oauthService";
 import { OldContentRouteGuard } from "./routing/oldContentRouteGuard";
-import { AccessTokenRefrsher } from "./authentication/accessTokenRefresher";
 import { ApiProductsDesignModule } from "./components/apis/api-products/apiProducts.design.module";
 import { RuntimeConfigurator } from "./services/runtimeConfigurator";
 import { CustomHtmlDesignModule } from "./components/custom-html/customHtml.design.module";
 import { CustomWidgetDesignModule } from "./components/custom-widget/customWidget.design.module";
 import { CodeEditor } from "./components/code-editor/code-editor";
+import { DefaultSettingsProvider } from "./configuration";
+import { ArmService } from "./services/armService";
+import { StaticDelegationService } from "./services/staticDelegationService";
+import { NoRetryStrategy } from "./clients/retryStrategy/noRetryStrategy";
 
 export class ApimDesignModule implements IInjectorModule {
     public register(injector: IInjector): void {
@@ -81,19 +84,17 @@ export class ApimDesignModule implements IInjectorModule {
         injector.bindModule(new ApplicationListDesignModule())
         injector.bindModule(new ApplicationDetailsDesignModule());
         injector.bindModule(new ValidationSummaryDesignModule());
-        injector.bindModule(new CustomHtmlDesignModule());
-        injector.bindModule(new CustomWidgetDesignModule());
         injector.bindModule(new RoleBasedSecurityDesignModule());
         injector.bindSingleton("app", App);
         injector.bindSingleton("logger", ConsoleLogger);
         injector.bindSingleton("tenantService", TenantService);
-        injector.bindSingleton("backendService", BackendService);
         injector.bindSingleton("roleService", StaticRoleService);
         injector.bindSingleton("provisioningService", ProvisionService);
         injector.bindSingleton("identityService", IdentityService);
         injector.bindSingleton("policyService", PolicyService);
-        injector.bindSingleton("mapiClient", MapiClient);
-        injector.bindSingleton("authenticator", DefaultAuthenticator);
+        injector.bindSingleton("retryStrategy", NoRetryStrategy);
+        injector.bindSingleton("backendService", BackendService);
+
         injector.bindSingleton("objectStorage", MapiObjectStorage);
         injector.bindSingleton("blobStorage", MapiBlobStorage);
         injector.bindToCollection("routeGuards", OldContentRouteGuard);
@@ -101,12 +102,18 @@ export class ApimDesignModule implements IInjectorModule {
         injector.bindInstance("reservedPermalinks", Constants.reservedPermalinks);
         injector.bindSingleton("oauthService", OAuthService);
         injector.bindToCollection("autostart", HistoryRouteHandler);
-        injector.bindToCollection("autostart", AccessTokenRefrsher);
         injector.bindToCollection("autostart", RuntimeConfigurator);
+
         injector.bindSingleton("sessionManager", DefaultSessionManager);
+        injector.bindInstance("configFileUri", Constants.ConfigEndpoints.backend);
+        injector.bindSingleton("settingsProvider", DefaultSettingsProvider);
+        injector.bindSingleton("armService", ArmService);
+        injector.bindSingleton("delegationService", StaticDelegationService);
         injector.bind("CodeEditor", CodeEditor);
-        injector.bindModule(new CustomWidgetListModule()); // needs "blobStorage"
         injector.bindModule(new ContentModule());
         injector.bindModule(new HelpModule());
+        injector.bindModule(new CustomHtmlDesignModule());
+        injector.bindModule(new CustomWidgetDesignModule());
+        injector.bindModule(new CustomWidgetListModule());
     }
 }

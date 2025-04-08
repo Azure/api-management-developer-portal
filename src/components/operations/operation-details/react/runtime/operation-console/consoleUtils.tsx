@@ -17,6 +17,7 @@ import { Utils } from "../../../../../../utils";
 import { OAuth2AuthenticationSettings } from "../../../../../../contracts/authenticationSettings";
 import { GrantTypes, oauthSessionKey } from "../../../../../../constants";
 import { SearchQuery } from "../../../../../../contracts/searchQuery";
+import { noAuthFlow } from "./ConsoleAuthorization";
 
 interface SubscriptionOption {
     name: string;
@@ -57,12 +58,12 @@ export const loadSubscriptionKeys = async (api: Api, apiService: ApiService, pro
     const userId = await usersService.getCurrentUserId();
     if (!userId) return;
 
+    const allProducts = await apiService.getAllApiProducts(`/apis/${api.id}`);
+    const products = allProducts || [];
     const subscriptionsQuery: SearchQuery = {
         pattern: subscriptionsPattern
     };
 
-    const pageOfProducts = await apiService.getAllApiProducts(api.id);
-    const products = pageOfProducts && pageOfProducts.value ? pageOfProducts.value : [];
     const allSubscriptions = await productService.getProductsAllSubscriptions(api.name, products, userId, subscriptionsQuery);
     const subscriptions = allSubscriptions.filter(subscription => subscription.state === SubscriptionState.active);
     const availableProducts = [];
@@ -235,7 +236,7 @@ export const onGrantTypeChange = async (
 ): Promise<ConsoleHeader[]> => {
     await clearStoredCredentials(sessionManager);
 
-    if (!grantType || grantType === GrantTypes.password) {
+    if (!grantType || grantType === GrantTypes.password || grantType === noAuthFlow) {
         const authHeader = headers?.find(header => header.name() === KnownHttpHeaders.Authorization);
         if (authHeader) {
             const newHeaders = headers.filter(header => header.id !== authHeader.id);

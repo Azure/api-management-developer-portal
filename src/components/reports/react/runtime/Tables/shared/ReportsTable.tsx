@@ -3,14 +3,13 @@ import { Spinner, Table, TableBody } from "@fluentui/react-components";
 import { Pagination } from "../../../../../utils/react/Pagination";
 import { NoRecordsRow } from "../../../../../utils/react/NoRecordsRow";
 import { ScrollableTableContainer } from "../../../../../utils/react/ScrollableTableContainer";
-import { defaultPageSize } from "../../../../../../constants";
 import { Headers, TOrderState } from "./Headers";
 
 export const ReportsTable = <T extends unknown>({ mainLabel, pageState: [pageNumber, setPageNumber], orderState, data, working, children }: {
     mainLabel: string
     pageState: [number, React.Dispatch<React.SetStateAction<number>>]
     orderState: TOrderState
-    data: { value: T[], count: number } | undefined
+    data: { value: T[], nextLink?: string } | undefined
     working: boolean
     children: (product: T) => JSX.Element
 }) => (
@@ -34,7 +33,7 @@ export const ReportsTable = <T extends unknown>({ mainLabel, pageState: [pageNum
             <Spinner label={"Loading products"} labelPosition="below" style={{ marginBottom: "1.5rem" }} size="small" />
         ) : data?.value.length > 0 && (
             <div className={"pagination-container"}>
-                <Pagination pageNumber={pageNumber} setPageNumber={setPageNumber} pageMax={Math.ceil(data?.count / defaultPageSize)} />
+                <Pagination pageNumber={pageNumber} setPageNumber={setPageNumber} hasNextPage={!!data.nextLink} />
             </div>
         )}
     </>

@@ -16,17 +16,16 @@
         <div class="col-7">
             <select id="authServer" class="form-control" data-bind="value: $component.selectedAuthorizationServer">
                 <!-- ko foreach: { data: $component.authorizationServers, as: 'authorizationServer' } -->
-                <option data-bind="value: authorizationServer, text:authorizationServer.name">
+                <option data-bind="value: authorizationServer, text:authorizationServer.displayName">
                 </option>
                 <!-- /ko -->
             </select>
         </div>
         <!-- /ko -->
-
         <!-- ko if: $component.authorizationServers().length == 1 -->
         <div class="col-7">
             <label id="authServer" class="text-monospace form-label"
-                data-bind="text: $component.selectedAuthorizationServer()?.name"></label>
+                data-bind="text: $component.selectedAuthorizationServer().displayName"></label>
         </div>
         <!-- /ko -->
     </div>

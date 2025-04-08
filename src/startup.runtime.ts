@@ -45,15 +45,16 @@ window.onbeforeunload = () => {
 function initFeatures() {
     const logger = injector.resolve<Logger>("logger");
     const settingsProvider = injector.resolve<ISettingsProvider>("settingsProvider");
-    Utils.checkIsFeatureEnabled(FEATURE_CLIENT_TELEMETRY, settingsProvider, logger)
+    Utils.getFeatureValueOrNull(FEATURE_CLIENT_TELEMETRY, settingsProvider, logger)
         .then((isEnabled) => {
+            const featureFlagValue = isEnabled === null || isEnabled;
             logger.trackEvent("FeatureFlag", {
                 feature: FEATURE_CLIENT_TELEMETRY,
-                enabled: isEnabled.toString(),
+                enabled: featureFlagValue.toString(),
                 message: `Feature flag '${FEATURE_CLIENT_TELEMETRY}' - ${isEnabled ? 'enabled' : 'disabled'}`
             });
             let telemetryConfigurator = new TelemetryConfigurator(injector);
-            if (isEnabled) {
+            if (featureFlagValue) {
                 telemetryConfigurator.configure();
             } else {
                 telemetryConfigurator.cleanUp();
@@ -64,18 +65,18 @@ function initFeatures() {
             logger.trackEvent("FeatureFlag", {
                 feature: isRedesignEnabledSetting,
                 enabled: isEnabled.toString(),
-                message: `Feature flag '${isRedesignEnabledSetting}' - ${isEnabled ? 'enabled' : 'disabled'}`
+                message: `Feature flag '${isRedesignEnabledSetting}' - ${isEnabled ? "enabled" : "disabled"}`
             });
         });
 }
 
-async function checkIsRedesignEnabled(settingsProvider: ISettingsProvider, logger: Logger) {
+async function checkIsRedesignEnabled(settingsProvider: ISettingsProvider, logger: Logger): Promise<boolean> {
     try {
         const setting = await settingsProvider.getSetting(isRedesignEnabledSetting);
 
         if (!setting) return false;
 
-        return setting;
+        return Boolean(setting);
     } catch (error) {
         logger?.trackEvent("FeatureFlag", { message: "Feature flag check failed", data: error.message });
         return false;

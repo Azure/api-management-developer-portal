@@ -360,7 +360,7 @@ export class GraphqlConsole {
 
     public async sendFromProxy<T>(request: HttpRequest): Promise<HttpResponse<T>> {
         if (request.body) {
-            request.body = Buffer.from(request.body);
+            request.body = Array.from(Buffer.from(request.body));
         }
 
         const formData = new FormData();
@@ -703,7 +703,7 @@ export class GraphqlConsole {
                         this.wsLogItems.unshift(data);
                     }
                 } catch (error) {
-                    this.logger.trackError(error);
+                    this.logger.trackError(error, { message: `Error for ${data.logType}` });
                 }
             }
             else if (data.logType === LogItemType.SendData) {
@@ -714,7 +714,7 @@ export class GraphqlConsole {
                         this.wsLogItems.unshift(data);
                     }
                 } catch (error) {
-                    this.logger.trackError(error);
+                    this.logger.trackError(error, { message: `Error for ${data.logType}` });
                 }
             }
             else if (data.logType === LogItemType.Connection) {

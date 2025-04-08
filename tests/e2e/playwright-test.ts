@@ -1,3 +1,4 @@
+import * as fs from "fs";
 import { test as base } from '@playwright/test';
 import { TestUtils } from '../testUtils';
 import { TestApiService } from '../services/testApiService';
@@ -6,14 +7,15 @@ import { TestProductService } from '../services/testProductService';
 import { ITestRunner } from '../services/ITestRunner';
 import { TestRunnerMock } from '../services/testRunnerMock';
 import { TestRunner } from '../services/testRunner';
+import { TestProvisionService } from '../services/testProvisionService';
 
-let configurationTest = base.extend<{}, { configuration: Object, cleanUp: Array<Function>, apiService: TestApiService, userService: TestUserService, productService: TestProductService, testRunner: ITestRunner }>({
+let configurationTest = base.extend<{}, { configuration: Object, cleanUp: Array<Function>, apiService: TestApiService, userService: TestUserService, productService: TestProductService, testRunner: ITestRunner, provisionService: TestProvisionService }>({
   configuration: [async ({}, use) => {
     let configuration = {};
     configuration = await TestUtils.getConfigAsync();
     await use(configuration);
   }, { scope: 'worker' }],
-  
+
   testRunner: [async ({}, use) => {
     let testRunner: ITestRunner;
     if (!(await TestUtils.IsLocalEnv())){
@@ -39,6 +41,11 @@ let configurationTest = base.extend<{}, { configuration: Object, cleanUp: Array<
     await use(userService);
   }, { scope: 'worker' }],
 
+  provisionService: [async ({}, use) => {
+    let provisionService = new TestProvisionService();
+    await use(provisionService);
+  }, { scope: 'worker' }],
+
   cleanUp: [async ({}, use) => {
     let cleanUp: Array<Function> = [];
     await use(cleanUp);
@@ -56,23 +63,39 @@ let configurationTest = base.extend<{}, { configuration: Object, cleanUp: Array<
 
 
 export const test = configurationTest.extend({
-    mockedData: async ({ }, use, testInfo) => {
-        let testTitle = `${testInfo.titlePath[1]}-${testInfo.titlePath[2]}`;
-        var dataToUse = TestUtils.getTestData(testTitle);
+    mockedData: async ({ configuration }, use, testInfo) => {
         let mockedData = {};
-        mockedData["data"] = dataToUse;
-        mockedData["testName"] = testTitle;
+
+        if (configuration['isLocalRun']) {
+            const testTitle = `${testInfo.titlePath[1]}-${testInfo.titlePath[2]}`;
+            const dataToUse = TestUtils.getTestData(testTitle);
+
+            mockedData["data"] = dataToUse;
+            mockedData["testName"] = testTitle;
+        }
+
         await use(mockedData);
     },
 });
 
-test.beforeEach(async ( { cleanUp } ) => {
+let messages: string[] = [];
+
+test.beforeEach(async ( { cleanUp, page } ) => {
     cleanUp =  [];
+    messages = [];
+
+    page.on("console", msg => messages.push(msg.text()));
 });
 
-test.afterEach(async ( { cleanUp } ) => {
+test.afterEach(async ( { page, cleanUp }, testInfo ) => {
     for (const cleanUpFunction of cleanUp) {
         await cleanUpFunction();
+    }
+
+    if (testInfo.status === 'failed') {
+        const outputPath = testInfo.outputPath(testInfo.title)
+        await fs.promises.writeFile(outputPath + ".html", await page.content());
+        await fs.promises.writeFile(outputPath + ".txt", messages.join("\n"));
     }
 });
 

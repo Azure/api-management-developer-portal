@@ -3,7 +3,6 @@ import { AadConfigPublisher } from "./publishing/aadConfigPublisher";
 import { IInjector, IInjectorModule } from "@paperbits/common/injection";
 import { ConsoleLogger } from "@paperbits/common/logging";
 import { RoleBasedSecurityPublishModule } from "@paperbits/core/security/roleBasedSecurity.publish.module";
-import { MapiClient } from "./services/mapiClient";
 import { MapiObjectStorage, MapiBlobStorage } from "./persistence";
 import { ListOfApisPublishModule } from "./components/apis/list-of-apis/listOfApis.publish.module";
 import { DetailsOfApiPublishModule } from "./components/apis/details-of-api/detailsOfApi.publish.module";
@@ -17,7 +16,7 @@ import { SubscriptionsPublishModule } from "./components/users/subscriptions/sub
 import { ProductDetailsPublishModule } from "./components/products/product-details/productDetails.publish.module";
 import { StaticRouter } from "./components/staticRouter";
 import { StaticUserService } from "./services/userService";
-import { StaticAuthenticator } from "./components/staticAuthenticator";
+import { StaticAuthenticator } from "./authentication/staticAuthenticator";
 import { OperationListPublishModule } from "./components/operations/operation-list/operationList.publish.module";
 import { OperationDetailsPublishModule } from "./components/operations/operation-details/operationDetails.publish.module";
 import { ProductListPublishModule } from "./components/products/product-list/productList.publish.module";
@@ -25,13 +24,12 @@ import { ProductApisPublishModule } from "./components/products/product-apis/pro
 import { ProductSubscribePublishModule } from "./components/products/product-subscribe/productSubscribe.publish.module";
 import { ProductSubscriptionsPublishModule } from "./components/products/product-subscriptions/productSubscriptions.publish.module";
 import { IdentityService } from "./services/identityService";
-import { ResetPasswordPublishModule } from "./components/users/reset-password/resetPassword.publish.module";
 import { ConfirmPasswordPublishModule } from "./components/users/confirm-password/confirmPassword.publish.module";
 import { ChangePasswordPublishModule } from "./components/users/change-password/changePassword.publish.module";
 import { ReportsPublishModule } from "./components/reports/reports.publish.module";
 import { ApplicationListPublishModule } from "./components/applications/application-list/applicationList.publish.module";
 import { ApplicationDetailsPublishModule } from "./components/applications/application-details/applicationDetails.publish.module";
-import { TenantService } from "./services/tenantService";
+import { ResetPasswordPublishModule } from "./components/users/reset-password/resetPassword.publish.module";
 import { ValidationSummaryPublishModule } from "./components/users/validation-summary/validationSummary.publish.module";
 import { BackendService } from "./services/backendService";
 import { StaticRoleService } from "./services/roleService";
@@ -45,6 +43,10 @@ import { CustomWidgetPublishModule } from "./components/custom-widget/customWidg
 import { StaticDataHttpClient } from "./services/staticDataHttpClient";
 import { PublisherStaticDataProvider } from "./services/publisherStaticDataProvider";
 import { staticDataEnvironment, mockStaticDataEnvironment } from "./../environmentConstants";
+import { TenantService } from "./services/tenantService";
+import { StaticDelegationService } from "./services/staticDelegationService";
+import { PublishingRetryStrategy } from "./clients/retryStrategy/publishingRetryStrategy";
+import MapiClientDirect from "./clients/mapiClientDirect";
 import { RedesignConfigPublisher } from "./publishing/redesignConfigPublisher";
 
 export class ApimPublishModule implements IInjectorModule {
@@ -85,12 +87,14 @@ export class ApimPublishModule implements IInjectorModule {
         injector.bindSingleton("identityService", IdentityService);
         injector.bindSingleton("router", StaticRouter);
         injector.bindSingleton("authenticator", StaticAuthenticator);
-        injector.bindSingleton("mapiClient", MapiClient);
+        injector.bindSingleton("retryStrategy", PublishingRetryStrategy);
+        injector.bindSingleton("apiClient", MapiClientDirect);
         injector.bindSingleton("objectStorage", MapiObjectStorage);
         injector.bindSingleton("blobStorage", MapiBlobStorage);
         injector.bindSingleton("logger", ConsoleLogger);
         injector.bindSingleton("oauthService", OAuthService);
         injector.bindSingleton("runtimeConfigBuilder", RuntimeConfigBuilder);
+        injector.bindSingleton("delegationService", StaticDelegationService);
         injector.bindToCollection("publishers", AadConfigPublisher);
         injector.bindToCollection("publishers", RedesignConfigPublisher);
         injector.bindToCollection("publishers", RuntimeConfigPublisher);

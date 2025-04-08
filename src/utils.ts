@@ -6,11 +6,14 @@ import { JwtToken } from "./contracts/jwtToken";
 import { js } from "js-beautify";
 import { NameValuePair } from "./contracts/nameValuePair";
 import { FEATURE_FLAGS, USER_ID, USER_SESSION } from "./constants";
+import { ensureTrailingSlash, RegExps } from "@paperbits/common";
+import { HttpHeader } from "@paperbits/common/http";
+import { SettingNames, isUserResourceHeaderName } from "./constants";
 
 export class Utils {
     public static getResourceName(resource: string, fullId: string, resultType: string = "name"): string {
         const regexp = new RegExp(`\/${resource}\/((?!${resource}\/).*)`);// negative lookahead to escape cases when "resource" is in "fullId" multiple times in a row (e.g. ...apis/operations/operations/foo - https://github.com/Azure/api-management-developer-portal/issues/2112 )
-       const matches = regexp.exec(fullId);
+        const matches = regexp.exec(fullId);
 
         if (matches && matches.length > 1) {
             switch (resultType) {
@@ -26,6 +29,32 @@ export class Utils {
         } else {
             throw new Error("Could not parse ID.");
         }
+    }
+
+    /**
+     * Suffixes developer endpoint to the given url.
+     * @param backendUrl Url to suffix
+     * @returns Suffixed url
+     */
+    public static getDataApiUrl(settings: object): string {
+        const [backendUrl, dataApiUrl, directDataApi] = [
+            settings[SettingNames.backendUrl],
+            settings[SettingNames.dataApiUrl],
+            settings[SettingNames.directDataApi]
+        ];
+        return directDataApi ? dataApiUrl : `${ensureTrailingSlash(backendUrl)}developer`;
+    }
+
+    /**
+     * Suffixes mapi endpoint to the given url.
+     * @param backendUrl Url to suffix
+     * @returns Suffixed url
+     */
+    public static getBaseUrlWithMapiSuffix(backendUrl: string): string {
+        if (!backendUrl) {
+            return undefined;
+        }
+        return `${ensureTrailingSlash(backendUrl)}mapi`
     }
 
     public static groupBy<T>(array: T[], valueAccessor: (item: T) => string): T[][] {
@@ -51,6 +80,35 @@ export class Utils {
         }
 
         return url;
+    }
+
+    /**
+     * Some resources are available for guests and users. i.e /apis and /users/{userId}/apis
+     * Depending on authorization, we need to prefix users resource before requests.
+     * @param query query to be formatted.
+     * @param userId user identifier to be prefixed. i.e. /users/123456789
+     * @returns User prefixed query or as it is.
+     */
+    public static ensureUserPrefixed(query: string, userId: string): string {
+        if (!query.startsWith("/users") && !!userId && userId !== "integration") {
+            const userResource = `/users/${userId}`
+            return (query.startsWith("/") ? userResource : this.ensureTrailingSlash(userResource)) + query;
+        }
+
+        return query;
+    }
+
+    /**
+     * Some resources are available for guests and users.
+     * Depending on authorization, we need to prefix users resource before requests.
+     * To decide if it is a resource for guest only or users as well, we check this header.
+     * @returns HttpHeader that indicates the resource can be user resource or not.
+     */
+    public static getIsUserResourceHeader(): HttpHeader {
+        return {
+            name: isUserResourceHeaderName,
+            value: "true"
+        };
     }
 
     public static ensureTrailingSlash(url: string): string {
@@ -91,8 +149,16 @@ export class Utils {
         return url.replace(/^(.*\/\/)?[^\/]*/gm, "")
     }
 
+    private static isValidRelativeUrl(url: string): boolean {
+        return RegExps.permalink.test(url);
+    }
+
     public static sanitizeReturnUrl(returnUrl: string): string {
-        return sanitizeUrl(this.getRelativeUrl(returnUrl));
+        if (this.isValidRelativeUrl(returnUrl)) {
+            const relativeUrl = this.getRelativeUrl(returnUrl);
+            return sanitizeUrl(relativeUrl);
+        }
+        return "/";
     }
 
     public static formatXml(xml: string): string {
@@ -274,6 +340,28 @@ export class Utils {
         return uri;
     }
 
+    public static addQueryParameters(uri: string, params: { [key: string]: string }) {
+        return this.addQueryParameter(uri,
+            Object.entries(params)
+                .map(([key, value]) => `${key}${value ? `=${value}` : ""}`)
+                .join("&")
+        );
+    }
+
+    public static IsQueryParameterExists(uri: string, parameterName: string) {
+        if (!uri) {
+            return false;
+        }
+        const searchParamIndex = uri.indexOf("?");
+        if (searchParamIndex < 0) {
+            return false;
+        }
+
+        const path = uri.substring(searchParamIndex);
+        const urlSearchParameters = new URLSearchParams(path);
+        return urlSearchParameters.has(parameterName);
+    }
+
     private static reservedURIComponentCharactersTuples = [
         ["&", "%26"],
         ["+", "%2B"],
@@ -333,26 +421,6 @@ export class Utils {
         if (!!e && e.scrollIntoView) {
             e.scrollIntoView();
         }
-    }
-
-    public static ensureUrlArmified(resourceUrl: string): string {
-        const regex = /subscriptions\/.*\/resourceGroups\/.*\/providers\/microsoft.ApiManagement\/service/i;
-        const isArmUrl = regex.test(resourceUrl);
-
-        if (isArmUrl) {
-            return resourceUrl;
-        }
-
-        const url = new URL(resourceUrl);
-        const protocol = url.protocol;
-        const hostname = url.hostname;
-        const pathname = url.pathname.endsWith("/")
-            ? url.pathname.substring(0, url.pathname.length - 1)
-            : url.pathname;
-
-        resourceUrl = `${protocol}//${hostname}/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid${pathname}`;
-
-        return resourceUrl;
     }
 
     public static armifyContract(resource: string, contract: any): ArmResource {
@@ -423,6 +491,44 @@ export class Utils {
         return /\bxml\b/i.test(contentType.toLocaleLowerCase());
     }
 
+    public static subscriptionManager() {
+        return new class implements ko.Subscription {
+            subscriptions: ko.Subscription[] = [];
+            push(...subscriptions: ko.Subscription[]) {
+                this.subscriptions.push(...subscriptions);
+            }
+            dispose(): void {
+                this.subscriptions.forEach(sub => sub.dispose());
+                this.subscriptions = [];
+            }
+            disposeWhenNodeIsRemoved(node: Node): void {
+                this.subscriptions.forEach(sub => sub.disposeWhenNodeIsRemoved(node));
+            }
+        }
+    }
+
+    public static ensureUrlArmified(resourceUrl: string): string {
+        if (Utils.isArmUrl(resourceUrl)) {
+            return resourceUrl;
+        }
+
+        const url = new URL(resourceUrl);
+        const protocol = url.protocol;
+        const hostname = url.hostname;
+        const pathname = url.pathname.endsWith("/")
+            ? url.pathname.substring(0, url.pathname.length - 1)
+            : url.pathname;
+
+        resourceUrl = `${protocol}//${hostname}/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid${pathname}`;
+
+        return resourceUrl;
+    }
+
+    public static isArmUrl(resourceUrl: string): boolean {
+        const regex = /subscriptions\/.*\/resourceGroups\/.*\/providers\/microsoft.ApiManagement\/service/i;
+        return regex.test(resourceUrl);
+    }
+
     public static getCookie(name: string): { name: string, value: string, expiresInDays?: number } | null {
         const value = `; ${document.cookie}`;
         const parts = value.split(`; ${name}=`);
@@ -430,15 +536,15 @@ export class Utils {
             return null;
         }
 
-        const cookieValue = parts.pop().split(';').shift();
-        const cookieParts = document.cookie.split(';').map(cookie => cookie.trim());
+        const cookieValue = parts.pop().split(";").shift();
+        const cookieParts = document.cookie.split(";").map(cookie => cookie.trim());
         const cookieString = cookieParts.find(cookie => cookie.startsWith(`${name}=`));
         let expiresInDays: number | undefined;
 
         if (cookieString) {
-            const expiresPart = cookieString.split(';').find(part => part.trim().startsWith('expires='));
+            const expiresPart = cookieString.split(";").find(part => part.trim().startsWith("expires="));
             if (expiresPart) {
-                const expiresDate = new Date(expiresPart.split('=')[1]);
+                const expiresDate = new Date(expiresPart.split("=")[1]);
                 const currentDate = new Date();
                 expiresInDays = Math.ceil((expiresDate.getTime() - currentDate.getTime()) / (1000 * 60 * 60 * 24));
             }
@@ -465,11 +571,30 @@ export class Utils {
     public static async checkIsFeatureEnabled(featureFlagName: string, settingsProvider: ISettingsProvider, logger: Logger): Promise<boolean> {
         try {
             const settingsObject = await settingsProvider.getSetting(FEATURE_FLAGS);
+
             const featureFlags = new Map(Object.entries(settingsObject ?? {}));
             if (!featureFlags || !featureFlags.has(featureFlagName)) {
                 return false;
             }
+            
             return featureFlags.get(featureFlagName) == true;
+        } catch (error) {
+            logger?.trackEvent("FeatureFlag", { message: "Feature flag check failed", data: error.message });
+            return false;
+        }
+    }
+
+    public static async getFeatureValueOrNull(featureFlagName: string, settingsProvider: ISettingsProvider, logger: Logger): Promise<boolean|null> {
+        try {
+            const settingsObject = await settingsProvider.getSetting(FEATURE_FLAGS);
+
+            const featureFlags = new Map(Object.entries(settingsObject ?? {}));
+            if (!featureFlags || !featureFlags.has(featureFlagName)) {
+                return null;
+            }
+
+            const featureFlagValue = featureFlags.get(featureFlagName);
+            return Boolean(featureFlagValue);
         } catch (error) {
             logger?.trackEvent("FeatureFlag", { message: "Feature flag check failed", data: error.message });
             return false;

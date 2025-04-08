@@ -1,21 +1,54 @@
 import { ParameterContract } from "./parameter";
 import { RequestContract } from "./request";
 import { ResponseContract } from "./response";
-import { ArmResource } from "./armResource";
 
 /**
  * Model of API operation
  */
-export interface OperationContract extends ArmResource {
-    properties: {
-        displayName: string;
-        description: string;
-        urlTemplate: string;
-        templateParameters: ParameterContract[];
-        method: string;
-        backend?: string;
-        version?: string;
-        request?: RequestContract;
-        responses?: ResponseContract[];
-    };
+export interface OperationContract {
+
+    /**
+     * Operation identifier. e.g. "create-resource"
+     */
+    id: string;
+
+    /**
+     * Operation name.  Must be 1 to 300 characters long.
+     */
+    name: string;
+
+    /**
+     * Operation description.
+     */
+    description: string;
+
+    /**
+     * Operation method.
+     */
+    method: string;
+
+    /**
+     * Operation URI template. Cannot be more than 400 characters long.
+     */
+    urlTemplate: string;
+
+    /**
+     * Collection of URL template parameters.
+     */
+    templateParameters: ParameterContract[];
+
+    /**
+     * Operation version.
+     */
+    version?: string;
+
+    /**
+     * Containing request details.
+     */
+    request?: RequestContract;
+
+    /**
+     * Array of Operation responses.
+     */
+    responses?: ResponseContract[];
 }

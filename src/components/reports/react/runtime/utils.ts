@@ -1,6 +1,6 @@
 import * as React from "react";
 
-export const useLoadData = <T extends any, D extends unknown[]>(load: (...args: D) => Promise<T>, deps: D): { working: boolean, data: T | undefined } => {
+export const useLoadData = <T, D extends unknown[]>(load: (...args: D) => Promise<T>, deps: D): { working: boolean, data: T | undefined } => {
     const [working, setWorking] = React.useState(true);
     const [data, setData] = React.useState<T>();
 

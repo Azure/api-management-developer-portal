@@ -2,12 +2,10 @@ import { ISettingsProvider } from "@paperbits/common/configuration";
 import { StyleCompiler } from "@paperbits/common/styles";
 import { ViewModelBinder, WidgetState } from "@paperbits/common/widgets";
 import { ISiteService } from "@paperbits/common/sites/ISiteService";
+import { IDelegationService } from "../../../services/IDelegationService";
 import { Logger } from "@paperbits/common/logging";
 import { TermsOfService } from "../../../contracts/identitySettings";
-import { DelegationAction, DelegationParameters } from "../../../contracts/tenantSettings";
 import { IdentityService } from "../../../services";
-import { BackendService } from "../../../services/backendService";
-import { TenantService } from "../../../services/tenantService";
 import { SignupModel } from "./signupModel";
 import { SignUpViewModel } from "./react/SignUpViewModel";
 import { isRedesignEnabledSetting } from "../../../constants";
@@ -15,8 +13,7 @@ import { isRedesignEnabledSetting } from "../../../constants";
 export class SignupViewModelBinder implements ViewModelBinder<SignupModel, SignUpViewModel> {
 
     constructor(
-        private readonly tenantService: TenantService,
-        private readonly backendService: BackendService,
+        private readonly delegationService: IDelegationService,
         private readonly settingsProvider: ISettingsProvider,
         private readonly identityService: IdentityService,
         private readonly styleCompiler: StyleCompiler,
@@ -25,8 +22,8 @@ export class SignupViewModelBinder implements ViewModelBinder<SignupModel, SignU
     ) { }
 
     public async getTermsOfService(): Promise<TermsOfService> {
-        const identitySetting = await this.identityService.getIdentitySetting();
-        return identitySetting.properties.termsOfService;
+        const termsOfService = await this.identityService.getTermsOfService();
+        return termsOfService;
     }
 
     public stateToInstance(nextState: WidgetState, componentInstance: any): void {
@@ -43,14 +40,10 @@ export class SignupViewModelBinder implements ViewModelBinder<SignupModel, SignU
 
     public async modelToState(model: SignupModel, state: WidgetState): Promise<void> {
         const useHipCaptcha = await this.settingsProvider.getSetting<boolean>("useHipCaptcha");
-        const isDelegationEnabled = await this.tenantService.isDelegationEnabled();
 
+        const isDelegationEnabled = await this.delegationService.isUserRegistrationDelegationEnabled();
         if (isDelegationEnabled) {
-            const delegationParam = {};
-            delegationParam[DelegationParameters.ReturnUrl] = "/";
-
-            const delegationUrl = await this.backendService.getDelegationUrlFromServer(DelegationAction.signUp, delegationParam);
-
+            const delegationUrl = await this.delegationService.getDelegatedSignupUrl("/");
             if (delegationUrl) {
                 state.delegationUrl = delegationUrl;
             }

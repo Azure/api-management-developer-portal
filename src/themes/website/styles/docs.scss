@@ -218,6 +218,12 @@ validation-summary {
     }
 }
 
+security-schemes {
+    .form-control {
+        margin: 0;
+    }
+}
+
 oauth-server-configuration {
     .form-control {
         margin: 0;

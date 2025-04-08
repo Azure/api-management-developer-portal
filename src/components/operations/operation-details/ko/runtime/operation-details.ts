@@ -22,7 +22,7 @@ import {
 } from "../../../../../models/typeDefinition";
 import { OAuthService } from "../../../../../services/oauthService";
 import { LruCache } from "@paperbits/common/caching/lruCache";
-
+import { ApiKeyDetails, ApiKeyLocation } from "./apiKeyDetails";
 
 @RuntimeComponent({
     selector: "operation-details"
@@ -52,6 +52,7 @@ export class OperationDetails {
     public readonly apiType: ko.Observable<string>;
     public readonly protocol: ko.Computed<string>;
     public readonly examples: ko.Observable<OperationExamples>;
+    public readonly apiKeyDetails: ko.Observable<ApiKeyDetails>;
 
     public readonly selectedRepresentatnionsValue: ko.Observable<object>;
 
@@ -77,6 +78,7 @@ export class OperationDetails {
         this.definitions = ko.observableArray<TypeDefinition>();
         this.defaultSchemaView = ko.observable("table");
         this.useCorsProxy = ko.observable();
+        this.apiKeyDetails = ko.observable({} as ApiKeyDetails);
         this.includeAllHostnames = ko.observable();
         this.selectedRepresentatnionsValue = ko.observable<object>();
         this.showExamples = ko.observable(false);
@@ -224,6 +226,16 @@ export class OperationDetails {
 
         this.closeConsole();
 
+        if (api.typeName.toLocaleLowerCase() === "rest") {
+            this.apiKeyDetails().name = api.subscriptionKeyParameterNames?.header;
+            this.apiKeyDetails().in = ApiKeyLocation.Header;
+        }
+        else {
+            this.apiKeyDetails().name = api.subscriptionKeyParameterNames?.query;
+            this.apiKeyDetails().in = ApiKeyLocation.Query;
+        }
+
+
         let associatedAuthServers: AuthorizationServer[];
         if (api.authenticationSettings?.oAuth2AuthenticationSettings?.length > 0) {
             associatedAuthServers = await this.oauthService.getOauthServers(api.id);
@@ -239,10 +251,10 @@ export class OperationDetails {
     public async loadOperation(apiName: string, operationName: string): Promise<void> {
         this.working(true);
 
-        const operation = await this.apiService.getOperation(`apis/${apiName}/operations/${operationName}`);
+        const operation = await this.apiService.getOperation(apiName, operationName);
 
         if (operation) {
-            await this.loadDefinitions(operation);
+            await this.loadDefinitions(operation, apiName);
             if (this.showExamples()) this.parseResponseExamples(operation);
 
             this.loadRequestExamples(operation);
@@ -272,8 +284,8 @@ export class OperationDetails {
         this.selectedRepresentatnionsValue(requestExamples);
     }
 
-    public async loadDefinitions(operation: Operation): Promise<void> {
-        const cachedDefinitions = this.definitionsCache.getItem(operation.id);
+    public async loadDefinitions(operation: Operation, apiName: string): Promise<void> {
+        const cachedDefinitions = this.definitionsCache.getItem(`${apiName}/${operation.id}`);
         if (cachedDefinitions) {
             this.definitions(cachedDefinitions);
             return;
@@ -320,7 +332,7 @@ export class OperationDetails {
         }
 
         const typedDefinitions = definitions.filter(definition => typeNames.indexOf(definition.name) !== -1);
-        this.definitionsCache.setItem(operation.id, typedDefinitions);
+        this.definitionsCache.setItem(`${apiName}/${operation.id}`, typedDefinitions);
         this.definitions(typedDefinitions);
     }
 
@@ -411,7 +423,7 @@ export class OperationDetails {
     }
 
     public async loadGatewayInfo(apiName: string): Promise<void> {
-        const hostnames = await this.apiService.getApiHostnames(apiName, this.includeAllHostnames());
+        const hostnames = await this.apiService.getApiHostnames(apiName);
 
         if (hostnames.length !== 0) {
             this.sampleHostname(hostnames[0]);

@@ -6,15 +6,15 @@ import { AzureBlobStorage } from "@paperbits/azure";
 import { ISettingsProvider } from "@paperbits/common/configuration/ISettingsProvider";
 import { Logger } from "@paperbits/common/logging/logger";
 import * as Constants from "../constants";
+import { IApiClient } from "../clients";
 import { KnownMimeTypes } from "../models/knownMimeTypes";
 import { KnownHttpHeaders } from "../models/knownHttpHeaders";
 import { Utils } from "../utils";
-import { MapiClient } from "./mapiClient";
 
 export class ProvisionService {
     constructor(
         private readonly httpClient: HttpClient,
-        private readonly mapiClient: MapiClient,
+        private readonly apiClient: IApiClient,
         private readonly authenticator: IAuthenticator,
         private readonly viewManager: ViewManager,
         private readonly router: Router,
@@ -42,14 +42,14 @@ export class ProvisionService {
 
         for (const key of keys) {
             const contentItem = dataObj[key];
-            const url = `${key}?api-version=${Constants.managementApiVersion}`;
-            await this.mapiClient.put(
+            const url = `${key}`;
+            await this.apiClient.put(
                 url,
                 [
                     { name: KnownHttpHeaders.IfMatch, value: "*" },
                     { name: KnownHttpHeaders.ContentType, value: KnownMimeTypes.Json },
                     { name: KnownHttpHeaders.Authorization, value: accessToken },
-                    await this.mapiClient.getPortalHeader("provision")
+                    await this.apiClient.getPortalHeader("provision")
                 ],
                 contentItem);
         }
@@ -61,36 +61,36 @@ export class ProvisionService {
     private async cleanupContent(): Promise<void> {
         const accessToken = await this.authenticator.getAccessTokenAsString();
 
-        const response = await this.mapiClient.get(
-            `contentTypes?api-version=${Constants.managementApiVersion}`,
+        const response = await this.apiClient.get(
+            `contentTypes`,
             [
                 { name: KnownHttpHeaders.IfMatch, value: "*" },
                 { name: KnownHttpHeaders.ContentType, value: KnownMimeTypes.Json },
                 { name: KnownHttpHeaders.Authorization, value: accessToken },
-                await this.mapiClient.getPortalHeader("getContentTypes")
+                await this.apiClient.getPortalHeader("getContentTypes")
             ]);
         const contentTypes = Object.values(response["value"]);
 
         for (const contentType of contentTypes) {
             const contentTypeName = contentType["name"];
-            const itemsResponse = await this.mapiClient.get(
-                `contentTypes/${contentTypeName}/contentItems?api-version=${Constants.managementApiVersion}`,
+            const itemsResponse = await this.apiClient.get(
+                `contentTypes/${contentTypeName}/contentItems`,
                 [
                     { name: KnownHttpHeaders.IfMatch, value: "*" },
                     { name: KnownHttpHeaders.ContentType, value: KnownMimeTypes.Json },
                     { name: KnownHttpHeaders.Authorization, value: accessToken },
-                    await this.mapiClient.getPortalHeader("getContentItems")
+                    await this.apiClient.getPortalHeader("getContentItems")
                 ]);
 
             const items = Object.values(itemsResponse["value"]);
             for (const item of items) {
-                await this.mapiClient.delete(
-                    `${item["id"]}?api-version=${Constants.managementApiVersion}`,
+                await this.apiClient.delete(
+                    `${item["id"]}`,
                     [
                         { name: KnownHttpHeaders.IfMatch, value: "*" },
                         { name: KnownHttpHeaders.ContentType, value: KnownMimeTypes.Json },
                         { name: KnownHttpHeaders.Authorization, value: accessToken },
-                        await this.mapiClient.getPortalHeader("resetContent")
+                        await this.apiClient.getPortalHeader("resetContent")
                     ]);
             }
         }

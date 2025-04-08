@@ -1,19 +1,24 @@
 import * as ko from "knockout";
-import template from "./oauth-server-configuration.html";
+import template from "./security-schemes.html";
 import { Component, OnMounted, Param } from "@paperbits/common/ko/decorators";
 import { AuthorizationServer } from "../../../../../models/authorizationServer";
+import { ApiKeyDetails } from "./apiKeyDetails";
 
 @Component({
-    selector: "oauth-server-configuration",
+    selector: "security-schemes",
     template: template,
 })
-export class OauthServerConfiguration {
+
+export class SecuritySchemes {
 
     public displayServersName: boolean;
 
     constructor() {
         this.authorizationServers = ko.observable();
     }
+
+    @Param()
+    public apiKeyDetails: ko.Observable<ApiKeyDetails>;
 
     @Param()
     public authorizationServers: ko.Observable<AuthorizationServer[]>;

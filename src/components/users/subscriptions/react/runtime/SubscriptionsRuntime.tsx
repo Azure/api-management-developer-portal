@@ -9,9 +9,8 @@ import { Subscription } from "../../../../../models/subscription";
 import { DelegationAction, DelegationParameters } from "../../../../../contracts/tenantSettings";
 import { SearchQuery } from "../../../../../contracts/searchQuery";
 import { UsersService } from "../../../../../services/usersService";
-import { TenantService } from "../../../../../services/tenantService";
-import { BackendService } from "../../../../../services/backendService";
 import { ProductService } from "../../../../../services/productService";
+import { IDelegationService } from "../../../../../services/IDelegationService";
 import { RouteHelper } from "../../../../../routing/routeHelper";
 import { Utils } from "../../../../../utils";
 import { dispatchErrors, parseAndDispatchError } from "../../../validation-summary/utils";
@@ -142,11 +141,8 @@ export class SubscriptionsRuntime extends React.Component<SubscriptionsRuntimePr
     @Resolve("eventManager")
     public eventManager: EventManager;
 
-    @Resolve("tenantService")
-    public tenantService: TenantService;
-
-    @Resolve("backendService")
-    public backendService: BackendService;
+    @Resolve("delegationService")
+    public delegationService: IDelegationService;
 
     @Resolve("routeHelper")
     public routeHelper: RouteHelper;
@@ -158,11 +154,14 @@ export class SubscriptionsRuntime extends React.Component<SubscriptionsRuntimePr
     public logger: Logger;
 
     private async applyDelegation(subscriptionId: string): Promise<boolean> {
-        const isDelegationEnabled = await this.tenantService.isSubscriptionDelegationEnabled();
+        const isDelegationEnabled = await this.delegationService.isSubscriptionDelegationEnabled();
         if (isDelegationEnabled) {
+            const userResource = await this.usersService.getCurrentUserId();
+            const userId = Utils.getResourceName("users", userResource);
             const delegationParam = {};
-            delegationParam[DelegationParameters.SubscriptionId] = Utils.getResourceName("subscriptions", subscriptionId);
-            const delegationUrl = await this.backendService.getDelegationString(DelegationAction.unsubscribe, delegationParam);
+            delegationParam[DelegationParameters.UserId] = userId;
+            delegationParam[DelegationParameters.SubscriptionId] = Utils.isArmUrl(subscriptionId) ? Utils.getResourceName("subscriptions", subscriptionId) : subscriptionId;
+            const delegationUrl = await this.delegationService.getUserDelegationUrl(userId, DelegationAction.unsubscribe, delegationParam);
             if (delegationUrl) {
                 location.assign(delegationUrl);
             }

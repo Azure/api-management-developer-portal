@@ -103,8 +103,8 @@ const ApiHistoryFC = ({
                                     {currentChangelogPage?.value?.length > 0
                                         ? currentChangelogPage.value.map((changelog, index) => (
                                             <TableRow key={index}>
-                                                <TableCell>{Utils.formatDateTime(changelog.properties.createdDateTime)}</TableCell>
-                                                <TableCell>{changelog.properties.notes}</TableCell>
+                                                <TableCell>{Utils.formatDateTime(changelog.createdDateTime)}</TableCell>
+                                                <TableCell>{changelog.notes}</TableCell>
                                             </TableRow>
                                         ))
                                         : <NoRecordsRow colspan={2} />

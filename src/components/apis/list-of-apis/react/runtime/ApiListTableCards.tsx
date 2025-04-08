@@ -94,11 +94,11 @@ export const ApiListTableCards = ({
                 />
             ) : (
                 <>
-                    <div style={{ margin: "1rem auto 2rem" }}>
+                    <div style={{ margin: "1rem auto" }}>
                         <Pagination
                             pageNumber={pageNumber}
                             setPageNumber={setPageNumber}
-                            pageMax={Math.ceil(apis?.count / defaultPageSize)}
+                            hasNextPage={!!apis?.nextLink}
                         />
                     </div>
 
@@ -124,7 +124,7 @@ export const ApiListTableCards = ({
                         <Pagination
                             pageNumber={pageNumber}
                             setPageNumber={setPageNumber}
-                            pageMax={Math.ceil(apis?.count / defaultPageSize)}
+                            hasNextPage={!!apis?.nextLink}
                         />
                     </div>
                 </>

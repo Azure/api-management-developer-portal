@@ -13,7 +13,6 @@ import { GraphqlService } from "../../../../../services/graphqlService";
 import { UsersService } from "../../../../../services/usersService";
 import { ProductService } from "../../../../../services/productService";
 import { OAuthService } from "../../../../../services/oauthService";
-import { TenantService } from "../../../../../services/tenantService";
 import { GraphDocService } from "../../../operation-details/ko/runtime/graphql-documentation/graphql-doc-service";
 import { RouteHelper } from "../../../../../routing/routeHelper";
 import { OperationDetailsWebsocket } from "./OperationDetailsWebsocket";
@@ -58,9 +57,6 @@ export class OperationDetailsRuntime extends React.Component<OperationDetailsRun
 
     @Resolve("oauthService")
     public oauthService: OAuthService;
-
-    @Resolve("tenantService")
-    public tenantService: TenantService;
 
     @Resolve("routeHelper")
     public routeHelper: RouteHelper;
@@ -134,7 +130,6 @@ export class OperationDetailsRuntime extends React.Component<OperationDetailsRun
                             usersService={this.usersService}
                             productService={this.productService}
                             oauthService={this.oauthService}
-                            tenantService={this.tenantService}
                             routeHelper={this.routeHelper}
                             settingsProvider={this.settingsProvider}
                             sessionManager={this.sessionManager}
@@ -165,7 +160,6 @@ export class OperationDetailsRuntime extends React.Component<OperationDetailsRun
                             usersService={this.usersService}
                             productService={this.productService}
                             oauthService={this.oauthService}
-                            tenantService={this.tenantService}
                             routeHelper={this.routeHelper}
                             settingsProvider={this.settingsProvider}
                             sessionManager={this.sessionManager}

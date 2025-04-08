@@ -9,7 +9,7 @@ subscriptions-runtime {
         @media (max-width: $breakpoint-md) {
             display: block;
         }
-    
+
         > div {
             @media (max-width: $breakpoint-md) {
                 max-width: 100%;

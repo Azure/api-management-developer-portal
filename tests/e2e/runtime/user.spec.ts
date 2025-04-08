@@ -5,17 +5,19 @@ import { HomePageWidget } from "../maps/home";
 import { SignupBasicWidget } from "../maps/signup-basic";
 import { User } from "../../mocks/collection/user";
 import { Templating } from "../../templating";
+import { UserSignUp } from "../../mocks/collection/userSignUp";
 
 test.describe("user-sign-in", async () => {
     test("user-can-sign-in-with-basic-credentials", async function ({page, configuration, cleanUp, mockedData, userService, testRunner})  {
         var userInfo = User.getRandomUser("user1");
-        mockedData.data = Templating.updateTemplate(JSON.stringify(mockedData.data), userInfo);
+
+        mockedData.data = Templating.updateTemplate(configuration['isLocalRun'], JSON.stringify(mockedData.data), userInfo);
 
         async function populateData(): Promise<any>{
             await userService.putUser("users/"+userInfo.publicId, userInfo.getRequestContract());
             cleanUp.push(async () => userService.deleteUser("users/"+userInfo.publicId, true));
         }
-        
+
         async function validate(){
             const signInWidget = new SignInBasicWidget(page, configuration);
             const homePageWidget = new HomePageWidget(page);
@@ -28,16 +30,15 @@ test.describe("user-sign-in", async () => {
         await testRunner.runTest(validate, populateData, mockedData.data);
     });
 
-
     test("user-can-visit-his-profile-page", async ({page, configuration, cleanUp, mockedData, userService, testRunner}) => {
         var userInfo = User.getRandomUser("user1");
-        mockedData.data = Templating.updateTemplate(JSON.stringify(mockedData.data), userInfo);
+        mockedData.data = Templating.updateTemplate(configuration['isLocalRun'], JSON.stringify(mockedData.data), userInfo);
 
         async function populateData(): Promise<any>{
             await userService.putUser("users/"+userInfo.publicId, userInfo.getRequestContract());
             cleanUp.push(async () => userService.deleteUser("users/"+userInfo.publicId, true));
         }
-        
+
         async function validate(){
             const signInWidget = new SignInBasicWidget(page, configuration);
             const homePageWidget = new HomePageWidget(page);
@@ -56,9 +57,8 @@ test.describe("user-sign-in", async () => {
         await testRunner.runTest(validate, populateData, mockedData.data);
     });
 
-
     test.skip("user-can-sign-up-with-basic-credentials", async ({page, configuration, cleanUp, mockedData, userService, testRunner}) => {
-        var userInfo = User.getRandomUser("user1");
+        var userInfo = UserSignUp.getRandomUser("user1");
 
         async function populateData(): Promise<any>{
             cleanUp.push(async () => userService.deleteUser("users/"+userInfo.publicId, true));
@@ -66,7 +66,7 @@ test.describe("user-sign-in", async () => {
 
         async function validate(){
             await page.goto(configuration['urls']['signup']);
-            
+
             await page.waitForTimeout(5000);
             const signUpWidget = new SignupBasicWidget(page);
             await signUpWidget.signUpWithBasic(userInfo);

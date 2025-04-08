@@ -1,4 +1,5 @@
 import { SubscriptionContract } from "../../../src/contracts/subscription";
+import { SubscriptionContract as SmapiSubscriptionContract } from "../../models/subscriptionContract";
 import { TestUtils } from "../../testUtils";
 import { Resource } from "./resource";
 import { User } from "./user";
@@ -24,27 +25,25 @@ export class Subscription extends Resource{
         this.responseContract = this.getResponseContract();
     }
 
-    public getResponseContract(): any{
+    public getResponseContract(): SubscriptionContract{
         return {
-            id: `/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid/users/${this.user.publicId}/subscriptions/${this.id}`,
-            type: "Microsoft.ApiManagement/service/users/subscriptions",
-            name: this.id,
-            properties: {
-                ownerId: `/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid/users/${this.user.publicId}`,
-                scope: `/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid/products/${this.product.productId}`,
-                displayName: this.displayName,
-                state: "active",
-                createdDate: new Date().toISOString(),
-                startDate: new Date().toISOString(),
-                expirationDate: new Date().toISOString(),
-                endDate: null,
-                notificationDate: new Date().toISOString(),
-                stateComment: null,
-            }
+            id: this.id,
+            name: this.displayName,
+            ownerId: this.user.publicId,
+            scope: `/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid/products/${this.product.productId}`,
+            state: "active",
+            createdDate: new Date().toISOString(),
+            startDate: new Date().toISOString(),
+            expirationDate: new Date().toISOString(),
+            endDate: new Date().toISOString(),
+            notificationDate: new Date().toISOString(),
+            stateComment: "",
+            primaryKey: TestUtils.randomIdentifier(10),
+            secondaryKey: TestUtils.randomIdentifier(10)
         }
     }
 
-    public getContract(): SubscriptionContract{
+    public getRequestContract(): SmapiSubscriptionContract{
         return {
             properties: {
                 displayName: this.displayName,
@@ -53,12 +52,12 @@ export class Subscription extends Resource{
                 expirationDate: new Date().toISOString(),
                 notificationDate: new Date().toISOString(),
                 primaryKey: TestUtils.randomIdentifier(10),
-                scope: TestUtils.randomIdentifier(5),
+                scope:  `/products/${this.product.productId}`,
                 secondaryKey: TestUtils.randomIdentifier(10),
                 startDate: new Date().toISOString(),
                 state: "active",
                 stateComment: TestUtils.randomIdentifier(10),
-                ownerId: TestUtils.randomIdentifier(5)
+                ownerId: `/users/${this.user.publicId}`
             }
         };
     }
