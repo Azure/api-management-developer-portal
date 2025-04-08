@@ -1,0 +1,40 @@
+import { IInjectorModule, IInjector } from "@paperbits/common/injection";
+import { IWidgetService } from "@paperbits/common/widgets";
+import { KnockoutComponentBinder } from "@paperbits/core/ko";
+import { ReactComponentBinder } from "@paperbits/react/bindings";
+import { ComponentFlow } from "@paperbits/common/components";
+import { ApplicationDetailsHandlers } from "./applicationDetailsHandlers";
+import { ApplicationDetailsModel } from "./applicationDetailsModel";
+import { ApplicationDetailsModelBinder } from "./applicationDetailsModelBinder";
+import { ApplicationDetailsViewModel } from "./react/ApplicationDetailsViewModel";
+import { ApplicationDetailsViewModelBinder } from "./applicationDetailsViewModelBinder";
+// import { ApplicationListEditor } from "./ko/applicationListEditor";
+
+export class ApplicationDetailsDesignModule implements IInjectorModule {
+    public register(injector: IInjector): void {
+        // injector.bind("applicationDetailsEditor", ApplicationListEditor);
+        injector.bindSingleton("applicationDetailsModelBinder", ApplicationDetailsModelBinder);
+        injector.bindSingleton("applicationDetailsViewModelBinder", ApplicationDetailsViewModelBinder)
+        injector.bindSingleton("applicationDetailsHandlers", ApplicationDetailsHandlers);
+
+        const widgetService = injector.resolve<IWidgetService>("widgetService");
+
+        widgetService.registerWidget("application-details", {
+            modelDefinition: ApplicationDetailsModel,
+            componentBinder: ReactComponentBinder,
+            componentDefinition: ApplicationDetailsViewModel,
+            modelBinder: ApplicationDetailsModelBinder,
+            viewModelBinder: ApplicationDetailsViewModelBinder,
+            componentFlow: ComponentFlow.Block
+        });
+
+        widgetService.registerWidgetEditor("application-details", {
+            displayName: "Application: Details",
+            category: "Applications",
+            iconClass: "widget-icon widget-icon-api-management",
+            componentBinder: KnockoutComponentBinder,
+            // componentDefinition: ApplicationListEditor,
+            handlerComponent: ApplicationDetailsHandlers
+        });
+    }
+}

@@ -30,6 +30,7 @@ import { ConfirmPasswordPublishModule } from "./components/users/confirm-passwor
 import { ChangePasswordPublishModule } from "./components/users/change-password/changePassword.publish.module";
 import { ReportsPublishModule } from "./components/reports/reports.publish.module";
 import { ApplicationListPublishModule } from "./components/applications/application-list/applicationList.publish.module";
+import { ApplicationDetailsPublishModule } from "./components/applications/application-details/applicationDetails.publish.module";
 import { TenantService } from "./services/tenantService";
 import { ValidationSummaryPublishModule } from "./components/users/validation-summary/validationSummary.publish.module";
 import { BackendService } from "./services/backendService";
@@ -71,6 +72,7 @@ export class ApimPublishModule implements IInjectorModule {
         injector.bindModule(new ChangePasswordPublishModule());
         injector.bindModule(new ReportsPublishModule());
         injector.bindModule(new ApplicationListPublishModule());
+        injector.bindModule(new ApplicationDetailsPublishModule());
         injector.bindModule(new ValidationSummaryPublishModule());
         injector.bindModule(new CustomHtmlPublishModule());
         injector.bindModule(new CustomWidgetPublishModule());
