@@ -3,5 +3,8 @@
     "backendUrl": "https://<service-name>.developer.azure-api.net",
     "featureFlags": {
         "clientTelemetry": true
-    }
+    },
+
+    "directDataApi": false,
+    "dataApiUrl": "https://<service name>.data.azure-api.net"
 }

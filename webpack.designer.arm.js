@@ -6,9 +6,19 @@ const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const runtimeConfig = require("./webpack.runtime");
 const packageJson = require("./package.json");
 const { getArmToken } = require("./auth/arm-auth");
+const config = require("./src/config.design.json");
 
 async function generateWebpackConfig() {
-    const armToken = await getArmToken();
+    const tokenOptions = {};
+    if (config.tenantId) {
+        console.log(`Using tenantId: ${config.tenantId}`);
+        tokenOptions.tenantId = config.tenantId;
+    }
+    if (config.clientId) {
+        console.log(`Using clientId: ${config.clientId}`);
+        tokenOptions.clientId = config.clientId;
+    }
+    const armToken = await getArmToken(tokenOptions);
 
     const designerConfig = {
         mode: "development",
@@ -75,7 +85,8 @@ async function generateWebpackConfig() {
                     { from: `./src/config.design.json`, to: `./config.json` },
                     { from: `./src/themes/designer/assets/index.html`, to: "index.html" },
                     { from: `./src/themes/designer/styles/fonts`, to: "editors/styles/fonts" },
-                    { from: `./templates/default.json`, to: "editors/templates/default.json" }
+                    { from: `./templates/default.json`, to: "editors/templates/default.json" },
+                    { from: `./templates/default-old.json`, to: "editors/templates/default-old.json" }
                 ]
             }),
             new webpack.ProvidePlugin({ Buffer: ["buffer", "Buffer"] }),

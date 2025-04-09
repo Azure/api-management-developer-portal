@@ -168,7 +168,7 @@ export default abstract class ApiClient implements IApiClient {
             this.logger.trackEvent(eventTypes.clientRequest, { message: `request response`, method: httpRequest.method, requestUrl: httpRequest.url, responseCode: response.statusCode+""});
         }
         catch (error) {
-            this.logger.trackEvent(eventTypes.clientRequest, { message: `request error: ${error?.message}`, method: httpRequest.method, requestUrl: httpRequest.url, responseCode: response.statusCode+"" });
+            this.logger.trackEvent(eventTypes.clientRequest, { message: `request error: ${error?.message}`, method: httpRequest.method, requestUrl: httpRequest.url, responseCode: response?.statusCode+"" });
             throw new Error(`Unable to complete request. Error: ${error.message}`);
         }
 

@@ -5,6 +5,7 @@ const CopyWebpackPlugin = require("copy-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const runtimeConfig = require("./webpack.runtime");
 const { getArmToken } = require("./auth/arm-auth");
+const config = require("./src/config.publish.json");
 
 const publisherRuntimeConfig = merge(runtimeConfig, {
     entry: { "styles/theme": ["./src/themes/website/styles/styles.scss"] },
@@ -12,7 +13,16 @@ const publisherRuntimeConfig = merge(runtimeConfig, {
 });
 
 async function generateWebpackConfig() {
-    const armToken = await getArmToken();
+    const tokenOptions = {};
+    if (config.tenantId) {
+        console.log(`Using tenantId: ${config.tenantId}`);
+        tokenOptions.tenantId = config.tenantId;
+    }
+    if (config.clientId) {
+        console.log(`Using clientId: ${config.clientId}`);
+        tokenOptions.clientId = config.clientId;
+    }
+    const armToken = await getArmToken(tokenOptions);
 
     const publisherConfig = {
         mode: "development",
@@ -78,7 +88,8 @@ async function generateWebpackConfig() {
                 patterns: [
                     { from: `./src/config.publish.json`, to: `config.json` },
                     { from: `./src/config.runtime.json`, to: `assets/config.json` },
-                    { from: `./templates/default.json`, to: "editors/templates/default.json" }
+                    { from: `./templates/default.json`, to: "editors/templates/default.json" },
+                    { from: `./templates/default-old.json`, to: "editors/templates/default-old.json" }
                 ]
             }),
             new webpack.ProvidePlugin({ Buffer: ['buffer', 'Buffer'] }),
