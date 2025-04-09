@@ -37,11 +37,13 @@ export class Utils {
      * @returns Suffixed url
      */
     public static getDataApiUrl(settings: object): string {
-        const [backendUrl, dataApiUrl, directDataApi] = [
-            settings[SettingNames.backendUrl],
-            settings[SettingNames.dataApiUrl],
-            settings[SettingNames.directDataApi]
-        ];
+        if (!settings) {
+            return undefined;
+        }
+        const directDataApi = settings[SettingNames.directDataApi];
+        const dataApiUrl = settings[SettingNames.dataApiUrl];
+        const backendUrl = settings[SettingNames.backendUrl];
+
         return directDataApi ? dataApiUrl : `${ensureTrailingSlash(backendUrl)}developer`;
     }
 
@@ -576,7 +578,7 @@ export class Utils {
             if (!featureFlags || !featureFlags.has(featureFlagName)) {
                 return false;
             }
-            
+
             return featureFlags.get(featureFlagName) == true;
         } catch (error) {
             logger?.trackEvent("FeatureFlag", { message: "Feature flag check failed", data: error.message });
