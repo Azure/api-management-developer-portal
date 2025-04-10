@@ -1,47 +1,34 @@
 import * as React from "react";
 import { FluentProvider } from "@fluentui/react-components";
 import { Resolve } from "@paperbits/react/decorators";
+import { ApplicationService } from "../../../../../services/applicationService";
+import { Application } from "../../../../../models/application";
 import { fuiTheme } from "../../../../../constants";
-import { Product } from "../../../../../models/product";
-import { ProductService } from "../../../../../services/productService";
-import { ApiService } from "../../../../../services/apiService";
 import { RouteHelper } from "../../../../../routing/routeHelper";
 import { TLayout } from "../../../../utils/react/TableListInfo";
 import { ApplicationsTableCards } from "./ApplicationsTableCards";
 
-export const application = {
-    id: "1",
-    name: "application",
-    displayName: "Application",
-    description: "Description of the application",
-    clientId: 'ClientIDname',
-    owner: 'Jelena Sorohova',
-}
-
-export interface ProductsListProps {
+export interface ApplicationsListProps {
     allowSelection?: boolean;
     allowViewSwitching?: boolean;
-    detailsPageUrl: string;
     layoutDefault: TLayout;
+    detailsPageUrl: string;
 }
 
-interface ProductsListState {
+interface ApplicationsListState {
     working: boolean;
-    selectedProduct?: Product | null;
+    selectedApplication?: Application | null;
 }
 
-export type TProductListRuntimeFCProps = Omit<ProductsListProps, "detailsPageUrl"> & {
-    getReferenceUrl: (productName: string) => string;
-    productService?: ProductService;
-    apiService?: ApiService;
-    apiName?: string;
-    selectedProduct?: Product | null;
-    isApiProducts?: boolean;
+export type TApplicationsListRuntimeFCProps = Omit<ApplicationsListProps, "detailsPageUrl"> & {
+    getReferenceUrl: (applicationName: string) => string;
+    applicationService: ApplicationService;
+    selectedApplication?: Application | null;
 };
 
-export class ApplicationsListRuntime extends React.Component<ProductsListProps, ProductsListState> {
-    @Resolve("productService")
-    public productService: ProductService;
+export class ApplicationsListRuntime extends React.Component<ApplicationsListProps, ApplicationsListState> {
+    @Resolve("applicationService")
+    public applicationService: ApplicationService;
 
     @Resolve("routeHelper")
     public routeHelper: RouteHelper;
@@ -51,31 +38,31 @@ export class ApplicationsListRuntime extends React.Component<ProductsListProps, 
 
         this.state = {
             working: false,
-            selectedProduct: undefined,
+            selectedApplication: undefined,
         };
     }
 
     public componentDidMount() {
-        this.loadSelectedProduct();
+        this.loadSelectedApplication();        
     }
 
-    async loadSelectedProduct() {
-        const productName = this.routeHelper.getProductName();
-        if (!productName) {
-            this.setState({ selectedProduct: null });
+    async loadSelectedApplication() {
+        const applicationName = this.routeHelper.getApplicationName();
+        if (!applicationName) {
+            this.setState({ selectedApplication: null });
             return;
         }
 
-        this.setState({ working: true, selectedProduct: undefined });
-
-        return this.productService
-            .getProduct(`products/${productName}`)
-            .then((selectedProduct) => this.setState({ selectedProduct }))
+        this.setState({ working: true, selectedApplication: undefined });
+        
+        return this.applicationService
+            .getApplication("maxpodriezov", applicationName) // TODO: get user id
+            .then((selectedApplication) => this.setState({ selectedApplication }))
             .finally(() => this.setState({ working: false }));
     }
 
-    getReferenceUrl(productName: string): string {
-        return this.routeHelper.getProductReferenceUrl(productName, this.props.detailsPageUrl);
+    getReferenceUrl(applicationName: string): string {
+        return this.routeHelper.getApplicationReferenceUrl(applicationName, this.props.detailsPageUrl);
     }
 
     render() {
@@ -83,8 +70,8 @@ export class ApplicationsListRuntime extends React.Component<ProductsListProps, 
             <FluentProvider theme={fuiTheme}>
                 <ApplicationsTableCards
                     {...this.props}
-                    productService={this.productService}
-                    getReferenceUrl={(productName) => this.getReferenceUrl(productName)}
+                    applicationService={this.applicationService}
+                    getReferenceUrl={(applicationName) => this.getReferenceUrl(applicationName)}
                 />
             </FluentProvider>
         );

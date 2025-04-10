@@ -1,17 +1,18 @@
 import * as React from "react";
 import { Stack } from "@fluentui/react";
+import { Application } from "../../../../../models/application";
 import { markdownMaxCharsMap } from "../../../../../constants";
 import { MarkdownProcessor } from "../../../../utils/react/MarkdownProcessor";
 
 type Props = {
-    getReferenceUrl: (productName: string) => string;
+    getReferenceUrl: (applicationName: string) => string;
 };
 
-const ApplicationCard = ({ application, getReferenceUrl }) => {
+const ApplicationCard = ({ application, getReferenceUrl }: Props & { application: Application }) => {
     return (
         <div className={"fui-list-card"}>
             <div style={{ height: "100%" }}>
-                <h4>{application.displayName}</h4>
+                <h4>{application.name}</h4>
 
                 <MarkdownProcessor markdownToDisplay={application.description} maxChars={markdownMaxCharsMap.cards} />
             </div>
@@ -19,7 +20,7 @@ const ApplicationCard = ({ application, getReferenceUrl }) => {
             <Stack horizontal>
                 <a
                     href={getReferenceUrl(application.name)}
-                    title={application.displayName}
+                    title={application.name}
                     role="button"
                     className="button"
                 >
@@ -30,7 +31,7 @@ const ApplicationCard = ({ application, getReferenceUrl }) => {
     );
 };
 
-export const ApplicationsCards = ({ applications, getReferenceUrl }) => (
+export const ApplicationsCards = ({ applications, getReferenceUrl }: Props & { applications: Application[] }) => (
     <div className={"fui-list-cards-container"}>
         {applications?.map((application) => (
             <ApplicationCard

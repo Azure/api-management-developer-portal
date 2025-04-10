@@ -15,7 +15,7 @@ export class ApplicationListPublishModule implements IInjectorModule {
 
         const widgetService = injector.resolve<IWidgetService>("widgetService");
 
-        widgetService.registerWidget("operationList", {
+        widgetService.registerWidget("application-list", {
             modelDefinition: ApplicationListModel,
             componentBinder: ReactComponentBinder,
             componentDefinition: ApplicationListViewModel,

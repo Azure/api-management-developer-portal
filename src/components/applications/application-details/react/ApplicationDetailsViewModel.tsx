@@ -15,11 +15,9 @@ export class ApplicationDetailsViewModel extends React.Component {
 
     public render(): JSX.Element {
         const data = JSON.stringify(this.state);
-
-        return;
         
-        // return this.state.isRedesignEnabled
-        //     ? <fui-application-details key={data} props={data}></fui-application-details>
-        //     : <application-details params={data}></application-details>;
+        return this.state.isRedesignEnabled
+            ? <fui-application-details key={data} props={data}></fui-application-details>
+            : <application-details params={data}></application-details>;
     }
 }

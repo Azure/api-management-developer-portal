@@ -91,6 +91,7 @@ import { RuntimeStaticDataProvider } from "./services/runtimeStaticDataProvider"
 import { RequestRetryStrategy } from "./clients/retryStrategy/requestRetryStrategy";
 import { TraceClick } from "./bindingHandlers/traceClick";
 import { GraphqlService } from "./services/graphqlService";
+import { ApplicationService } from "./services/applicationService";
 import { ListOfApisRuntimeModule } from "./components/apis/list-of-apis/listOfApis.runtime.module";
 import { ApiProductsRuntimeModule } from "./components/apis/api-products/apiProducts.runtime.module";
 import { ProductListRuntimeModule } from "./components/products/product-list/productList.runtime.module";
@@ -147,6 +148,7 @@ export class ApimRuntimeModule implements IInjectorModule {
         injector.bind("fileInput", FileInput);
         injector.bind("apiService", ApiService);
         injector.bind("graphqlService", GraphqlService);
+        injector.bind("applicationService", ApplicationService);
         injector.bind("tagService", TagService);
         injector.bind("productService", ProductService);
         injector.bind("analyticsService", AnalyticsService);

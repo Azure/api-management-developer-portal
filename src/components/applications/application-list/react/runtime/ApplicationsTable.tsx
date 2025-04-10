@@ -7,40 +7,39 @@ import {
     TableHeaderCell,
     TableRow,
 } from "@fluentui/react-components";
-import { Product } from "../../../../../models/product";
+import { Application } from "../../../../../models/application";
 import { MarkdownProcessor } from "../../../../utils/react/MarkdownProcessor";
 import { ScrollableTableContainer } from "../../../../utils/react/ScrollableTableContainer";
 import { NoRecordsRow } from "../../../../utils/react/NoRecordsRow";
 import { markdownMaxCharsMap } from "../../../../../constants";
 
 type Props = {
-    products: Product[];
-    getReferenceUrl: (productName: string) => string;
+    applications: Application[];
+    getReferenceUrl: (applicatioName: string) => string;
 };
 
-const TableBodyApplications = ({ applications, getReferenceUrl }) => (
+const TableBodyApplications = ({ applications, getReferenceUrl }: Props) => (
     <>
         {applications?.length > 0
             ? applications.map((application) => (
                 <TableRow key={application.id}>
                     <TableCell>
-                        <a href={getReferenceUrl(application.name)} title={application.displayName}>
-                            {application.displayName}
+                        <a href={getReferenceUrl(application.name)} title={application.name}>
+                            {application.name}
                         </a>
                     </TableCell>
-                    <TableCell>{application.clientId}</TableCell>
-                    <TableCell>{application.owner}</TableCell>
+                    <TableCell>{application.entraApplicationId}</TableCell>
                     <TableCell>
                         <MarkdownProcessor markdownToDisplay={application.description} maxChars={markdownMaxCharsMap.table} />
                     </TableCell>
                 </TableRow>
             ))
-            : <NoRecordsRow colspan={2} customText="No products to display" />
+            : <NoRecordsRow colspan={3} customText="No applications to display" />
         }
     </>
 );
 
-export const ApplicationsTable = ({ applications, getReferenceUrl }) => (
+export const ApplicationsTable = ({ applications, getReferenceUrl }: Props) => (
     <ScrollableTableContainer>
         <Table className={"fui-table"} size={"small"} aria-label={"Applications List table"}>
             <TableHeader>
@@ -49,10 +48,7 @@ export const ApplicationsTable = ({ applications, getReferenceUrl }) => (
                         <span className="strong">Name</span>
                     </TableHeaderCell>
                     <TableHeaderCell>
-                        <span className="strong">Client ID</span>
-                    </TableHeaderCell>
-                    <TableHeaderCell>
-                        <span className="strong">Owner</span>
+                        <span className="strong">Entra ID</span>
                     </TableHeaderCell>
                     <TableHeaderCell>
                         <span className="strong">Description</span>
