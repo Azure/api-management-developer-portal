@@ -14,8 +14,6 @@ export class ApplicationService {
      constructor(private readonly apiClient: IApiClient) { }
 
     public async getClientApplications(userId: string, searchQuery?: SearchQuery): Promise<Page<Application>> {
-        console.log('getClientApplications', userId, searchQuery);
-
         if (!userId) {
             throw new Error(`Parameter "userId" not specified.`);
         }
@@ -38,7 +36,6 @@ export class ApplicationService {
        
         try {
             const pageContract = await this.apiClient.get<Page<ApplicationContract>>(`users/${userId}/${query}`);
-            console.log('pageContract', pageContract);
 
             pageOfApplications.value = pageContract.value.map((item) => new Application(item));
             pageOfApplications.nextLink = pageContract.nextLink;
@@ -55,8 +52,6 @@ export class ApplicationService {
     }
 
     public async getApplication(userId: string, applicationId: string): Promise<Application | undefined> {
-        console.log('getApplication', userId, applicationId);
-
         if (!userId) {
             throw new Error(`Parameter "userId" not specified.`);
         }
@@ -67,7 +62,6 @@ export class ApplicationService {
 
         try {
             const contract = await this.apiClient.get<ApplicationContract>(`users/${userId}/clientApplications/${applicationId}`);
-            console.log('contract', contract);
 
             if (contract) {
                 return new Application(contract);
@@ -80,8 +74,6 @@ export class ApplicationService {
     }
 
     public async getApplicationProducts(userId: string, applicationId: string): Promise<Page<Product>> {
-        console.log('getApplicationProducts', userId, applicationId);
-
         if (!userId) {
             throw new Error(`Parameter "userId" not specified.`);
         }
@@ -94,7 +86,6 @@ export class ApplicationService {
         
         try {
             const pageContract = await this.apiClient.get<Page<ProductContract>>(`users/${userId}/clientApplications/${applicationId}/products`);
-            console.log('contract', pageContract);
 
             pageOfProducts.value = pageContract.value.map((item) => new Product(item));
             pageOfProducts.nextLink = pageContract.nextLink;
@@ -108,8 +99,6 @@ export class ApplicationService {
     }
 
     public async createNewSecret(userId: string, applicationId: string): Promise<EntraSecret | undefined> {
-        console.log('listSecrets', userId, applicationId);
-
         if (!userId) {
             throw new Error(`Parameter "userId" not specified.`);
         }
@@ -120,7 +109,6 @@ export class ApplicationService {
         
         try {
             const contract = await this.apiClient.post<EntraSecretContract>(`users/${userId}/clientApplications/${applicationId}/listSecrets`);
-            console.log('contract', contract);
 
             if (contract) {
                 return new EntraSecret(contract);
