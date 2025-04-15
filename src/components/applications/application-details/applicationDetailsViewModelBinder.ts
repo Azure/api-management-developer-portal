@@ -2,7 +2,6 @@ import { ViewModelBinder, WidgetState } from "@paperbits/common/widgets";
 import { StyleCompiler } from "@paperbits/common/styles";
 import { ISiteService } from "@paperbits/common/sites";
 import { Logger } from "@paperbits/common/logging";
-import { layoutsMap } from "../../utils/react/TableListInfo";
 import { ApplicationDetailsModel } from "./applicationDetailsModel";
 import { ApplicationDetailsViewModel } from "./react/ApplicationDetailsViewModel";
 import { isRedesignEnabledSetting } from "../../../constants";
@@ -18,9 +17,6 @@ export class ApplicationDetailsViewModelBinder implements ViewModelBinder<Applic
         componentInstance.setState(prevState => ({
             isRedesignEnabled: state.isRedesignEnabled,
             styles: state.styles,
-            layout: state.layout,
-            layoutDefault: layoutsMap[state.layout],
-            allowViewSwitching: state.allowViewSwitching,
             detailsPageUrl: state.detailsPageHyperlink
                 ? state.detailsPageHyperlink.href
                 : undefined
@@ -28,9 +24,7 @@ export class ApplicationDetailsViewModelBinder implements ViewModelBinder<Applic
     }
 
     public async modelToState(model: ApplicationDetailsModel, state: WidgetState): Promise<void> {
-        state.allowViewSwitching = model.allowViewSwitching;
         state.detailsPageHyperlink = model.detailsPageHyperlink;
-        state.layout = model.layout;
 
         if (model.styles) {
             state.styles = await this.styleCompiler.getStyleModelAsync(model.styles);

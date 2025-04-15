@@ -8,11 +8,11 @@ import { ApplicationDetailsModel } from "./applicationDetailsModel";
 import { ApplicationDetailsModelBinder } from "./applicationDetailsModelBinder";
 import { ApplicationDetailsViewModel } from "./react/ApplicationDetailsViewModel";
 import { ApplicationDetailsViewModelBinder } from "./applicationDetailsViewModelBinder";
-// import { ApplicationListEditor } from "./ko/applicationListEditor";
+import { ApplicationDetailsEditor } from "./ko/applicationDetailsEditor";
 
 export class ApplicationDetailsDesignModule implements IInjectorModule {
     public register(injector: IInjector): void {
-        // injector.bind("applicationDetailsEditor", ApplicationListEditor);
+        injector.bind("applicationDetailsEditor", ApplicationDetailsEditor);
         injector.bindSingleton("applicationDetailsModelBinder", ApplicationDetailsModelBinder);
         injector.bindSingleton("applicationDetailsViewModelBinder", ApplicationDetailsViewModelBinder)
         injector.bindSingleton("applicationDetailsHandlers", ApplicationDetailsHandlers);
@@ -33,7 +33,7 @@ export class ApplicationDetailsDesignModule implements IInjectorModule {
             category: "Applications",
             iconClass: "widget-icon widget-icon-api-management",
             componentBinder: KnockoutComponentBinder,
-            // componentDefinition: ApplicationListEditor,
+            componentDefinition: ApplicationDetailsEditor,
             handlerComponent: ApplicationDetailsHandlers
         });
     }

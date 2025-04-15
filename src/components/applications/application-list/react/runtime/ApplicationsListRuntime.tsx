@@ -2,6 +2,7 @@ import * as React from "react";
 import { FluentProvider } from "@fluentui/react-components";
 import { Resolve } from "@paperbits/react/decorators";
 import { ApplicationService } from "../../../../../services/applicationService";
+import { UsersService } from "../../../../../services";
 import { Application } from "../../../../../models/application";
 import { fuiTheme } from "../../../../../constants";
 import { RouteHelper } from "../../../../../routing/routeHelper";
@@ -17,11 +18,13 @@ export interface ApplicationsListProps {
 
 interface ApplicationsListState {
     working: boolean;
+    userId: string;
     selectedApplication?: Application | null;
 }
 
 export type TApplicationsListRuntimeFCProps = Omit<ApplicationsListProps, "detailsPageUrl"> & {
     getReferenceUrl: (applicationName: string) => string;
+    userId: string;
     applicationService: ApplicationService;
     selectedApplication?: Application | null;
 };
@@ -29,6 +32,9 @@ export type TApplicationsListRuntimeFCProps = Omit<ApplicationsListProps, "detai
 export class ApplicationsListRuntime extends React.Component<ApplicationsListProps, ApplicationsListState> {
     @Resolve("applicationService")
     public applicationService: ApplicationService;
+
+    @Resolve("usersService")
+    public usersService: UsersService;
 
     @Resolve("routeHelper")
     public routeHelper: RouteHelper;
@@ -38,6 +44,7 @@ export class ApplicationsListRuntime extends React.Component<ApplicationsListPro
 
         this.state = {
             working: false,
+            userId: undefined,
             selectedApplication: undefined,
         };
     }
@@ -47,17 +54,18 @@ export class ApplicationsListRuntime extends React.Component<ApplicationsListPro
     }
 
     async loadSelectedApplication() {
+        const userId = await this.usersService.ensureSignedIn();
         const applicationName = this.routeHelper.getApplicationName();
         if (!applicationName) {
-            this.setState({ selectedApplication: null });
+            this.setState({ userId, selectedApplication: null });
             return;
         }
 
         this.setState({ working: true, selectedApplication: undefined });
         
         return this.applicationService
-            .getApplication("maxpodriezov", applicationName) // TODO: get user id
-            .then((selectedApplication) => this.setState({ selectedApplication }))
+            .getApplication(userId, applicationName)
+            .then((selectedApplication) => this.setState({ userId, selectedApplication }))
             .finally(() => this.setState({ working: false }));
     }
 
@@ -70,6 +78,7 @@ export class ApplicationsListRuntime extends React.Component<ApplicationsListPro
             <FluentProvider theme={fuiTheme}>
                 <ApplicationsTableCards
                     {...this.props}
+                    userId={this.state.userId}
                     applicationService={this.applicationService}
                     getReferenceUrl={(applicationName) => this.getReferenceUrl(applicationName)}
                 />

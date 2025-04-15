@@ -9,9 +9,6 @@ export class ApplicationDetailsModelBinder implements IModelBinder<ApplicationDe
     
     public async contractToModel(contract: ApplicationDetailsContract): Promise<ApplicationDetailsModel> {
         const model = new ApplicationDetailsModel();
-
-        model.layout = contract.itemStyleView || "list";
-        model.allowViewSwitching = contract.allowViewSwitching ?? true;
         model.styles = contract.styles ?? {};
 
         if (contract.detailsPageHyperlink) {
@@ -24,8 +21,6 @@ export class ApplicationDetailsModelBinder implements IModelBinder<ApplicationDe
     public modelToContract(model: ApplicationDetailsModel): Contract {
         const contract: ApplicationDetailsContract = {
             type: "application-details",
-            itemStyleView: model.layout,
-            allowViewSwitching: model.allowViewSwitching,
             detailsPageHyperlink: model.detailsPageHyperlink
                 ? {
                     target: model.detailsPageHyperlink.target,

@@ -16,6 +16,7 @@ type TApplicationTableCards = TApplicationsListRuntimeFCProps;
 
 export const ApplicationsTableCards = ({
     getReferenceUrl,
+    userId,
     applicationService,
     layoutDefault,
     allowViewSwitching
@@ -43,8 +44,7 @@ export const ApplicationsTableCards = ({
         let applications: Page<Application>;
     
         try {
-            /*TODO : ADD USER ID*/
-            applications = await applicationService.getClientApplications("maxpodriezov", query);
+            applications = await applicationService.getClientApplications(userId, query);
         } catch (error) {
             throw new Error(`Unable to load applications. Error: ${error.message}`);
         }
@@ -69,9 +69,9 @@ export const ApplicationsTableCards = ({
                 </div>
             ) : (
                 <>
-                    {/* <div style={{ margin: "1rem auto 2rem" }}>
+                    <div style={{ margin: "1rem auto 2rem" }}>
                         <Pagination pageNumber={pageNumber} setPageNumber={setPageNumber} pageMax={Math.ceil(applications?.count / defaultPageSize)} />
-                    </div> */}
+                    </div>
 
                     <div>
                         {layout === TLayout.table ? (
@@ -81,9 +81,9 @@ export const ApplicationsTableCards = ({
                         )}
                     </div>
 
-                    {/* <div style={{ margin: "1rem auto" }}>
+                    <div style={{ margin: "1rem auto" }}>
                         <Pagination pageNumber={pageNumber} setPageNumber={setPageNumber} pageMax={Math.ceil(applications?.count / defaultPageSize)} />
-                    </div> */}
+                    </div>
                 </>
             )}
         </Stack>

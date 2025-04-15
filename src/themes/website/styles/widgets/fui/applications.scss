@@ -1,0 +1,10 @@
+.application-product-options-container {
+    display: table-row;
+}
+
+.application-product-options {
+    display: grid;
+    grid-template-columns: 300px 400px;
+    row-gap: 1rem;
+    padding: 1rem 3rem;
+}

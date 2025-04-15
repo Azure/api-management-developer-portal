@@ -17,8 +17,8 @@ export interface ProductContract {
 
     /**
      * Specifies whether subscription approval is required.
-     * If false, new subscriptions will be approved automatically enabling developers to call the product’s APIs immediately after subscribing.
-     * If true, administrators must manually approve the subscription before the developer can call any of the product’s APIs.
+     * If false, new subscriptions will be approved automatically enabling developers to call the productï¿½s APIs immediately after subscribing.
+     * If true, administrators must manually approve the subscription before the developer can call any of the productï¿½s APIs.
      * Can be present only if subscriptionRequired property is present and has a value of true.
      */
     approvalRequired: boolean;
@@ -42,6 +42,30 @@ export interface ProductContract {
      * Product terms and conditions. Developer will have to accept these terms before he's allowed to call product API.
      */
     terms: string;
+
+    /**
+     * Specifies the product's application settings.
+     */
+    applicationSettings?: ProductApplicationSettings;
 }
 
 export type ProductState = "published" | "notPublished";
+
+export interface ProductApplicationSettings {
+    /**
+     * Specifies the product's entra settings.
+     */
+    entra?: ProductEntraSettings;
+}
+
+export interface ProductEntraSettings {
+    /**
+     * Specifies the product's entra application id.
+     */
+    applicationId: string;
+
+    /**
+     * Specifies the product's audience.
+     */
+    audience: string;
+}
