@@ -307,7 +307,7 @@ export class ProductService {
             throw new Error(`Parameter "productId" not specified.`);
         }
 
-        const contract = await this.apiClient.get<ProductContract>(productId, [await this.apiClient.getPortalHeader("getProduct"), Utils.getIsUserResourceHeader()]);
+        const contract = await this.apiClient.get<ProductContract>(`/products/${productId}`, [await this.apiClient.getPortalHeader("getProduct"), Utils.getIsUserResourceHeader()]);
 
         if (contract) {
             return new Product(contract);

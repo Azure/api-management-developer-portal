@@ -81,7 +81,7 @@ export class ProductSubscribe {
                 return;
             }
 
-            const product = await this.productService.getProduct(`products/${productName}`);
+            const product = await this.productService.getProduct(productName);
 
             if (!product) {
                 return;
