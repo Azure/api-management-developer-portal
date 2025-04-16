@@ -1,11 +1,15 @@
 import { IInjectorModule, IInjector } from "@paperbits/common/injection";
+import { IWidgetService } from "@paperbits/common/widgets";
+import { ReactComponentBinder } from "@paperbits/react/bindings";
+import { ComponentFlow } from "@paperbits/common/components";
+import { Logger } from "@paperbits/common/logging";
+import { ISettingsProvider } from "@paperbits/common/configuration";
 import { ApplicationDetailsModelBinder } from "./applicationDetailsModelBinder";
 import { ApplicationDetailsViewModelBinder } from "./applicationDetailsViewModelBinder";
 import { ApplicationDetailsModel } from "./applicationDetailsModel";
 import { ApplicationDetailsViewModel } from "./react/ApplicationDetailsViewModel";
-import { IWidgetService } from "@paperbits/common/widgets";
-import { ReactComponentBinder } from "@paperbits/react/bindings";
-import { ComponentFlow } from "@paperbits/common/components";
+import { Utils } from "../../../utils";
+import { FEATURE_CLIENT_APPLICATIONS } from "../../../constants";
 
 
 export class ApplicationDetailsPublishModule implements IInjectorModule {
@@ -14,14 +18,22 @@ export class ApplicationDetailsPublishModule implements IInjectorModule {
         injector.bindToCollection("viewModelBinders", ApplicationDetailsViewModelBinder);
 
         const widgetService = injector.resolve<IWidgetService>("widgetService");
+        const logger = injector.resolve<Logger>("logger");
+        const settingsProvider = injector.resolve<ISettingsProvider>("settingsProvider");
 
-        widgetService.registerWidget("application-details", {
-            modelDefinition: ApplicationDetailsModel,
-            componentBinder: ReactComponentBinder,
-            componentDefinition: ApplicationDetailsViewModel,
-            modelBinder: ApplicationDetailsModelBinder,
-            viewModelBinder: ApplicationDetailsViewModelBinder,
-            componentFlow: ComponentFlow.Block
-        });
+        Utils.getFeatureValueOrNull(FEATURE_CLIENT_APPLICATIONS, settingsProvider, logger)
+            .then((isEnabled) => {
+                if (isEnabled) {
+                    widgetService.registerWidget("application-details", {
+                        modelDefinition: ApplicationDetailsModel,
+                        componentBinder: ReactComponentBinder,
+                        componentDefinition: ApplicationDetailsViewModel,
+                        modelBinder: ApplicationDetailsModelBinder,
+                        viewModelBinder: ApplicationDetailsViewModelBinder,
+                        componentFlow: ComponentFlow.Block
+                    });
+                }
+            }
+        );
     }
 }

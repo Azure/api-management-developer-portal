@@ -17,7 +17,6 @@ export class ApplicationListViewModel extends React.Component {
         const data = JSON.stringify(this.state);
         
         return this.state.isRedesignEnabled
-            ? <fui-application-list key={data} props={data}></fui-application-list>
-            : <application-list params={data}></application-list>;
+            && <fui-application-list key={data} props={data}></fui-application-list>;
     }
 }

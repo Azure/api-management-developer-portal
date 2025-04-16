@@ -55,8 +55,6 @@ declare namespace JSX {
         "fui-reports-runtime": any;
         "reports-runtime": any;
         "fui-application-list": any;
-        "application-list": any;
         "fui-application-details": any;
-        "application-details": any;
     }
 }

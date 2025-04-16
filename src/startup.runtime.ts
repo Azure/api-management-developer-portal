@@ -9,7 +9,7 @@ import { Logger } from "@paperbits/common/logging";
 import { TelemetryConfigurator } from "./telemetry/telemetryConfigurator";
 import { Utils } from "./utils";
 import { ISettingsProvider } from "@paperbits/common/configuration/ISettingsProvider";
-import { FEATURE_CLIENT_TELEMETRY, isRedesignEnabledSetting } from "./constants";
+import { FEATURE_CLIENT_APPLICATIONS, FEATURE_CLIENT_TELEMETRY, isRedesignEnabledSetting } from "./constants";
 
 define({ "application/x-zip-compressed": ["zip"] }, true);
 
@@ -59,6 +59,15 @@ function initFeatures() {
             } else {
                 telemetryConfigurator.cleanUp();
             }
+        });
+    Utils.getFeatureValueOrNull(FEATURE_CLIENT_APPLICATIONS, settingsProvider, logger)
+        .then((isEnabled) => {
+            const featureFlagValue = isEnabled === null || isEnabled;
+            logger.trackEvent("FeatureFlag", {
+                feature: FEATURE_CLIENT_APPLICATIONS,
+                enabled: featureFlagValue.toString(),
+                message: `Feature flag '${FEATURE_CLIENT_APPLICATIONS}' - ${isEnabled ? 'enabled' : 'disabled'}`
+            });
         });
     checkIsRedesignEnabled(settingsProvider, logger)
         .then((isEnabled) => {
