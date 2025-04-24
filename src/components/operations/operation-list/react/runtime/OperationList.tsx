@@ -223,7 +223,7 @@ export const OperationList = ({
     return (
         <div className={"operation-list-container"}>
             <Stack horizontal verticalAlign="center">
-                <span style={{display: "block"}} className={"operation-list-title strong"}>Operations</span>
+                <div className={"operation-list-title strong"}>Operations</div>
                 <Stack horizontal>
                     <Menu defaultCheckedValues={{ "operation-list-props": getDefaultListProps() }}>
                         <MenuTrigger disableButtonEnhancement>
