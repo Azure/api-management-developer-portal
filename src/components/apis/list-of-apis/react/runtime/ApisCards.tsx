@@ -1,46 +1,14 @@
 import * as React from "react";
 import { useState } from "react";
-import { Stack } from "@fluentui/react";
+import { ApiCard } from "@microsoft/api-docs-ui";
 import { Api } from "../../../../../models/api";
 import { TagGroup } from "../../../../../models/tagGroup";
-import { MarkdownProcessor } from "../../../../utils/react/MarkdownProcessor";
-import { markdownMaxCharsMap } from "../../../../../constants";
 import { isApisGrouped, toggleValueInSet, TagGroupToggleBtn, TApisData } from "./utils";
 
 type Props = {
     showApiType: boolean;
     getReferenceUrl: (apiName: string) => string;
     detailsPageTarget: string;
-};
-
-const ApiCard = ({ api, getReferenceUrl, showApiType, detailsPageTarget }: Props & { api: Api }) => {
-    return (
-        <div className={"fui-list-card"}>
-            <div style={{ height: "100%" }}>
-                {showApiType && (
-                    <div className={"fui-list-card-tags"}>
-                        <span className="caption1">API</span>
-                        <span className="caption1">{api.typeName}</span>
-                    </div>
-                )}
-                <h4>{api.displayName}</h4>
-
-                <MarkdownProcessor markdownToDisplay={api.description} maxChars={markdownMaxCharsMap.cards} />
-            </div>
-            
-            <Stack horizontal>
-                <a
-                    href={getReferenceUrl(api.name)}
-                    target={detailsPageTarget}
-                    title={api.displayName}
-                    role="button"
-                    className="button"
-                >
-                    Go to API
-                </a>
-            </Stack>
-        </div>
-    );
 };
 
 const ApisCardsContainer = ({ apis, ...props }: Props & { apis: Api[] }) => (

@@ -2,10 +2,10 @@ import * as React from "react";
 import { useState } from "react";
 import { Stack } from "@fluentui/react";
 import { Tab, TabList, Table, TableBody, TableCell, TableHeader, TableHeaderCell, TableRow } from "@fluentui/react-components";
+import { RawSchema } from "@microsoft/api-docs-ui";
 import { TypeDefinition, TypeDefinitionPropertyTypeCombination } from "../../../../../models/typeDefinition";
 import { MarkdownProcessor } from "../../../../utils/react/MarkdownProcessor";
 import { ScrollableTableContainer } from "../../../../utils/react/ScrollableTableContainer";
-import { CodeSnippet } from "../../../../utils/react/CodeSnippet";
 import { TSchemaView } from "./OperationRepresentation";
 
 type TypeDefinitionProps = {
@@ -46,11 +46,11 @@ export const TypeDefinitionInList = ({ definition, showExamples, getReferenceUrl
                 </TabList>
             </Stack>
             {schemaView === TSchemaView.schema
-                ? <CodeSnippet
-                    name={definition.name}
-                    content={definition.rawSchema}
-                    format={definition.rawSchemaFormat}
-                  />
+                ? <RawSchema
+                    schema={definition.rawSchema}
+                    language={definition.rawSchemaFormat}
+                    title={definition.name}
+                />
                 : <TypeDefinitionForRepresentation
                     definition={definition}
                     showExamples={showExamples}

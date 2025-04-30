@@ -17,6 +17,7 @@ import {
     Tooltip,
 } from "@fluentui/react-components";
 import { Copy16Regular } from "@fluentui/react-icons";
+import { InfoPanel } from "@microsoft/api-docs-ui";
 import { RouteHelper } from "../../../../../routing/routeHelper";
 import { ApiService } from "../../../../../services/apiService";
 import { UsersService } from "../../../../../services/usersService";
@@ -369,10 +370,9 @@ export const OperationDetails = ({
                             sessionManager={sessionManager}
                             httpClient={httpClient}
                         />
-                        <div className={"operation-table"}>
-                            <div className={"operation-table-header"}>
-                                <strong>Endpoint:</strong>
-                                {tags.length > 0 && (
+                        <InfoPanel
+                            title={
+                                tags.length > 0 && (
                                     <Stack
                                         horizontal
                                         className={"operation-tags"}
@@ -388,13 +388,11 @@ export const OperationDetails = ({
                                             </Badge>
                                         ))}
                                     </Stack>
-                                )}
-                            </div>
-                            <div className={"operation-table-body"}>
-                                <div className={"operation-table-body-row"}>
-                                    <span
-                                        className={`caption1-strong operation-info-caption operation-method method-${operation.method}`}
-                                    >
+                                )
+                            }
+                            children={
+                                <div className="operation-table-body-row">
+                                    <span className={`caption1-strong operation-info-caption operation-method method-${operation.method}`}>
                                         {operation.method}
                                     </span>
                                     <span className={"operation-text"}>
@@ -421,8 +419,8 @@ export const OperationDetails = ({
                                         />
                                     </Tooltip>
                                 </div>
-                            </div>
-                        </div>
+                            }
+                        />
                         {enableConsole && (
                             <button
                                 className="button"

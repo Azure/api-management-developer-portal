@@ -3,9 +3,9 @@ import { useState } from "react";
 import { GraphQLCompositeType, GraphQLEnumValue, GraphQLField, GraphQLInputType, GraphQLObjectType, GraphQLOutputType, isEnumType, isUnionType } from "graphql";
 import { Stack } from "@fluentui/react";
 import { Tab, TabList, Table, TableBody, TableCell, TableHeader, TableHeaderCell, TableRow } from "@fluentui/react-components";
+import { RawSchema } from "@microsoft/api-docs-ui";
 import { MarkdownProcessor } from "../../../../utils/react/MarkdownProcessor";
 import { ScrollableTableContainer } from "../../../../utils/react/ScrollableTableContainer";
-import { CodeSnippet } from "../../../../utils/react/CodeSnippet";
 import { GraphqlFieldTypes } from "../../../../../constants";
 import { TSchemaView } from "./OperationRepresentation";
 
@@ -37,10 +37,10 @@ export const TypeDefinitionGql = ({
                 </TabList>
             </Stack>
             {schemaView === TSchemaView.schema
-                ? <CodeSnippet
-                    name={graph.name}
-                    content={getGraphSchemaForRepresentation(graph)}
-                    format={"graphql"}
+                ? <RawSchema
+                    title={graph.name}
+                    schema={getGraphSchemaForRepresentation(graph)}
+                    language={"graphql"}
                   />
                 : <GQLTypeDefinitionForRepresentation
                     graph={graph}

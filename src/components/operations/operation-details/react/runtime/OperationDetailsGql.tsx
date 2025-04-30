@@ -32,6 +32,7 @@ import {
     Tooltip,
 } from "@fluentui/react-components";
 import { Copy16Regular } from "@fluentui/react-icons";
+import { InfoPanel, RawSchema } from "@microsoft/api-docs-ui";
 import { Api } from "../../../../../models/api";
 import { ApiService } from "../../../../../services/apiService";
 import {
@@ -43,7 +44,6 @@ import { ProductService } from "../../../../../services/productService";
 import { OAuthService } from "../../../../../services/oauthService";
 import { RouteHelper } from "../../../../../routing/routeHelper";
 import { MarkdownProcessor } from "../../../../utils/react/MarkdownProcessor";
-import { CodeSnippet } from "../../../../utils/react/CodeSnippet";
 import { ScrollableTableContainer } from "../../../../utils/react/ScrollableTableContainer";
 import {
     GraphqlCustomFieldNames,
@@ -347,12 +347,9 @@ export const OperationDetailsGql = ({
                             httpClient={httpClient}
                             logger={logger}
                         />
-                        <div className={"operation-table"}>
-                            <div className={"operation-table-header"}>
-                                <strong>Endpoint:</strong>
-                            </div>
-                            <div className={"operation-table-body"}>
-                                <div className={"operation-table-body-row"}>
+                        <InfoPanel
+                            children={
+                                <div className="operation-table-body-row">
                                     <span className={"operation-text"}>
                                         {requestUrl}
                                     </span>
@@ -377,8 +374,8 @@ export const OperationDetailsGql = ({
                                         />
                                     </Tooltip>
                                 </div>
-                            </div>
-                        </div>
+                            }
+                        />
                         {enableConsole && (
                             <button
                                 className="button"
@@ -484,12 +481,12 @@ export const OperationDetailsGql = ({
                                         </Table>
                                     </ScrollableTableContainer>
                                 ) : (
-                                    <CodeSnippet
-                                        name={graph.name}
-                                        content={getGraphSchemaForRepresentation(
+                                    <RawSchema
+                                        title={graph.name}
+                                        schema={getGraphSchemaForRepresentation(
                                             graph
                                         )}
-                                        format={"graphql"}
+                                        language={"graphql"}
                                     />
                                 )}
                             </div>
