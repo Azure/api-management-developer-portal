@@ -3,8 +3,6 @@ import * as ko from "knockout";
 import { useEffect, useState } from "react";
 import { saveAs } from "file-saver";
 import { getExtension } from "mime";
-import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
-import { a11yLight } from "react-syntax-highlighter/dist/esm/styles/hljs";
 import { HttpClient, HttpHeader, HttpMethod, HttpRequest } from "@paperbits/common/http";
 import { Stack } from "@fluentui/react";
 import {
@@ -20,7 +18,7 @@ import {
     Tooltip
 } from "@fluentui/react-components";
 import { ChevronUp20Regular, Copy16Regular } from "@fluentui/react-icons";
-import { MarkdownRenderer } from "@microsoft/api-docs-ui";
+import { MarkdownRenderer, SyntaxHighlighter } from "@microsoft/api-docs-ui";
 import { Api } from "../../../../../../models/api";
 import { KnownMimeTypes } from "../../../../../../models/knownMimeTypes";
 import { KnownHttpHeaders } from "../../../../../../models/knownHttpHeaders";
@@ -459,7 +457,7 @@ ${responseBodyFormatted}`;
                             </Tooltip>
                             <RevealSecretButton showSecret={isSecretsRevealed} onClick={() => setIsSecretsRevealed(!isSecretsRevealed)} ></RevealSecretButton>
                         </Stack>
-                        <SyntaxHighlighter children={codeSample} language={selectedLanguage} style={a11yLight} />
+                        <SyntaxHighlighter children={codeSample} language={selectedLanguage} />
                         {api.type === TypeOfApi.webSocket &&
                             <>
                                 {isWsConnected &&
@@ -535,7 +533,7 @@ ${responseBodyFormatted}`;
                     <div className={`operation-table-body-console ${requestError ? "validation-error" : ""}`}>
                         {requestError
                             ? <MarkdownRenderer markdown={requestError} />
-                            : formattedResponse && <SyntaxHighlighter language={"http"} style={a11yLight}>{formattedResponse}</SyntaxHighlighter>
+                            : formattedResponse && <SyntaxHighlighter language={"http"} children={formattedResponse} />
                         }
                     </div>
                 </div>

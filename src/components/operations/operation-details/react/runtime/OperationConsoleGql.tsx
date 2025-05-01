@@ -1,7 +1,5 @@
 import * as React from "react";
 import { useCallback, useEffect, useState } from "react";
-import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
-import { a11yLight } from "react-syntax-highlighter/dist/esm/styles/hljs";
 import Editor, { Monaco } from '@monaco-editor/react';
 import { ISettingsProvider } from "@paperbits/common/configuration";
 import { SessionManager } from "@paperbits/common/persistence/sessionManager";
@@ -36,7 +34,7 @@ import {
     truncateBreadcrumbLongName
 } from "@fluentui/react-components";
 import { DismissRegular, SearchRegular } from "@fluentui/react-icons";
-import { MarkdownRenderer } from "@microsoft/api-docs-ui";
+import { MarkdownRenderer, SyntaxHighlighter } from "@microsoft/api-docs-ui";
 import { RouteHelper } from "../../../../../routing/routeHelper";
 import { Api } from "../../../../../models/api";
 import { ConsoleHeader } from "../../../../../models/console/consoleHeader";
@@ -703,7 +701,7 @@ export const OperationConsoleGql = ({
                                             {selectedTab === ConsoleTab.response &&
                                                 (requestError
                                                     ? <MarkdownRenderer markdown={requestError} />
-                                                    : response && <SyntaxHighlighter children={response} language={responseLanguage} style={a11yLight} />
+                                                    : response && <SyntaxHighlighter children={response} language={responseLanguage} />
                                                 )
                                             }
                                             {selectedTab === ConsoleTab.wsconsole &&

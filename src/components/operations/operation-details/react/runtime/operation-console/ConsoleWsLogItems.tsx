@@ -1,9 +1,7 @@
 import * as React from "react";
-import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
-import { a11yLight } from "react-syntax-highlighter/dist/esm/styles/hljs";
 import { Body1, TableCell, TableRow } from "@fluentui/react-components";
 import { ArrowDownFilled, ArrowUpFilled } from "@fluentui/react-icons";
-import { InfoTable } from "@microsoft/api-docs-ui";
+import { InfoTable, SyntaxHighlighter } from "@microsoft/api-docs-ui";
 import { LogItem } from "./ws-utilities/websocketClient";
 
 export const ConsoleWsLogItems = ({ wsLogItems }: { wsLogItems: LogItem[] }) => (
@@ -25,9 +23,7 @@ export const ConsoleWsLogItems = ({ wsLogItems }: { wsLogItems: LogItem[] }) => 
                         }</TableCell>
                         <TableCell>{
                             item.logType === "SendData" || item.logType === "GetData"
-                                ? <SyntaxHighlighter language="json" style={a11yLight}>
-                                    {item.logData}
-                                </SyntaxHighlighter>
+                                ? <SyntaxHighlighter language="json" children={item.logData} />
                                 : item.logData
                         }</TableCell>
                     </TableRow>
