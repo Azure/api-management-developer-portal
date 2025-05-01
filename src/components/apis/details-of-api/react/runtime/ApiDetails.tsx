@@ -4,12 +4,12 @@ import { Resolve } from "@paperbits/react/decorators";
 import { Router } from "@paperbits/common/routing";
 import { Stack } from "@fluentui/react";
 import { Badge, Dropdown, FluentProvider, Option, Spinner } from "@fluentui/react-components";
+import { MarkdownRenderer } from "@microsoft/api-docs-ui";
 import { Api } from "../../../../../models/api";
 import { KnownMimeTypes } from "../../../../../models/knownMimeTypes"
 import { ApiService } from "../../../../../services/apiService";
 import { RouteHelper } from "../../../../../routing/routeHelper";
 import { TypeOfApi, fuiTheme } from "../../../../../constants";
-import { MarkdownProcessor } from "../../../../utils/react/MarkdownProcessor";
 
 interface ApiDetailsProps {
     changeLogPageUrl?: string
@@ -165,7 +165,7 @@ const ApiDetailsFC = ({
                             </Stack>
                         }
                         {api.description &&
-                            <span style={{display: "block"}}><MarkdownProcessor markdownToDisplay={api.description} /></span>
+                            <span style={{display: "block"}}><MarkdownRenderer markdown={api.description} /></span>
                         }
                         {(api.contact || api.license || api.termsOfServiceUrl) &&
                             <div className={"api-additional-info"}>

@@ -10,6 +10,16 @@ fui-operation-details {
 
     .operation-details-content {
         max-width: 800px;
+
+        .ws-info-panel {
+            > div {
+                padding: 0;
+            }
+
+            .operation-table-body-row {
+                padding: 1rem;
+            }
+        }
     }
 
     .operation-description {
@@ -21,7 +31,7 @@ fui-operation-details {
     }
 
     .operation-tags {
-        padding-top: 1rem;
+        padding: 1rem 0;
 
         > * {
             margin-right: .5rem;
@@ -119,8 +129,7 @@ fui-operation-details {
     }
 }
 
-.operation-table-body-row {
-    padding: 1rem;
+.operation-table-body-row {    
     display: flex;
     align-items: center;
 

@@ -6,6 +6,7 @@ import { HttpClient } from "@paperbits/common/http/httpClient";
 import { Stack } from "@fluentui/react";
 import { Badge, Button, Spinner, Tooltip } from "@fluentui/react-components";
 import { Copy16Regular } from "@fluentui/react-icons";
+import { InfoPanel, MarkdownRenderer } from "@microsoft/api-docs-ui";
 import { Operation } from "../../../../../models/operation";
 import { Api } from "../../../../../models/api";
 import { Tag } from "../../../../../models/tag";
@@ -14,7 +15,6 @@ import { OAuthService } from "../../../../../services/oauthService";
 import { UsersService } from "../../../../../services/usersService";
 import { ProductService } from "../../../../../services/productService";
 import { RouteHelper } from "../../../../../routing/routeHelper";
-import { MarkdownProcessor } from "../../../../utils/react/MarkdownProcessor";
 import { getRequestUrl, scrollToOperation } from "./utils";
 import { OperationDetailsRuntimeProps } from "./OperationDetailsRuntime";
 import { OperationConsole } from "./OperationConsole";
@@ -119,6 +119,12 @@ export const OperationDetailsWebsocket = ({
                 : !operation
                     ? <span>No operation selected.</span> 
                     : <div className={"operation-details-content"}>
+                        <h2 id={"operation"}>
+                            {operation.displayName}
+                        </h2>
+                        {operation.description && (
+                            <div><MarkdownRenderer markdown={operation.description} /></div>
+                        )}
                         <OperationConsole
                             isOpen={isConsoleOpen}
                             setIsOpen={setIsConsoleOpen}
@@ -135,48 +141,44 @@ export const OperationDetailsWebsocket = ({
                             sessionManager={sessionManager}
                             httpClient={httpClient}
                         />
-                        <div className={"operation-table"}>
-                            <div className={"operation-table-header"}>
-                                <h5>{operation.displayName}</h5>
-                                {operation.description &&
-                                    <div className={"operation-description"}>
-                                        <MarkdownProcessor markdownToDisplay={operation.description} />
-                                    </div>
-                                }
-                                {tags.length > 0 &&
+                        <InfoPanel
+                            className="ws-info-panel"
+                            title={
+                                tags.length > 0 &&
                                     <Stack horizontal className={"operation-tags"}>
                                         <span className="strong">Tags:</span>
                                         {tags.map(tag => <Badge key={tag.id} color="important" appearance="outline">{tag.name}</Badge>)}
                                     </Stack>
-                                }
-                            </div>
-                            <div className={"operation-table-body"}>
-                                <div className={"operation-table-body-row"}>
-                                    <span className={"caption1-strong operation-info-caption ws-caption"}>Socket URL</span>
-                                    <span className={"operation-text"}>{requestUrl}</span>
-                                    <Tooltip
-                                        content={isCopied ? "Copied to clipboard!" : "Copy to clipboard"}
-                                        relationship={"description"}
-                                        hideDelay={isCopied ? 3000 : 250}
-                                    >
-                                        <Button
-                                            icon={<Copy16Regular />}
-                                            appearance="transparent"
-                                            onClick={() => {
-                                                navigator.clipboard.writeText(requestUrl);
-                                                setIsCopied(true);
-                                            }}
-                                        />
-                                    </Tooltip>
-                                </div>
-                                {api.protocols &&
+                            }
+                            children={
+                                <>
                                     <div className={"operation-table-body-row"}>
-                                        <span className={"caption1-strong operation-info-caption ws-caption"}>Protocol</span>
-                                        <span className={"operation-text"}>{api.protocols.join(", ")}</span>
+                                        <span className={"caption1-strong operation-info-caption ws-caption"}>Socket URL</span>
+                                        <span className={"operation-text"}>{requestUrl}</span>
+                                        <Tooltip
+                                            content={isCopied ? "Copied to clipboard!" : "Copy to clipboard"}
+                                            relationship={"description"}
+                                            hideDelay={isCopied ? 3000 : 250}
+                                        >
+                                            <Button
+                                                icon={<Copy16Regular />}
+                                                appearance="transparent"
+                                                onClick={() => {
+                                                    navigator.clipboard.writeText(requestUrl);
+                                                    setIsCopied(true);
+                                                }}
+                                            />
+                                        </Tooltip>
                                     </div>
-                                }
-                            </div>
-                        </div>
+                                    {api.protocols &&
+                                        <div className={"operation-table-body-row"}>
+                                            <span className={"caption1-strong operation-info-caption ws-caption"}>Protocol</span>
+                                            <span className={"operation-text"}>{api.protocols.join(", ")}</span>
+                                        </div>
+                                    }
+                                </>
+                            }
+                        />
                         {enableConsole && <button className="button" onClick={() => setIsConsoleOpen(true)}>Try this operation</button>}
                       </div>
             }

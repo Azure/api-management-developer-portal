@@ -4,19 +4,9 @@ import { ISettingsProvider } from "@paperbits/common/configuration";
 import { SessionManager } from "@paperbits/common/persistence/sessionManager";
 import { HttpClient } from "@paperbits/common/http/httpClient";
 import { Stack } from "@fluentui/react";
-import {
-    Badge,
-    Button,
-    Spinner,
-    Table,
-    TableBody,
-    TableCell,
-    TableHeader,
-    TableHeaderCell,
-    TableRow,
-    Tooltip,
-} from "@fluentui/react-components";
+import { Badge, Button, Spinner, TableCell, TableRow, Tooltip } from "@fluentui/react-components";
 import { Copy16Regular } from "@fluentui/react-icons";
+import { InfoPanel, InfoTable, MarkdownRenderer } from "@microsoft/api-docs-ui";
 import { RouteHelper } from "../../../../../routing/routeHelper";
 import { ApiService } from "../../../../../services/apiService";
 import { UsersService } from "../../../../../services/usersService";
@@ -36,8 +26,6 @@ import {
     TypeDefinitionPropertyTypePrimitive,
     TypeDefinitionPropertyTypeReference,
 } from "../../../../../models/typeDefinition";
-import { MarkdownProcessor } from "../../../../utils/react/MarkdownProcessor";
-import { ScrollableTableContainer } from "../../../../utils/react/ScrollableTableContainer";
 import { OperationDetailsRuntimeProps } from "./OperationDetailsRuntime";
 import {
     OperationRepresentation,
@@ -346,11 +334,7 @@ export const OperationDetails = ({
                         {operation.displayName}
                     </h2>
                     {operation.description && (
-                        <div>
-                            <MarkdownProcessor
-                                markdownToDisplay={operation.description}
-                            />
-                        </div>
+                        <div><MarkdownRenderer markdown={operation.description} /></div>
                     )}
                     <div className={"operation-details-content"}>
                         <OperationConsole
@@ -369,10 +353,9 @@ export const OperationDetails = ({
                             sessionManager={sessionManager}
                             httpClient={httpClient}
                         />
-                        <div className={"operation-table"}>
-                            <div className={"operation-table-header"}>
-                                <strong>Endpoint:</strong>
-                                {tags.length > 0 && (
+                        <InfoPanel
+                            title={
+                                tags.length > 0 && (
                                     <Stack
                                         horizontal
                                         className={"operation-tags"}
@@ -388,13 +371,11 @@ export const OperationDetails = ({
                                             </Badge>
                                         ))}
                                     </Stack>
-                                )}
-                            </div>
-                            <div className={"operation-table-body"}>
-                                <div className={"operation-table-body-row"}>
-                                    <span
-                                        className={`caption1-strong operation-info-caption operation-method method-${operation.method}`}
-                                    >
+                                )
+                            }
+                            children={
+                                <div className="operation-table-body-row">
+                                    <span className={`caption1-strong operation-info-caption operation-method method-${operation.method}`}>
                                         {operation.method}
                                     </span>
                                     <span className={"operation-text"}>
@@ -421,8 +402,8 @@ export const OperationDetails = ({
                                         />
                                     </Tooltip>
                                 </div>
-                            </div>
-                        </div>
+                            }
+                        />
                         {enableConsole && (
                             <button
                                 className="button"
@@ -437,9 +418,7 @@ export const OperationDetails = ({
                                     Request
                                 </h4>
                                 {request.description && (
-                                    <MarkdownProcessor
-                                        markdownToDisplay={request.description}
-                                    />
+                                    <MarkdownRenderer markdown={request.description} />
                                 )}
                                 {operation.parameters?.length > 0 && (
                                     <>
@@ -466,7 +445,6 @@ export const OperationDetails = ({
                                             tableContent={request.headers}
                                             showExamples={showExamples}
                                             showIn={false}
-                                            isHeaders={true}
                                         />
                                     </>
                                 )}
@@ -500,11 +478,7 @@ export const OperationDetails = ({
                                         {response.statusCode.description}
                                     </h4>
                                     {response.description && (
-                                        <MarkdownProcessor
-                                            markdownToDisplay={
-                                                response.description
-                                            }
-                                        />
+                                        <MarkdownRenderer markdown={response.description} />
                                     )}
                                     {response.headers?.length > 0 && (
                                         <>
@@ -544,66 +518,45 @@ export const OperationDetails = ({
                                 <h4 className={"operation-details-title"}>
                                     Definitions
                                 </h4>
-                                <ScrollableTableContainer>
-                                    <Table
-                                        aria-label={"Definitions list"}
-                                        className={"fui-table"}
-                                    >
-                                        <TableHeader>
+                                <InfoTable
+                                    title="Definitions list"
+                                    columnLabels={["Name", "Description"]}
+                                    children={
+                                        definitions.map((definition) => (
                                             <TableRow
-                                                className={"fui-table-headerRow"}
+                                                key={definition.name}
+                                                className={"fui-table-body-row"}
                                             >
-                                                <TableHeaderCell>
-                                                    <span className="strong">
-                                                        Name
+                                                <TableCell>
+                                                    <a
+                                                        href={getReferenceUrl(
+                                                            definition.name
+                                                        )}
+                                                        title={definition.name}
+                                                        className={
+                                                            "truncate-text"
+                                                        }
+                                                    >
+                                                        {definition.name}
+                                                    </a>
+                                                </TableCell>
+                                                <TableCell>
+                                                    <span
+                                                        title={
+                                                            definition.description
+                                                        }
+                                                    >
+                                                        <MarkdownRenderer
+                                                            markdown={definition.description}
+                                                            maxLength={250}
+                                                            shouldTruncate={true}
+                                                        />
                                                     </span>
-                                                </TableHeaderCell>
-                                                <TableHeaderCell>
-                                                    <span className="strong">
-                                                        Description
-                                                    </span>
-                                                </TableHeaderCell>
+                                                </TableCell>
                                             </TableRow>
-                                        </TableHeader>
-                                        <TableBody>
-                                            {definitions.map((definition) => (
-                                                <TableRow
-                                                    key={definition.name}
-                                                    className={"fui-table-body-row"}
-                                                >
-                                                    <TableCell>
-                                                        <a
-                                                            href={getReferenceUrl(
-                                                                definition.name
-                                                            )}
-                                                            title={definition.name}
-                                                            className={
-                                                                "truncate-text"
-                                                            }
-                                                        >
-                                                            {definition.name}
-                                                        </a>
-                                                    </TableCell>
-                                                    <TableCell>
-                                                        <span
-                                                            title={
-                                                                definition.description
-                                                            }
-                                                        >
-                                                            <MarkdownProcessor
-                                                                markdownToDisplay={
-                                                                    definition.description
-                                                                }
-                                                                maxChars={250}
-                                                                truncate={true}
-                                                            />
-                                                        </span>
-                                                    </TableCell>
-                                                </TableRow>
-                                            ))}
-                                        </TableBody>
-                                    </Table>
-                                </ScrollableTableContainer>
+                                        ))
+                                    }
+                                />                               
 
                                 {definitions.map((definition) => (
                                     <div

@@ -1,15 +1,7 @@
 import * as React from "react";
-import {
-    Spinner,
-    Table,
-    TableBody,
-    TableCell,
-    TableHeader,
-    TableHeaderCell,
-    TableRow,
-} from "@fluentui/react-components";
+import { Spinner, TableCell, TableRow } from "@fluentui/react-components";
+import { InfoTable } from "@microsoft/api-docs-ui";
 import { Subscription } from "../../../../../models/subscription";
-import { ScrollableTableContainer } from "../../../../utils/react/ScrollableTableContainer";
 
 export const ProductSubscriptionsTable = ({
     subscriptions,
@@ -27,27 +19,16 @@ export const ProductSubscriptionsTable = ({
     ) : !subscriptions || subscriptions.length === 0 ? (
         <span className="strong" style={{ display: "block", padding: "1rem 0" }}>You don't have subscriptions yet.</span>
     ) : (
-        <ScrollableTableContainer>
-            <Table className={"fui-table"} size={"small"} aria-label={"Your Subscriptions list"}>
-                <TableHeader>
-                    <TableRow className={"fui-table-headerRow"}>
-                        <TableHeaderCell>
-                            <span className="strong">Name</span>
-                        </TableHeaderCell>
-                        <TableHeaderCell>
-                            <span className="strong">Status</span>
-                        </TableHeaderCell>
+        <InfoTable
+            title={"Your Subscriptions list"}
+            columnLabels={["Name", "Status"]}
+            children={
+                subscriptions?.map((sub) => (
+                    <TableRow key={sub.id}>
+                        <TableCell>{sub.name}</TableCell>
+                        <TableCell>{sub.state}</TableCell>
                     </TableRow>
-                </TableHeader>
-
-                <TableBody>
-                    {subscriptions?.map((sub) => (
-                        <TableRow key={sub.id}>
-                            <TableCell>{sub.name}</TableCell>
-                            <TableCell>{sub.state}</TableCell>
-                        </TableRow>
-                    ))}
-                </TableBody>
-            </Table>
-        </ScrollableTableContainer>
+                ))
+            }
+        />
     );

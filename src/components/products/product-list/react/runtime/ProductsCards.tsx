@@ -1,8 +1,8 @@
 import * as React from "react";
 import { Stack } from "@fluentui/react";
+import { MarkdownRenderer } from "@microsoft/api-docs-ui";
 import { Product } from "../../../../../models/product";
 import { markdownMaxCharsMap } from "../../../../../constants";
-import { MarkdownProcessor } from "../../../../utils/react/MarkdownProcessor";
 
 type Props = {
     getReferenceUrl: (productName: string) => string;
@@ -14,7 +14,7 @@ const ProductCard = ({ product, getReferenceUrl }: Props & { product: Product })
             <div style={{ height: "100%" }}>
                 <h4>{product.displayName}</h4>
 
-                <MarkdownProcessor markdownToDisplay={product.description} maxChars={markdownMaxCharsMap.cards} />
+                <MarkdownRenderer markdown={product.description} maxLength={markdownMaxCharsMap.cards} />
             </div>
 
             <Stack horizontal>

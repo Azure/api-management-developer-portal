@@ -1,7 +1,5 @@
 import * as React from "react";
 import { useCallback, useEffect, useState } from "react";
-import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
-import { a11yLight } from "react-syntax-highlighter/dist/esm/styles/hljs";
 import Editor, { Monaco } from '@monaco-editor/react';
 import { ISettingsProvider } from "@paperbits/common/configuration";
 import { SessionManager } from "@paperbits/common/persistence/sessionManager";
@@ -36,6 +34,7 @@ import {
     truncateBreadcrumbLongName
 } from "@fluentui/react-components";
 import { DismissRegular, SearchRegular } from "@fluentui/react-icons";
+import { MarkdownRenderer, SyntaxHighlighter } from "@microsoft/api-docs-ui";
 import { RouteHelper } from "../../../../../routing/routeHelper";
 import { Api } from "../../../../../models/api";
 import { ConsoleHeader } from "../../../../../models/console/consoleHeader";
@@ -49,7 +48,6 @@ import { ProductService } from "../../../../../services/productService";
 import { UsersService } from "../../../../../services/usersService";
 import { GraphqlService, TGraphqlTypes } from "../../../../../services/graphqlService";
 import { GqlWsMessageType, GraphqlProtocols, graphqlSubProtocol, GraphqlTypes } from "../../../../../constants";
-import { MarkdownProcessor } from "../../../../utils/react/MarkdownProcessor";
 import { Utils } from "../../../../../utils";
 import { ConsoleAuthorization } from "./operation-console/ConsoleAuthorization";
 import { ConsoleHeaders } from "./operation-console/ConsoleHeaders";
@@ -702,8 +700,8 @@ export const OperationConsoleGql = ({
                                             }
                                             {selectedTab === ConsoleTab.response &&
                                                 (requestError
-                                                    ? <MarkdownProcessor markdownToDisplay={requestError} />
-                                                    : response && <SyntaxHighlighter children={response} language={responseLanguage} style={a11yLight} />
+                                                    ? <MarkdownRenderer markdown={requestError} />
+                                                    : response && <SyntaxHighlighter children={response} language={responseLanguage} />
                                                 )
                                             }
                                             {selectedTab === ConsoleTab.wsconsole &&

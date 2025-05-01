@@ -6,14 +6,10 @@ import {
     MenuItem,
     MenuList,
     MenuPopover,
-    MenuTrigger, Spinner,
-    Table,
-    TableBody,
+    MenuTrigger,
+    Spinner,
     TableCell,
     TableCellActions,
-    TableCellLayout,
-    TableHeader,
-    TableHeaderCell,
     TableRow,
 } from "@fluentui/react-components";
 import {
@@ -23,11 +19,10 @@ import {
     MoreHorizontalRegular,
     ProhibitedFilled,
 } from "@fluentui/react-icons";
+import { InfoTable } from "@microsoft/api-docs-ui";
 import { Subscription } from "../../../../../models/subscription";
 import { formatDate } from "../../../../utils";
 import { ValueOrFieldWBtn } from "../../../../utils/react/ValueOrField";
-import { NoRecordsRow } from "../../../../utils/react/NoRecordsRow";
-import { ScrollableTableContainer } from "../../../../utils/react/ScrollableTableContainer";
 
 const hiddenKey = "XXXXXXXXXXXXXXXXXXXXXXXXXX";
 
@@ -185,61 +180,23 @@ const SubscriptionRow = ({ sub, saveName, cancelSubscription, regeneratePKey, re
 
 export const SubscriptionsTable = ({ subscriptions, saveName, cancelSubscription, regeneratePKey, regenerateSKey }: TPropsCommon & { subscriptions: Subscription[] }) => {
     return (
-        <ScrollableTableContainer>
-            <Table
-                className={"fui-table"}
-                size={"small"}
-                aria-label={"Subscriptions list"}
-                style={{ tableLayout: 'auto', width: "100%" }}
-            >
-                <TableHeader>
-                    <TableRow className={"fui-table-headerRow"}>
-                        <TableHeaderCell>
-                            <span className="strong">Name</span>
-                        </TableHeaderCell>
-
-                        <TableHeaderCell>
-                            <span className="strong">Product</span>
-                        </TableHeaderCell>
-
-                        <TableHeaderCell>
-                            <span className="strong">State</span>
-                        </TableHeaderCell>
-
-                        <TableHeaderCell>
-                            <span className="strong">Primary key</span>
-                        </TableHeaderCell>
-
-                        <TableHeaderCell>
-                            <span className="strong">Secondary key</span>
-                        </TableHeaderCell>
-
-                        <TableHeaderCell>
-                            <span className="strong">Date created</span>
-                        </TableHeaderCell>
-
-                        <TableHeaderCell>
-                            <span className="strong"></span>
-                        </TableHeaderCell>
-                    </TableRow>
-                </TableHeader>
-
-                <TableBody>
-                    {subscriptions.length > 0
-                        ? subscriptions.map((sub) => (
-                            <SubscriptionRow
-                                key={sub.id}
-                                sub={sub}
-                                saveName={saveName}
-                                cancelSubscription={cancelSubscription}
-                                regeneratePKey={regeneratePKey}
-                                regenerateSKey={regenerateSKey}
-                            />
-                        ))
-                        : <NoRecordsRow colspan={7} />
-                    }
-                </TableBody>
-            </Table>
-        </ScrollableTableContainer>
+        <InfoTable
+            title={"Subscriptions list"}
+            columnLabels={["Name", "Product", "State", "Primary key", "Secondary key", "Date created", ""]}
+            children={subscriptions.length > 0 &&
+                subscriptions.map((sub) => (
+                    <SubscriptionRow
+                        key={sub.id}
+                        sub={sub}
+                        saveName={saveName}
+                        cancelSubscription={cancelSubscription}
+                        regeneratePKey={regeneratePKey}
+                        regenerateSKey={regenerateSKey}
+                    />
+                ))
+            }
+            noDataMessage="No subscriptions to display"
+            className={"profile-subscriptions-table"}
+        />
     );
 };

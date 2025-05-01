@@ -2,13 +2,13 @@ import * as React from "react";
 import { useEffect, useState } from "react";
 import { Stack } from "@fluentui/react";
 import { Dropdown, Option, Tab, TabList } from "@fluentui/react-components";
+import { RawSchema } from "@microsoft/api-docs-ui";
 import { KnownMimeTypes } from "../../../../../models/knownMimeTypes";
 import { Representation } from "../../../../../models/representation";
 import { TypeDefinition } from "../../../../../models/typeDefinition";
 import { RepresentationExample } from "../../../../../models/representationExample";
 import { Utils } from "../../../../../utils";
 import { OperationDetailsTable } from "./utils";
-import { CodeSnippet } from "../../../../utils/react/CodeSnippet";
 import { TypeDefinitionForRepresentation } from "./TypeDefinitions";
 
 type OperationRepresentationProps = {
@@ -67,7 +67,7 @@ export const OperationRepresentation = ({ definitions, representations, showExam
                         selectedOptions={[selectedRepresentation.contentType]}
                         size="small"
                         className={"operation-content-type-dropdown"}
-                        onOptionSelect={(e, data) => {
+                        onOptionSelect={(_, data) => {
                             const newSelectedRepresentation = representations.find(x => x.contentType === data.optionValue);
                             setSelectedRepresentation(newSelectedRepresentation);
                             newSelectedRepresentation.contentType === KnownMimeTypes.FormData && setSchemaView(TSchemaView.table);
@@ -88,10 +88,10 @@ export const OperationRepresentation = ({ definitions, representations, showExam
                     />
                 : selectedRepresentationDefinition &&
                     (schemaView === TSchemaView.schema
-                        ? <CodeSnippet
-                            name={selectedRepresentationDefinition.name}
-                            content={selectedRepresentationDefinition.rawSchema}
-                            format={selectedRepresentationDefinition.rawSchemaFormat}
+                        ? <RawSchema
+                            title={selectedRepresentationDefinition.name}
+                            schema={selectedRepresentationDefinition.rawSchema}
+                            language={selectedRepresentationDefinition.rawSchemaFormat}
                         />
                         : <TypeDefinitionForRepresentation
                             definition={selectedRepresentationDefinition}
@@ -105,7 +105,7 @@ export const OperationRepresentation = ({ definitions, representations, showExam
                     <Stack className={"operation-body"}>
                         <TabList
                             selectedValue={selectedRepresentationExample.title}
-                            onTabSelect={(e, data: { value: string }) =>
+                            onTabSelect={(_, data: { value: string }) =>
                                 setSelectedRepresentationExample(selectedRepresentation.examples.find(x => x.title === data.value))
                             }>
                             {selectedRepresentation.examples.map(example => (
@@ -113,7 +113,11 @@ export const OperationRepresentation = ({ definitions, representations, showExam
                             ))}
                         </TabList>
                     </Stack>
-                    <CodeSnippet example={selectedRepresentationExample} />
+                    <RawSchema
+                        title={selectedRepresentationExample.title}
+                        schema={selectedRepresentationExample.value}
+                        language={selectedRepresentationExample.format}
+                    />
                 </>
             }
         </>
