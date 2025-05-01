@@ -6,7 +6,7 @@ import { HttpClient } from "@paperbits/common/http/httpClient";
 import { Stack } from "@fluentui/react";
 import { Badge, Button, Spinner, TableCell, TableRow, Tooltip } from "@fluentui/react-components";
 import { Copy16Regular } from "@fluentui/react-icons";
-import { InfoPanel, InfoTable } from "@microsoft/api-docs-ui";
+import { InfoPanel, InfoTable, MarkdownRenderer } from "@microsoft/api-docs-ui";
 import { RouteHelper } from "../../../../../routing/routeHelper";
 import { ApiService } from "../../../../../services/apiService";
 import { UsersService } from "../../../../../services/usersService";
@@ -26,7 +26,6 @@ import {
     TypeDefinitionPropertyTypePrimitive,
     TypeDefinitionPropertyTypeReference,
 } from "../../../../../models/typeDefinition";
-import { MarkdownProcessor } from "../../../../utils/react/MarkdownProcessor";
 import { OperationDetailsRuntimeProps } from "./OperationDetailsRuntime";
 import {
     OperationRepresentation,
@@ -335,11 +334,7 @@ export const OperationDetails = ({
                         {operation.displayName}
                     </h2>
                     {operation.description && (
-                        <div>
-                            <MarkdownProcessor
-                                markdownToDisplay={operation.description}
-                            />
-                        </div>
+                        <div><MarkdownRenderer markdown={operation.description} /></div>
                     )}
                     <div className={"operation-details-content"}>
                         <OperationConsole
@@ -423,9 +418,7 @@ export const OperationDetails = ({
                                     Request
                                 </h4>
                                 {request.description && (
-                                    <MarkdownProcessor
-                                        markdownToDisplay={request.description}
-                                    />
+                                    <MarkdownRenderer markdown={request.description} />
                                 )}
                                 {operation.parameters?.length > 0 && (
                                     <>
@@ -485,11 +478,7 @@ export const OperationDetails = ({
                                         {response.statusCode.description}
                                     </h4>
                                     {response.description && (
-                                        <MarkdownProcessor
-                                            markdownToDisplay={
-                                                response.description
-                                            }
-                                        />
+                                        <MarkdownRenderer markdown={response.description} />
                                     )}
                                     {response.headers?.length > 0 && (
                                         <>
@@ -557,12 +546,10 @@ export const OperationDetails = ({
                                                             definition.description
                                                         }
                                                     >
-                                                        <MarkdownProcessor
-                                                            markdownToDisplay={
-                                                                definition.description
-                                                            }
-                                                            maxChars={250}
-                                                            truncate={true}
+                                                        <MarkdownRenderer
+                                                            markdown={definition.description}
+                                                            maxLength={250}
+                                                            shouldTruncate={true}
                                                         />
                                                     </span>
                                                 </TableCell>

@@ -20,6 +20,7 @@ import {
     Tooltip
 } from "@fluentui/react-components";
 import { ChevronUp20Regular, Copy16Regular } from "@fluentui/react-icons";
+import { MarkdownRenderer } from "@microsoft/api-docs-ui";
 import { Api } from "../../../../../../models/api";
 import { KnownMimeTypes } from "../../../../../../models/knownMimeTypes";
 import { KnownHttpHeaders } from "../../../../../../models/knownHttpHeaders";
@@ -30,7 +31,6 @@ import { RequestError } from "../../../../../../errors/requestError";
 import { HttpResponse } from "../../../../../../contracts/httpResponse";
 import { TemplatingService } from "../../../../../../services/templatingService";
 import { Utils } from "../../../../../../utils";
-import { MarkdownProcessor } from "../../../../../utils/react/MarkdownProcessor";
 import { RequestBodyType, TypeOfApi, downloadableTypes } from "../../../../../../constants";
 import { LogItem, WebsocketClient } from "./ws-utilities/websocketClient";
 import { templates } from "./templates/templates";
@@ -534,7 +534,7 @@ ${responseBodyFormatted}`;
                     </div>
                     <div className={`operation-table-body-console ${requestError ? "validation-error" : ""}`}>
                         {requestError
-                            ? <MarkdownProcessor markdownToDisplay={requestError} />
+                            ? <MarkdownRenderer markdown={requestError} />
                             : formattedResponse && <SyntaxHighlighter language={"http"} style={a11yLight}>{formattedResponse}</SyntaxHighlighter>
                         }
                     </div>

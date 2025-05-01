@@ -36,6 +36,7 @@ import {
     truncateBreadcrumbLongName
 } from "@fluentui/react-components";
 import { DismissRegular, SearchRegular } from "@fluentui/react-icons";
+import { MarkdownRenderer } from "@microsoft/api-docs-ui";
 import { RouteHelper } from "../../../../../routing/routeHelper";
 import { Api } from "../../../../../models/api";
 import { ConsoleHeader } from "../../../../../models/console/consoleHeader";
@@ -49,7 +50,6 @@ import { ProductService } from "../../../../../services/productService";
 import { UsersService } from "../../../../../services/usersService";
 import { GraphqlService, TGraphqlTypes } from "../../../../../services/graphqlService";
 import { GqlWsMessageType, GraphqlProtocols, graphqlSubProtocol, GraphqlTypes } from "../../../../../constants";
-import { MarkdownProcessor } from "../../../../utils/react/MarkdownProcessor";
 import { Utils } from "../../../../../utils";
 import { ConsoleAuthorization } from "./operation-console/ConsoleAuthorization";
 import { ConsoleHeaders } from "./operation-console/ConsoleHeaders";
@@ -702,7 +702,7 @@ export const OperationConsoleGql = ({
                                             }
                                             {selectedTab === ConsoleTab.response &&
                                                 (requestError
-                                                    ? <MarkdownProcessor markdownToDisplay={requestError} />
+                                                    ? <MarkdownRenderer markdown={requestError} />
                                                     : response && <SyntaxHighlighter children={response} language={responseLanguage} style={a11yLight} />
                                                 )
                                             }

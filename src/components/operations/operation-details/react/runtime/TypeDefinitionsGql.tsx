@@ -3,8 +3,7 @@ import { useState } from "react";
 import { GraphQLCompositeType, GraphQLEnumValue, GraphQLField, GraphQLInputType, GraphQLObjectType, GraphQLOutputType, isEnumType, isUnionType } from "graphql";
 import { Stack } from "@fluentui/react";
 import { Tab, TabList, TableCell, TableRow } from "@fluentui/react-components";
-import { InfoTable, RawSchema } from "@microsoft/api-docs-ui";
-import { MarkdownProcessor } from "../../../../utils/react/MarkdownProcessor";
+import { InfoTable, MarkdownRenderer, RawSchema } from "@microsoft/api-docs-ui";
 import { GraphqlFieldTypes } from "../../../../../constants";
 import { TSchemaView } from "./OperationRepresentation";
 
@@ -52,7 +51,7 @@ export const TypeDefinitionGql = ({
 
 const renderDescription = (description: string) => (
     <TableCell><div title={description}>
-        <MarkdownProcessor markdownToDisplay={description} maxChars={100} truncate={true} />
+        <MarkdownRenderer markdown={description} maxLength={100} shouldTruncate={true} />
     </div></TableCell>
 )
 
@@ -61,7 +60,7 @@ const GQLTypeDefinitionForRepresentation = ({ graph, getGraphType }: GQLTypeDefi
     return (
         <>
             <h5 className={"operation-subtitle2"}>{graph.name}</h5>
-            {graph.description && <MarkdownProcessor markdownToDisplay={graph.description} />}
+            {graph.description && <MarkdownRenderer markdown={graph.description} />}
             <InfoTable
                 title={graph.name}
                 columnLabels={columnLabels}

@@ -2,9 +2,8 @@ import * as React from "react";
 import { useState } from "react";
 import { Stack } from "@fluentui/react";
 import { Tab, TabList, TableCell, TableRow } from "@fluentui/react-components";
-import { InfoTable, RawSchema, TypeBadge } from "@microsoft/api-docs-ui";
+import { InfoTable, MarkdownRenderer, RawSchema, TypeBadge } from "@microsoft/api-docs-ui";
 import { TypeDefinition, TypeDefinitionPropertyTypeCombination } from "../../../../../models/typeDefinition";
-import { MarkdownProcessor } from "../../../../utils/react/MarkdownProcessor";
 import { TSchemaView } from "./OperationRepresentation";
 
 type TypeDefinitionProps = {
@@ -66,7 +65,7 @@ export const TypeDefinitionForRepresentation = ({ definition, showExamples, getR
     return (
         <>
             <h5 className={"operation-subtitle2"}>{definition.name}</h5>
-            {definition.description && <MarkdownProcessor markdownToDisplay={definition.description} />}
+            {definition.description && <MarkdownRenderer markdown={definition.description} />}
             {kind === TDefinitionKind.combination
                 ? <TypeDefinitionCombination definition={definition} showExamples={showExamples} getReferenceUrl={getReferenceUrl} />
                 : kind === TDefinitionKind.enum 
@@ -168,7 +167,7 @@ const TypeDefinitionObject = ({ definition, showExamples, getReferenceUrl }: Typ
                         {definition.readOnly && <TableCell><span>{property.readOnly}</span></TableCell>}
                         <TableCell><TypeBadge className={"truncate-text"} value={type} /></TableCell>
                         <TableCell><div title={property.description}>
-                            <MarkdownProcessor markdownToDisplay={property.description} maxChars={100} truncate={true} />
+                            <MarkdownRenderer markdown={property.description} maxLength={100} shouldTruncate={true} />
                         </div></TableCell>
                         {showExamples && 
                             <TableCell>

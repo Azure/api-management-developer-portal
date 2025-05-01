@@ -28,7 +28,7 @@ import {
     Tooltip,
 } from "@fluentui/react-components";
 import { Copy16Regular } from "@fluentui/react-icons";
-import { InfoPanel, InfoTable, RawSchema } from "@microsoft/api-docs-ui";
+import { InfoPanel, InfoTable, MarkdownRenderer, RawSchema } from "@microsoft/api-docs-ui";
 import { Api } from "../../../../../models/api";
 import { ApiService } from "../../../../../services/apiService";
 import {
@@ -39,7 +39,6 @@ import { UsersService } from "../../../../../services/usersService";
 import { ProductService } from "../../../../../services/productService";
 import { OAuthService } from "../../../../../services/oauthService";
 import { RouteHelper } from "../../../../../routing/routeHelper";
-import { MarkdownProcessor } from "../../../../utils/react/MarkdownProcessor";
 import {
     GraphqlCustomFieldNames,
     GraphqlDefaultScalarTypes,
@@ -316,9 +315,7 @@ export const OperationDetailsGql = ({
                 <>
                     <h2 id={"operation"}>{graph.name}</h2>
                     {graph.description && (
-                        <MarkdownProcessor
-                            markdownToDisplay={graph.description}
-                        />
+                        <MarkdownRenderer markdown={graph.description} />
                     )}
                     <div className={"operation-details-content"}>
                         <OperationConsoleGql
@@ -435,12 +432,10 @@ export const OperationDetailsGql = ({
                                                             arg.description
                                                         }
                                                     >
-                                                        <MarkdownProcessor
-                                                            markdownToDisplay={
-                                                                arg.description
-                                                            }
-                                                            maxChars={250}
-                                                            truncate={true}
+                                                        <MarkdownRenderer
+                                                            markdown={arg.description}
+                                                            maxLength={250}
+                                                            shouldTruncate={true}
                                                         />
                                                     </div>
                                                 </TableCell>
@@ -481,12 +476,10 @@ export const OperationDetailsGql = ({
                                                             reference.description
                                                         }
                                                     >
-                                                        <MarkdownProcessor
-                                                            markdownToDisplay={
-                                                                reference.description
-                                                            }
-                                                            maxChars={250}
-                                                            truncate={true}
+                                                        <MarkdownRenderer
+                                                            markdown={reference.description}
+                                                            maxLength={250}
+                                                            shouldTruncate={true}
                                                         />
                                                     </div>
                                                 </TableCell>

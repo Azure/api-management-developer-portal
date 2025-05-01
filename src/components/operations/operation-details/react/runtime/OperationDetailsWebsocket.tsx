@@ -6,7 +6,7 @@ import { HttpClient } from "@paperbits/common/http/httpClient";
 import { Stack } from "@fluentui/react";
 import { Badge, Button, Spinner, Tooltip } from "@fluentui/react-components";
 import { Copy16Regular } from "@fluentui/react-icons";
-import { InfoPanel } from "@microsoft/api-docs-ui";
+import { InfoPanel, MarkdownRenderer } from "@microsoft/api-docs-ui";
 import { Operation } from "../../../../../models/operation";
 import { Api } from "../../../../../models/api";
 import { Tag } from "../../../../../models/tag";
@@ -15,7 +15,6 @@ import { OAuthService } from "../../../../../services/oauthService";
 import { UsersService } from "../../../../../services/usersService";
 import { ProductService } from "../../../../../services/productService";
 import { RouteHelper } from "../../../../../routing/routeHelper";
-import { MarkdownProcessor } from "../../../../utils/react/MarkdownProcessor";
 import { getRequestUrl, scrollToOperation } from "./utils";
 import { OperationDetailsRuntimeProps } from "./OperationDetailsRuntime";
 import { OperationConsole } from "./OperationConsole";
@@ -124,11 +123,7 @@ export const OperationDetailsWebsocket = ({
                             {operation.displayName}
                         </h2>
                         {operation.description && (
-                            <div>
-                                <MarkdownProcessor
-                                    markdownToDisplay={operation.description}
-                                />
-                            </div>
+                            <div><MarkdownRenderer markdown={operation.description} /></div>
                         )}
                         <OperationConsole
                             isOpen={isConsoleOpen}

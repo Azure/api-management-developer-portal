@@ -1,16 +1,16 @@
 import * as React from "react";
 import { useEffect, useState } from "react";
+import { Resolve } from "@paperbits/react/decorators";
+import { Router } from "@paperbits/common/routing";
 import { Stack } from "@fluentui/react";
 import { FluentProvider, Spinner } from "@fluentui/react-components";
 import { CircleSmallFilled } from "@fluentui/react-icons";
-import { Resolve } from "@paperbits/react/decorators";
-import { Router } from "@paperbits/common/routing";
+import { MarkdownRenderer } from "@microsoft/api-docs-ui";
 import { Product } from "../../../../../models/product";
 import { ProductService } from "../../../../../services/productService";
 import { UsersService } from "../../../../../services/usersService";
 import { ProductState } from "../../../../../contracts/product";
 import { RouteHelper } from "../../../../../routing/routeHelper";
-import { MarkdownProcessor } from "../../../../utils/react/MarkdownProcessor";
 import { fuiTheme } from "../../../../../constants";
 
 type ProductSubscribeRuntimeProps = {}
@@ -71,7 +71,7 @@ const ProductDetailsRuntimeFC = ({ usersService, productService, productName }: 
             <span className="caption1"> Product {!!product.state && <><CircleSmallFilled /> {productStateToLabel(product.state)}</>}</span>
 
             {product.description &&
-                <span><MarkdownProcessor markdownToDisplay={product.description} /></span>
+                <span><MarkdownRenderer markdown={product.description} /></span>
             }
         </Stack>
     );

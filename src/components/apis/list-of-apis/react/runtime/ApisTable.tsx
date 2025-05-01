@@ -1,11 +1,10 @@
 import * as React from "react";
 import { useState } from "react";
 import { TableCell, TableRow } from "@fluentui/react-components";
-import { InfoTable } from "@microsoft/api-docs-ui";
+import { InfoTable, MarkdownRenderer } from "@microsoft/api-docs-ui";
 import { Api } from "../../../../../models/api";
 import { Page } from "../../../../../models/page";
 import { TagGroup } from "../../../../../models/tagGroup";
-import { MarkdownProcessor } from "../../../../utils/react/MarkdownProcessor";
 import { NoRecordsRow } from "../../../../utils/react/NoRecordsRow";
 import { markdownMaxCharsMap } from "../../../../../constants";
 import {
@@ -33,7 +32,7 @@ const TableBodyApis = ({ showApiType, apis, getReferenceUrl, detailsPageTarget }
                         </a>
                     </TableCell>
                     <TableCell>
-                        <MarkdownProcessor markdownToDisplay={api.description} maxChars={markdownMaxCharsMap.table} />
+                        <MarkdownRenderer markdown={api.description} maxLength={markdownMaxCharsMap.table} />
                     </TableCell>
                     {showApiType && <TableCell>{api.typeName}</TableCell>}
                 </TableRow>

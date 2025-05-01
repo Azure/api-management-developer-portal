@@ -1,8 +1,7 @@
 import * as React from "react";
 import { TableCell, TableRow } from "@fluentui/react-components";
-import { InfoTable } from "@microsoft/api-docs-ui";
+import { InfoTable, MarkdownRenderer } from "@microsoft/api-docs-ui";
 import { Product } from "../../../../../models/product";
-import { MarkdownProcessor } from "../../../../utils/react/MarkdownProcessor";
 import { NoRecordsRow } from "../../../../utils/react/NoRecordsRow";
 import { markdownMaxCharsMap } from "../../../../../constants";
 
@@ -22,7 +21,7 @@ const TableBodyProducts = ({ products, getReferenceUrl }: Props) => (
                         </a>
                     </TableCell>
                     <TableCell>
-                        <MarkdownProcessor markdownToDisplay={product.description} maxChars={markdownMaxCharsMap.table} />
+                        <MarkdownRenderer markdown={product.description} maxLength={markdownMaxCharsMap.table} />
                     </TableCell>
                 </TableRow>
             ))
