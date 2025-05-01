@@ -1,19 +1,12 @@
 import * as React from "react";
 import { useState } from "react";
-import {
-    Table,
-    TableBody,
-    TableCell,
-    TableHeader,
-    TableHeaderCell,
-    TableRow,
-} from "@fluentui/react-components";
+import { TableCell, TableRow } from "@fluentui/react-components";
+import { InfoTable } from "@microsoft/api-docs-ui";
 import { Api } from "../../../../../models/api";
 import { Page } from "../../../../../models/page";
 import { TagGroup } from "../../../../../models/tagGroup";
 import { MarkdownProcessor } from "../../../../utils/react/MarkdownProcessor";
 import { NoRecordsRow } from "../../../../utils/react/NoRecordsRow";
-import { ScrollableTableContainer } from "../../../../utils/react/ScrollableTableContainer";
 import { markdownMaxCharsMap } from "../../../../../constants";
 import {
     isApisGrouped,
@@ -88,38 +81,23 @@ const TableBodyTags = ({ tags, ...props }: Props & { tags: Page<TagGroup<Api>> }
     );
 };
 
-export const ApisTable = ({ apis, ...props }: Props & { apis: TApisData }) => (
-    <ScrollableTableContainer>
-        <Table className={"fui-table"} size={"small"} aria-label={"APIs List table"}>
-            <TableHeader>
-                <TableRow className={"fui-table-headerRow"}>
-                    <TableHeaderCell>
-                        <span className="strong">Name</span>
-                    </TableHeaderCell>
-                    <TableHeaderCell>
-                        <span className="strong">Description</span>
-                    </TableHeaderCell>
-                    {props.showApiType && (
-                        <TableHeaderCell style={{ width: "8em" }}>
-                            <span className="strong">Type</span>
-                        </TableHeaderCell>
-                    )}
-                </TableRow>
-            </TableHeader>
+export const ApisTable = ({ apis, ...props }: Props & { apis: TApisData }) => {
+    const tableColumns = ["Name", "Description"];
+    props.showApiType && tableColumns.push("Type");
 
-            <TableBody>
-                {isApisGrouped(apis) ? (
-                    <TableBodyTags
-                        {...props}
-                        tags={apis}
-                    />
+    return (
+        <InfoTable
+            title="APIs List table"
+            columnLabels={tableColumns}
+            columnWidths={["calc(50% - 4em)", "calc(50% - 4em)", "8em"]}
+            children={
+                isApisGrouped(apis) ? (
+                    <TableBodyTags {...props} tags={apis} />
                 ) : (
-                    <TableBodyApis
-                        {...props}
-                        apis={apis.value}
-                    />
-                )}
-            </TableBody>
-        </Table>
-    </ScrollableTableContainer>
-);
+                    <TableBodyApis {...props} apis={apis.value} />
+                )
+            }
+            noDataMessage="No APIs to display"
+        />
+    );
+}

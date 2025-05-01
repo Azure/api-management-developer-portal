@@ -3,15 +3,14 @@ import { useEffect, useState } from "react";
 import { Resolve } from "@paperbits/react/decorators";
 import { Router } from "@paperbits/common/routing";
 import { Stack } from "@fluentui/react";
-import { FluentProvider, Spinner, Table, TableBody, TableCell, TableHeader, TableHeaderCell, TableRow } from "@fluentui/react-components";
+import { FluentProvider, Spinner, TableCell, TableRow } from "@fluentui/react-components";
+import { InfoTable } from "@microsoft/api-docs-ui";
 import { Api } from "../../../../../models/api";
 import { Page } from "../../../../../models/page";
 import { ChangeLogContract } from "../../../../../contracts/apiChangeLog";
 import { ApiService } from "../../../../../services/apiService";
 import { RouteHelper } from "../../../../../routing/routeHelper";
 import { Pagination } from "../../../../utils/react/Pagination";
-import { NoRecordsRow } from "../../../../utils/react/NoRecordsRow";
-import { ScrollableTableContainer } from "../../../../utils/react/ScrollableTableContainer";
 import { defaultPageSize, fuiTheme } from "../../../../../constants";
 import { Utils } from "../../../../../utils";
 
@@ -91,27 +90,19 @@ const ApiHistoryFC = ({
                                 <a href={routeHelper.getApiReferenceUrl(apiName, detailsPageUrl)}>Go back to the API reference page</a>
                             }
                         </Stack>
-                        <ScrollableTableContainer>
-                            <Table className={"fui-table"}>
-                                <TableHeader>
-                                    <TableRow className={"fui-table-headerRow"}>
-                                        <TableHeaderCell><span className="strong">Release date</span></TableHeaderCell>
-                                        <TableHeaderCell><span className="strong">Notes</span></TableHeaderCell>
-                                    </TableRow>
-                                </TableHeader>
-                                <TableBody>
-                                    {currentChangelogPage?.value?.length > 0
-                                        ? currentChangelogPage.value.map((changelog, index) => (
-                                            <TableRow key={index}>
-                                                <TableCell>{Utils.formatDateTime(changelog.createdDateTime)}</TableCell>
-                                                <TableCell>{changelog.notes}</TableCell>
-                                            </TableRow>
-                                        ))
-                                        : <NoRecordsRow colspan={2} />
-                                    }
-                                </TableBody>
-                            </Table>
-                        </ScrollableTableContainer>
+                        <InfoTable
+                            columnLabels={["Release date", "Notes"]}
+                            children={
+                                currentChangelogPage?.value?.length > 0
+                                    && currentChangelogPage.value.map((changelog, index) => (
+                                        <TableRow key={index}>
+                                            <TableCell>{Utils.formatDateTime(changelog.createdDateTime)}</TableCell>
+                                            <TableCell>{changelog.notes}</TableCell>
+                                        </TableRow>
+                                    ))
+                            }
+                            noDataMessage="No records to show"
+                        />
                         {currentChangelogPage?.count > 1 &&
                             <div className={"pagination-container"}>
                                 <Pagination pageNumber={pageNumber} setPageNumber={setPageNumber} pageMax={Math.ceil(currentChangelogPage?.count / defaultPageSize)} />

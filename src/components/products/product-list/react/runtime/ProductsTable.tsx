@@ -1,15 +1,8 @@
 import * as React from "react";
-import {
-    Table,
-    TableBody,
-    TableCell,
-    TableHeader,
-    TableHeaderCell,
-    TableRow,
-} from "@fluentui/react-components";
+import { TableCell, TableRow } from "@fluentui/react-components";
+import { InfoTable } from "@microsoft/api-docs-ui";
 import { Product } from "../../../../../models/product";
 import { MarkdownProcessor } from "../../../../utils/react/MarkdownProcessor";
-import { ScrollableTableContainer } from "../../../../utils/react/ScrollableTableContainer";
 import { NoRecordsRow } from "../../../../utils/react/NoRecordsRow";
 import { markdownMaxCharsMap } from "../../../../../constants";
 
@@ -39,25 +32,14 @@ const TableBodyProducts = ({ products, getReferenceUrl }: Props) => (
 );
 
 export const ProductsTable = ({ products, getReferenceUrl }: Props) => (
-    <ScrollableTableContainer>
-        <Table className={"fui-table"} size={"small"} aria-label={"Products List table"}>
-            <TableHeader>
-                <TableRow className={"fui-table-headerRow"}>
-                    <TableHeaderCell>
-                        <span className="strong">Name</span>
-                    </TableHeaderCell>
-                    <TableHeaderCell>
-                        <span className="strong">Description</span>
-                    </TableHeaderCell>
-                </TableRow>
-            </TableHeader>
-
-            <TableBody>
-                <TableBodyProducts
-                    products={products}
-                    getReferenceUrl={getReferenceUrl}
-                />
-            </TableBody>
-        </Table>
-    </ScrollableTableContainer>
+    <InfoTable
+        title={"Products List table"}
+        columnLabels={["Name", "Description"]}
+        children={
+            <TableBodyProducts
+                products={products}
+                getReferenceUrl={getReferenceUrl}
+            />
+        }
+    />
 );

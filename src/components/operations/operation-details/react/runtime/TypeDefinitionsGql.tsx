@@ -2,10 +2,9 @@ import * as React from "react";
 import { useState } from "react";
 import { GraphQLCompositeType, GraphQLEnumValue, GraphQLField, GraphQLInputType, GraphQLObjectType, GraphQLOutputType, isEnumType, isUnionType } from "graphql";
 import { Stack } from "@fluentui/react";
-import { Tab, TabList, Table, TableBody, TableCell, TableHeader, TableHeaderCell, TableRow } from "@fluentui/react-components";
-import { RawSchema } from "@microsoft/api-docs-ui";
+import { Tab, TabList, TableCell, TableRow } from "@fluentui/react-components";
+import { InfoTable, RawSchema } from "@microsoft/api-docs-ui";
 import { MarkdownProcessor } from "../../../../utils/react/MarkdownProcessor";
-import { ScrollableTableContainer } from "../../../../utils/react/ScrollableTableContainer";
 import { GraphqlFieldTypes } from "../../../../../constants";
 import { TSchemaView } from "./OperationRepresentation";
 
@@ -57,51 +56,37 @@ const renderDescription = (description: string) => (
     </div></TableCell>
 )
 
-const GQLTypeDefinitionForRepresentation = ({ graph, getGraphType }: GQLTypeDefinitionProps) => (
-    <>
-        <h5 className={"operation-subtitle2"}>{graph.name}</h5>
-        {graph.description && <MarkdownProcessor markdownToDisplay={graph.description} />}
-        <ScrollableTableContainer>
-            <Table aria-label={graph.name} className={"fui-table"}>
-                <TableHeader>
-                    <TableRow className={"fui-table-headerRow"}>
-                        {isEnumType(graph)
-                            ? <TableHeaderCell><span className="strong">Value</span></TableHeaderCell>
-                            : isUnionType(graph)
-                                ? <TableHeaderCell><span className="strong">Possible types</span></TableHeaderCell>
-                                : <>
-                                    <TableHeaderCell><span className="strong">Fields</span></TableHeaderCell>
-                                    <TableHeaderCell><span className="strong">Type</span></TableHeaderCell>
-                                </>
-                        }
-                        <TableHeaderCell><span className="strong">Description</span></TableHeaderCell>
-                    </TableRow>
-                </TableHeader>
-                <TableBody>
-                    {isEnumType(graph)
-                        ? graph[GraphqlFieldTypes.values].map((value: GraphQLEnumValue) => (
-                            <TableRow key={value.name} className={"fui-table-body-row"}>
-                                <TableCell><span>{value.name}</span></TableCell>
-                                {renderDescription(value.description)}
+const GQLTypeDefinitionForRepresentation = ({ graph, getGraphType }: GQLTypeDefinitionProps) => {
+    const columnLabels = isEnumType(graph) ? ["Value", "Description"] : isUnionType(graph) ? ["Possible types", "Description"] : ["Fields", "Type", "Description"];
+    return (
+        <>
+            <h5 className={"operation-subtitle2"}>{graph.name}</h5>
+            {graph.description && <MarkdownProcessor markdownToDisplay={graph.description} />}
+            <InfoTable
+                title={graph.name}
+                columnLabels={columnLabels}
+                children={isEnumType(graph)
+                    ? graph[GraphqlFieldTypes.values].map((value: GraphQLEnumValue) => (
+                        <TableRow key={value.name} className={"fui-table-body-row"}>
+                            <TableCell><span>{value.name}</span></TableCell>
+                            {renderDescription(value.description)}
+                        </TableRow>
+                        ))
+                    : isUnionType(graph)
+                        ? graph[GraphqlFieldTypes.types].map((type: GraphQLObjectType) => (
+                            <TableRow key={type.name} className={"fui-table-body-row"}>
+                                <TableCell><span>{getGraphType(type)}</span></TableCell>
+                                {renderDescription(type.description)}
                             </TableRow>
-                            ))
-                        : isUnionType(graph)
-                            ? graph[GraphqlFieldTypes.types].map((type: GraphQLObjectType) => (
-                                <TableRow key={type.name} className={"fui-table-body-row"}>
-                                    <TableCell><span>{getGraphType(type)}</span></TableCell>
-                                    {renderDescription(type.description)}
-                                </TableRow>
-                            ))
-                            : Object.values(graph[GraphqlFieldTypes.fields]).map((field: GraphQLField<any, any>) => (
-                                <TableRow key={field.name} className={"fui-table-body-row"}>
-                                    <TableCell><span>{field.name}</span></TableCell>
-                                    <TableCell><span>{getGraphType(field.type)}</span></TableCell>
-                                    {renderDescription(field.description)}
-                                </TableRow>
-                            ))
-                    }
-                </TableBody>
-            </Table>
-        </ScrollableTableContainer>
-    </>
-);
+                        ))
+                        : Object.values(graph[GraphqlFieldTypes.fields]).map((field: GraphQLField<any, any>) => (
+                            <TableRow key={field.name} className={"fui-table-body-row"}>
+                                <TableCell><span>{field.name}</span></TableCell>
+                                <TableCell><span>{getGraphType(field.type)}</span></TableCell>
+                                {renderDescription(field.description)}
+                            </TableRow>
+                        ))}
+            />            
+        </>
+    );
+}

@@ -16,16 +16,10 @@ import {
     Option,
     Radio,
     RadioGroup,
-    Table,
-    TableBody,
-    TableCell,
-    TableHeader,
-    TableHeaderCell,
-    TableRow,
     Textarea,
     Tooltip
 } from "@fluentui/react-components";
-import { ArrowDownFilled, ArrowUpFilled, ChevronUp20Regular, Copy16Regular, EyeOffRegular, EyeRegular } from "@fluentui/react-icons";
+import { ChevronUp20Regular, Copy16Regular } from "@fluentui/react-icons";
 import { Api } from "../../../../../../models/api";
 import { KnownMimeTypes } from "../../../../../../models/knownMimeTypes";
 import { KnownHttpHeaders } from "../../../../../../models/knownHttpHeaders";
@@ -37,12 +31,12 @@ import { HttpResponse } from "../../../../../../contracts/httpResponse";
 import { TemplatingService } from "../../../../../../services/templatingService";
 import { Utils } from "../../../../../../utils";
 import { MarkdownProcessor } from "../../../../../utils/react/MarkdownProcessor";
-import { ScrollableTableContainer } from "../../../../../utils/react/ScrollableTableContainer";
 import { RequestBodyType, TypeOfApi, downloadableTypes } from "../../../../../../constants";
 import { LogItem, WebsocketClient } from "./ws-utilities/websocketClient";
 import { templates } from "./templates/templates";
 import { BinaryField } from "./BinaryField";
 import { RevealSecretButton } from "./consoleUtils";
+import { ConsoleWsLogItems } from "./ConsoleWsLogItems";
 
 type ConsoleRequestResponseProps = {
     api: Api;
@@ -511,30 +505,7 @@ ${responseBodyFormatted}`;
                                 <Body1Strong block className={"ws-output-header"}>Output</Body1Strong>
                                 {wsLogItems.length === 0
                                     ? <Body1 block className={"ws-output-placeholder"}>Sent and received messages will appear here. Send a payload to begin.</Body1>
-                                    : <ScrollableTableContainer>
-                                        <Table className={"fui-table ws-output-table"}>
-                                            <TableHeader>
-                                                <TableRow className={"fui-table-headerRow"}>
-                                                    <TableHeaderCell style={{ width: "25%" }}><Body1Strong>Time</Body1Strong></TableHeaderCell>
-                                                    <TableHeaderCell style={{ width: "8%" }}></TableHeaderCell>
-                                                    <TableHeaderCell><Body1Strong>Data</Body1Strong></TableHeaderCell>
-                                                </TableRow>
-                                            </TableHeader>
-                                            <TableBody>
-                                                {wsLogItems.map((item, index) => (
-                                                    <TableRow key={index} className={"fui-table-body-row"}>
-                                                        <TableCell>{item.logTime}</TableCell>
-                                                        <TableCell>{
-                                                            item.logType === "SendData"
-                                                            ? <ArrowDownFilled className={"ws-log-send"} />
-                                                            : item.logType === "GetData" && <ArrowUpFilled className={"ws-log-get"} />
-                                                        }</TableCell>
-                                                        <TableCell>{item.logData}</TableCell>
-                                                    </TableRow>
-                                                ))}
-                                            </TableBody>
-                                        </Table>
-                                    </ScrollableTableContainer>
+                                    : <ConsoleWsLogItems wsLogItems={wsLogItems} />
                                 }
                                 <Button
                                     appearance="primary"

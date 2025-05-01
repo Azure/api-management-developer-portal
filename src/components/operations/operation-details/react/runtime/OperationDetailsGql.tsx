@@ -23,16 +23,12 @@ import {
     Spinner,
     Tab,
     TabList,
-    Table,
-    TableBody,
     TableCell,
-    TableHeader,
-    TableHeaderCell,
     TableRow,
     Tooltip,
 } from "@fluentui/react-components";
 import { Copy16Regular } from "@fluentui/react-icons";
-import { InfoPanel, RawSchema } from "@microsoft/api-docs-ui";
+import { InfoPanel, InfoTable, RawSchema } from "@microsoft/api-docs-ui";
 import { Api } from "../../../../../models/api";
 import { ApiService } from "../../../../../services/apiService";
 import {
@@ -44,7 +40,6 @@ import { ProductService } from "../../../../../services/productService";
 import { OAuthService } from "../../../../../services/oauthService";
 import { RouteHelper } from "../../../../../routing/routeHelper";
 import { MarkdownProcessor } from "../../../../utils/react/MarkdownProcessor";
-import { ScrollableTableContainer } from "../../../../utils/react/ScrollableTableContainer";
 import {
     GraphqlCustomFieldNames,
     GraphqlDefaultScalarTypes,
@@ -418,68 +413,40 @@ export const OperationDetailsGql = ({
                                     </TabList>
                                 </Stack>
                                 {schemaView === TSchemaView.table ? (
-                                    <ScrollableTableContainer>
-                                        <Table
-                                            aria-label={"Definitions list"}
-                                            className={"fui-table"}
-                                        >
-                                            <TableHeader>
-                                                <TableRow
-                                                    className={
-                                                        "fui-table-headerRow"
-                                                    }
-                                                >
-                                                    <TableHeaderCell>
-                                                        <span className="strong">
-                                                            Name
-                                                        </span>
-                                                    </TableHeaderCell>
-                                                    <TableHeaderCell>
-                                                        <span className="strong">
-                                                            Type
-                                                        </span>
-                                                    </TableHeaderCell>
-                                                    <TableHeaderCell>
-                                                        <span className="strong">
-                                                            Description
-                                                        </span>
-                                                    </TableHeaderCell>
-                                                </TableRow>
-                                            </TableHeader>
-                                            <TableBody>
-                                                {graph.args.map((arg) => (
-                                                    <TableRow
-                                                        key={arg.name}
-                                                        className={
-                                                            "fui-table-body-row"
+                                    <InfoTable
+                                        title="Definitions list"
+                                        columnLabels={["Name", "Type", "Description"]}                                        
+                                        children={graph.args.map((arg) => (
+                                            <TableRow
+                                                key={arg.name}
+                                                className={
+                                                    "fui-table-body-row"
+                                                }
+                                            >
+                                                <TableCell>
+                                                    {arg.name}
+                                                </TableCell>
+                                                <TableCell>
+                                                    {getGraphType(arg.type)}
+                                                </TableCell>
+                                                <TableCell>
+                                                    <div
+                                                        title={
+                                                            arg.description
                                                         }
                                                     >
-                                                        <TableCell>
-                                                            {arg.name}
-                                                        </TableCell>
-                                                        <TableCell>
-                                                            {getGraphType(arg.type)}
-                                                        </TableCell>
-                                                        <TableCell>
-                                                            <div
-                                                                title={
-                                                                    arg.description
-                                                                }
-                                                            >
-                                                                <MarkdownProcessor
-                                                                    markdownToDisplay={
-                                                                        arg.description
-                                                                    }
-                                                                    maxChars={250}
-                                                                    truncate={true}
-                                                                />
-                                                            </div>
-                                                        </TableCell>
-                                                    </TableRow>
-                                                ))}
-                                            </TableBody>
-                                        </Table>
-                                    </ScrollableTableContainer>
+                                                        <MarkdownProcessor
+                                                            markdownToDisplay={
+                                                                arg.description
+                                                            }
+                                                            maxChars={250}
+                                                            truncate={true}
+                                                        />
+                                                    </div>
+                                                </TableCell>
+                                            </TableRow>
+                                        ))}
+                                    />
                                 ) : (
                                     <RawSchema
                                         title={graph.name}
@@ -496,56 +463,37 @@ export const OperationDetailsGql = ({
                                 <h4 className={"operation-details-title"}>
                                     Types
                                 </h4>
-                                <ScrollableTableContainer>
-                                    <Table
-                                        aria-label={"Types list"}
-                                        className={"fui-table"}
-                                    >
-                                        <TableHeader>
+                                <InfoTable
+                                    title="Types list"
+                                    columnLabels={["Name", "Description"]}
+                                    children={
+                                        references.map((reference) => (
                                             <TableRow
-                                                className={"fui-table-headerRow"}
+                                                key={reference.name}
+                                                className={"fui-table-body-row"}
                                             >
-                                                <TableHeaderCell>
-                                                    <span className="strong">
-                                                        Name
-                                                    </span>
-                                                </TableHeaderCell>
-                                                <TableHeaderCell>
-                                                    <span className="strong">
-                                                        Description
-                                                    </span>
-                                                </TableHeaderCell>
-                                            </TableRow>
-                                        </TableHeader>
-                                        <TableBody>
-                                            {references.map((reference) => (
-                                                <TableRow
-                                                    key={reference.name}
-                                                    className={"fui-table-body-row"}
-                                                >
-                                                    <TableCell>
-                                                        {getGraphType(reference)}
-                                                    </TableCell>
-                                                    <TableCell>
-                                                        <div
-                                                            title={
+                                                <TableCell>
+                                                    {getGraphType(reference)}
+                                                </TableCell>
+                                                <TableCell>
+                                                    <div
+                                                        title={
+                                                            reference.description
+                                                        }
+                                                    >
+                                                        <MarkdownProcessor
+                                                            markdownToDisplay={
                                                                 reference.description
                                                             }
-                                                        >
-                                                            <MarkdownProcessor
-                                                                markdownToDisplay={
-                                                                    reference.description
-                                                                }
-                                                                maxChars={250}
-                                                                truncate={true}
-                                                            />
-                                                        </div>
-                                                    </TableCell>
-                                                </TableRow>
-                                            ))}
-                                        </TableBody>
-                                    </Table>
-                                </ScrollableTableContainer>
+                                                            maxChars={250}
+                                                            truncate={true}
+                                                        />
+                                                    </div>
+                                                </TableCell>
+                                            </TableRow>
+                                        ))
+                                    }
+                                />
 
                                 {references.map((reference) => (
                                     <div
