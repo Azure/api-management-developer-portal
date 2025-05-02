@@ -165,27 +165,27 @@ const ApiDetailsFC = ({
                             </Stack>
                         }
                         {api.description &&
-                            <span style={{display: "block"}}><MarkdownProcessor markdownToDisplay={api.description} /></span>
+                            <div className="api-details-description"><MarkdownProcessor markdownToDisplay={api.description} /></div>
                         }
                         {(api.contact || api.license || api.termsOfServiceUrl) &&
                             <div className={"api-additional-info"}>
                                 {api.contact &&
                                     <div className={"api-additional-info-block"}>
-                                        <span style={{display: "block"}}>Contact:</span>
-                                        {api.contact.name && <span style={{display: "block"}}>{api.contact.name}</span>}
-                                        {api.contact.email && <span style={{display: "block"}}><a href={`mailto:${api.contact.email}`}>{api.contact.email}</a></span>}
+                                        <div>Contact:</div>
+                                        {api.contact.name && <div>{api.contact.name}</div>}
+                                        {api.contact.email && <div><a href={`mailto:${api.contact.email}`}>{api.contact.email}</a></div>}
                                         {api.contact.url && <a href={api.contact.url}>{api.contact.url}</a>}
                                     </div>
                                 }
                                 {api.license &&
                                     <div className={"api-additional-info-block"}>
-                                        <span style={{display: "block"}}>License:</span>
+                                        <div>License:</div>
                                         {api.license.url ? <a href={api.license.url}>{api.license.name}</a> : <span>{api.license.name}</span>}
                                     </div>
                                 }
                                 {api.termsOfServiceUrl &&
                                     <div className={"api-additional-info-block"}>
-                                        <span style={{display: "block"}}>Additional resources:</span>
+                                        <div>Additional resources:</div>
                                         <a href={api.termsOfServiceUrl}>Terms and conditions</a>
                                     </div>
                                 }
