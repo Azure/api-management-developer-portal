@@ -55,6 +55,7 @@ export const ApplicationDetails = ({
     const [clientSecret, setClientSecret] = useState<EntraSecret>();
     const [popoverOpen, setPopoverOpen] = useState(false);
     const [isCopied, setIsCopied] = useState(false);
+    const [error, setError] = useState<string>(null);
 
     useEffect(() => {
         setWorking(true);
@@ -64,6 +65,7 @@ export const ApplicationDetails = ({
                 setUserId(userId);
             });
 
+        setError(null);
         loadApplication(applicationName)
             .then(setApplication)
             .catch((error) => {
@@ -77,7 +79,7 @@ export const ApplicationDetails = ({
 
         loadApplicationProducts(applicationName)
             .then((loadedProducts) => {
-                setProducts(loadedProducts.value);
+                loadedProducts && setProducts(loadedProducts.value);
             })
             .finally(() => setWorking(false));
     }, [usersService, applicationService, productService, applicationName]);
@@ -92,7 +94,8 @@ export const ApplicationDetails = ({
         try {
             application = await applicationService.getApplication(userId, applicationName);
         } catch (error) {
-            throw new Error(`Unable to load application ${applicationName}. Error: ${error.message}`);
+            setError("Application is not selected.");
+            //throw new Error(`Unable to load application ${applicationName}. Error: ${error.message}`);
         }
     
         return application;
@@ -116,7 +119,7 @@ export const ApplicationDetails = ({
         try {
             products = await applicationService.getApplicationProducts(userId, applicationName);
         } catch (error) {
-            throw new Error(`Unable to load products for application ${applicationName}. Error: ${error.message}`);
+            //throw new Error(`Unable to load products for application ${applicationName}. Error: ${error.message}`);
         }
     
         return products;
@@ -130,93 +133,101 @@ export const ApplicationDetails = ({
 
     return (
         <>
-            <h1>{application.name}</h1>
-            <span className="caption1">Application</span>
-            <div className={"fui-application-details-container"}>
-                <h3>Application</h3>
-                <ScrollableTableContainer>
-                    <Table className={"fui-table"} aria-label={"Application details table"}>
-                        <TableHeader>
-                            <TableRow className={"fui-table-headerRow"}>
-                                <TableHeaderCell><span className="strong">Entra Application ID</span></TableHeaderCell>
-                                <TableHeaderCell><span className="strong">Client Secret</span></TableHeaderCell>
-                            </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                            <TableRow>
-                                <TableCell>{application.entraApplicationId}</TableCell>
-                                <TableCell>
-                                    <Popover open={popoverOpen}>
-                                        <PopoverTrigger>
-                                            <Button
-                                                appearance="transparent"
-                                                onClick={async () => {
-                                                    setClientWorking(true);
-                                                    const newSecret = await generateClientSecret();
-                                                    setClientSecret(newSecret);
-                                                    setPopoverOpen(true);
-                                                    setClientWorking(false);
-                                                }
-                                            }>
-                                                {clientWorking ? <Spinner size="extra-small" /> : '+ New client secret'}
-                                            </Button>
-                                        </PopoverTrigger>
-                                        <PopoverSurface>
-                                            <div className="popover-content" style={{ maxWidth: "560px" }}>
-                                                <h4>New client secret</h4>
-                                                <p>The secret is stored securely in Microsoft Entra ID. Rotate the secret before the expiration date for continued access. 
-                                                    Client secret is valid until {new Date(clientSecret?.entra.expiresAt).toLocaleDateString(undefined, dateOptions)}.</p>                                                
-                                                <p className="strong" style={{ margin: 0 }}>Client secret (only shown once)</p>
-                                                <div className="flex flex-row align-items-center mb-20">
-                                                    <span className="strong">{clientSecret?.entra.clientSecret}</span>
-                                                    <Tooltip
-                                                        content={
-                                                            isCopied
-                                                                ? "Copied to clipboard!"
-                                                                : "Copy to clipboard"
+            {error ? (
+                <MessageBar intent="error">
+                    <MessageBarBody>{error}</MessageBarBody>
+                </MessageBar>
+            ) : (
+                <>
+                    <h1>{application.name}</h1>
+                    <span className="caption1">Application</span>
+                    <div className={"fui-application-details-container"}>
+                        <h3>Application</h3>
+                        <ScrollableTableContainer>
+                            <Table className={"fui-table"} aria-label={"Application details table"}>
+                                <TableHeader>
+                                    <TableRow className={"fui-table-headerRow"}>
+                                        <TableHeaderCell><span className="strong">Entra Application ID</span></TableHeaderCell>
+                                        <TableHeaderCell><span className="strong">Client Secret</span></TableHeaderCell>
+                                    </TableRow>
+                                </TableHeader>
+                                <TableBody>
+                                    <TableRow>
+                                        <TableCell>{application.entraApplicationId}</TableCell>
+                                        <TableCell>
+                                            <Popover open={popoverOpen}>
+                                                <PopoverTrigger>
+                                                    <Button
+                                                        appearance="transparent"
+                                                        onClick={async () => {
+                                                            setClientWorking(true);
+                                                            const newSecret = await generateClientSecret();
+                                                            setClientSecret(newSecret);
+                                                            setPopoverOpen(true);
+                                                            setClientWorking(false);
                                                         }
-                                                        relationship={"description"}
-                                                        hideDelay={isCopied ? 3000 : 250}
-                                                    >
-                                                        <Button
-                                                            icon={<Copy16Regular />}
-                                                            appearance="transparent"
-                                                            onClick={() => {
-                                                                navigator.clipboard.writeText(
-                                                                    clientSecret?.entra.clientSecret
-                                                                );
-                                                                setIsCopied(true);
-                                                            }}
-                                                        >
-                                                            Copy
-                                                        </Button>
-                                                    </Tooltip>
-                                                </div>
-                                                <MessageBar>
-                                                    <MessageBarBody>
-                                                        <span className="caption1">The secret value is only shown once. Copy it at this time because it will not show again.</span>
-                                                    </MessageBarBody>
-                                                </MessageBar>
-                                                <button className="button button-default" onClick={() => {
-                                                    setClientSecret(undefined);
-                                                    setPopoverOpen(false);
-                                                }}>
-                                                    Close
-                                                </button>
-                                            </div>
-                                        </PopoverSurface>
-                                    </Popover>
-                                </TableCell>
-                            </TableRow>
-                        </TableBody>
-                    </Table>
-                </ScrollableTableContainer>
-                <ApplicationsProducts
-                    products={products}
-                    productService={productService}
-                    getProductReferenceUrl={getProductReferenceUrl}
-                />
-            </div>
+                                                    }>
+                                                        {clientWorking ? <Spinner size="extra-small" /> : '+ New client secret'}
+                                                    </Button>
+                                                </PopoverTrigger>
+                                                <PopoverSurface>
+                                                    <div className="popover-content" style={{ maxWidth: "560px" }}>
+                                                        <h4>New client secret</h4>
+                                                        <p>The secret is stored securely in Microsoft Entra ID. Rotate the secret before the expiration date for continued access. 
+                                                            Client secret is valid until {new Date(clientSecret?.entra.expiresAt).toLocaleDateString(undefined, dateOptions)}.</p>                                                
+                                                        <p className="strong" style={{ margin: 0 }}>Client secret (only shown once)</p>
+                                                        <div className="flex flex-row align-items-center mb-20">
+                                                            <span className="strong">{clientSecret?.entra.clientSecret}</span>
+                                                            <Tooltip
+                                                                content={
+                                                                    isCopied
+                                                                        ? "Copied to clipboard!"
+                                                                        : "Copy to clipboard"
+                                                                }
+                                                                relationship={"description"}
+                                                                hideDelay={isCopied ? 3000 : 250}
+                                                            >
+                                                                <Button
+                                                                    icon={<Copy16Regular />}
+                                                                    appearance="transparent"
+                                                                    onClick={() => {
+                                                                        navigator.clipboard.writeText(
+                                                                            clientSecret?.entra.clientSecret
+                                                                        );
+                                                                        setIsCopied(true);
+                                                                    }}
+                                                                >
+                                                                    Copy
+                                                                </Button>
+                                                            </Tooltip>
+                                                        </div>
+                                                        <MessageBar>
+                                                            <MessageBarBody>
+                                                                <span className="caption1">The secret value is only shown once. Copy it at this time because it will not show again.</span>
+                                                            </MessageBarBody>
+                                                        </MessageBar>
+                                                        <button className="button button-default" onClick={() => {
+                                                            setClientSecret(undefined);
+                                                            setPopoverOpen(false);
+                                                        }}>
+                                                            Close
+                                                        </button>
+                                                    </div>
+                                                </PopoverSurface>
+                                            </Popover>
+                                        </TableCell>
+                                    </TableRow>
+                                </TableBody>
+                            </Table>
+                        </ScrollableTableContainer>
+                        <ApplicationsProducts
+                            products={products}
+                            productService={productService}
+                            getProductReferenceUrl={getProductReferenceUrl}
+                        />
+                    </div>
+                </>
+            )}
         </>
     );
 };
