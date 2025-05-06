@@ -10,6 +10,12 @@ export class Product {
     public readonly subscriptionRequired: boolean;
     public readonly subscriptionsLimit?: number;
     public readonly terms: string;
+    public readonly applicationSettings?: {
+        entra?: {
+            applicationId: string;
+            audience: string;
+        };
+    };
 
     constructor(contract?: ProductContract) {
         if (!contract) {
@@ -24,5 +30,6 @@ export class Product {
         this.subscriptionRequired = contract.subscriptionRequired;
         this.subscriptionsLimit = contract.subscriptionsLimit;
         this.terms = contract.terms;
+        this.applicationSettings = contract.applicationSettings;
     }
 }
