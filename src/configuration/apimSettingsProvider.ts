@@ -26,7 +26,7 @@ export class ApimSettingsProvider implements ISettingsProvider {
         const commonConfigurationResponse = await this.httpClient.send<any>({ url: ConfigEndpoints.backend });
         const commonConfiguration = commonConfigurationResponse.toObject();
 
-        const serializedDesignTimeSettings = await this.sessionManager?.getItem("designTimeSettings");
+        const serializedDesignTimeSettings = await this.sessionManager?.getItem(SettingNames.designTimeSettings);
 
         if (serializedDesignTimeSettings) {
             const designTimeSettings = serializedDesignTimeSettings;

@@ -11,7 +11,8 @@ async function getArmToken(options = {}) {
     try {
         const credential = new InteractiveBrowserCredential({
             tenantId: options.tenantId,
-            clientId: options.clientId
+            clientId: options.clientId,
+            redirectUri: "http://localhost:8080" // Ensure this matches the redirect URI registered in Azure AD
         });
         console.log("Please sign in via the browser window that will open...");
 
@@ -21,7 +22,17 @@ async function getArmToken(options = {}) {
 
         if (response && response.token) {
             console.log("Successfully acquired token with expiration at:", (new Date(response.expiresOnTimestamp)).toLocaleString());
-            return `${response.tokenType} ${response.token}`;
+            console.log("Response:", response);
+            const authData = await credential.authenticate(scope); // This is not necessary, but can be used to refresh the token if needed)
+            console.log("Auth data:", authData);
+            return JSON.stringify({
+                token: `${response.tokenType} ${response.token}`,
+                username: authData.username,
+                expiresOn: response.expiresOnTimestamp,
+                tenantId: authData.tenantId,
+                clientId: authData.clientId,
+                scope
+            });
         } else {
             throw new Error("Failed to acquire token: Empty response");
         }

@@ -6,7 +6,13 @@ declare const self: ServiceWorkerGlobalScope;
 // Check if running in a browser or Node.js environment
 const isServiceWorker = typeof self !== "undefined" && typeof clients !== "undefined";
 
-const sensitiveParams = ["client_secret", "salt", "sig", "signature", "key", "secret", "token", "access_token", "username", "user_name", "user", "password"];
+// Pattern for sensitive parameter names
+const SENSITIVE_PARAM_PATTERN = '(client_secret|salt|sig|signature|secret|(access_)?token|user(_)?(name)?|password)';
+
+// Regex pattern for matching sensitive parameters with various quoting styles
+const SENSITIVE_PARAM_REGEX = new RegExp(`${SENSITIVE_PARAM_PATTERN}=(?:([^&,"']+)|"([^"]+)"|'([^']+)')`, 'ig');
+
+const sensitiveParams = new Set(["client_secret", "salt", "sig", "signature", "key", "secret", "token", "access_token", "username", "user_name", "user", "password"]);
 const allowedList = new Set(["state", "session_state"]);
 const allowedHeaders = new Set([
     "accept",
@@ -72,33 +78,58 @@ if (isServiceWorker) {
 
         event.respondWith(
             (async () => {
-                const response = await fetch(request);
+                try {
+                    const response = await fetch(request);
 
-                if (request.url.endsWith("/trace")) {
-                    return response;
-                }
-
-                const cleanedUrl = sanitizeUrl(request.url);
-
-                const telemetryData = {
-                    url: cleanedUrl,
-                    method: request.method.toUpperCase(),
-                    status: response.status.toString(),
-                    responseHeaders: ""
-                };
-
-                const headers: { [key: string]: string } = {};
-
-                response.headers.forEach((value, key) => {
-                    if (allowedHeaders.has(key.toLowerCase())) {
-                        headers[key] = cleanUrlSensitiveDataFromValue(value);
+                    if (request.url.endsWith("/trace")) {
+                        return response;
                     }
-                });
-                telemetryData.responseHeaders = JSON.stringify(headers);
 
-                sendMessageToClients(telemetryData);
+                    const cleanedUrl = sanitizeUrl(request.url);
 
-                return response;
+                    const telemetryData = {
+                        url: cleanedUrl,
+                        method: request.method.toUpperCase(),
+                        status: response.status.toString(),
+                        responseHeaders: ""
+                    };
+
+                    const headers: { [key: string]: string } = {};
+
+                    response.headers.forEach((value, key) => {
+                        if (allowedHeaders.has(key.toLowerCase())) {
+                            headers[key] = cleanUrlSensitiveDataFromValue(value);
+                        }
+                    });
+                    telemetryData.responseHeaders = JSON.stringify(headers);
+
+                    sendMessageToClients(telemetryData);
+
+                    return response;
+                } catch (error) {
+                    console.error("Error in service worker fetch handler:", error);
+
+                    // Send telemetry about the error
+                    const errorTelemetry = {
+                        url: sanitizeUrl(request.url),
+                        method: request.method.toUpperCase(),
+                        status: "error",
+                        error: error.message || "Network error"
+                    };
+
+                    try {
+                        sendMessageToClients(errorTelemetry);
+                    } catch (e) {
+                        // Ignore errors in sending telemetry
+                    }
+
+                    // Return a fallback response
+                    return new Response("Network error occurred", {
+                        status: 503,
+                        statusText: errorTelemetry.error,
+                        headers: { "Content-Type": "text/plain" }
+                    });
+                }
             })()
         );
     });
@@ -164,11 +195,11 @@ export function cleanUrlSensitiveDataFromQuery(requestUrl: string): string {
             const url = new URL(requestUrl);
             const params = new URLSearchParams(url.search);
 
-            sensitiveParams.forEach(param => {
-                if (params.has(param)) {
-                    params.set(param, "***");
+            for (const [key, value] of params.entries()) {
+                if (sensitiveParams.has(key.toLowerCase())) {
+                    params.set(key, "***");
                 }
-            });
+            }
 
             url.search = params.toString();
             return url.toString();
@@ -181,8 +212,17 @@ export function cleanUrlSensitiveDataFromQuery(requestUrl: string): string {
 }
 
 export function cleanUrlSensitiveDataFromValue(dataValue: string): string {
-    if (dataValue) {
-        dataValue = dataValue.replace(/((client_secret|salt|sig|signature|secret|(access_)?token|user(_)?(name)?|password))=([^&]+)/ig, "$1$3=***");
+    if (!dataValue) {
+        return dataValue;
     }
+
+    // regex that handles cases:
+    // 1. parameter="value" (double quotes)
+    // 2. parameter='value' (single quotes)
+    // 3. parameter=value (no quotes)
+    return dataValue.replace(SENSITIVE_PARAM_REGEX,(match, paramName, unquotedValue, doubleQuotedValue, singleQuotedValue) => {
+            return `${paramName}=***`;
+        });
+
     return dataValue;
 }

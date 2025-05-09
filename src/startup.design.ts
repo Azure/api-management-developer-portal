@@ -13,11 +13,13 @@ import { LeftPanel } from "./admin/leftPanel";
 import { RightPanel } from "./admin/rightPanel";
 import { SelfHostedArmAuthenticator } from "./authentication/armAuthenticator";
 import { MapiClient } from "./clients/mapiClient";
+import { ArmTokenRefresher } from "./authentication/armTokenRefresher";
 
 
 /* Initializing dependency injection container */
 const injector = new InversifyInjector();
 injector.bindToCollection("autostart", SessionExpirationErrorHandler);
+injector.bindToCollection("autostart", ArmTokenRefresher);
 
 injector.bindSingleton("authenticator", SelfHostedArmAuthenticator);
 injector.bindModule(new CoreDesignModule());

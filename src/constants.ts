@@ -268,6 +268,7 @@ export enum SettingNames {
     aadAuthority = "editorAadAuthority",
 
     designTimeSettings = "designTimeSettings",
+    isEditorMode = "isEditorMode",
 }
 
 export enum PortalEnvironment {

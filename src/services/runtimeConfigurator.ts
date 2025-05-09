@@ -16,53 +16,15 @@ export class RuntimeConfigurator {
         private readonly identityService: IdentityService,
         private readonly settingsProvider: ISettingsProvider,
         private readonly sessionManager: SessionManager,
-        private readonly armService: ArmService,
-        private readonly logger: Logger
+        private readonly armService: ArmService
     ) {
         this.loadConfiguration();
-    }
-
-    private async loadArmSettingsForRuntime(): Promise<object> {
-        try {
-            await this.armService.loadSessionSettings(this.settingsProvider);
-
-            const managementApiUrl = await this.settingsProvider.getSetting<string>(SettingNames.managementApiUrl);
-            if (!managementApiUrl) {
-                this.logger.trackDependency("loadArmSettingsForRuntime", { message: "Warning: managementApiUrl missing" });
-                return;
-            }
-
-            const userId = adminUserId; // Admin user ID for editor DataApi
-            const userTokenValue = await this.armService.getUserAccessToken(userId, managementApiUrl);
-            const serviceDescription = await this.armService.getServiceDescription(managementApiUrl);
-            const dataApiUrl = serviceDescription.properties.dataApiUrl;
-            const developerPortalUrl = serviceDescription.properties.developerPortalUrl;
-            const isMultitenant = serviceDescription.sku.name.includes("V2");
-
-            const runtimeSettings = {
-                [SettingNames.backendUrl]: developerPortalUrl,
-                [SettingNames.dataApiUrl]: dataApiUrl,
-                [SettingNames.directDataApi]: !!dataApiUrl,
-                [SettingNames.managementApiAccessToken]: userTokenValue,
-                [SettingNames.isMultitenant]: isMultitenant
-            };
-            // this.sessionManager.setItem(SettingNames.designTimeSettings, runtimeSettings);
-
-            // await this.settingsProvider.setSetting(SettingNames.backendUrl, developerPortalUrl);
-            // await this.settingsProvider.setSetting(SettingNames.dataApiUrl, dataApiUrl);
-            // await this.settingsProvider.setSetting(SettingNames.directDataApi, !!dataApiUrl);
-            // await this.settingsProvider.setSetting(SettingNames.isMultitenant, isMultitenant);
-            this.logger.trackMetric("loadArmSettingsForRuntime", { message: `isMultitenant: ${isMultitenant}` });
-            return runtimeSettings;
-        } catch (error) {
-            this.logger.trackError(error, { message: "Error loadArmSettingsForRuntime" });
-            return;
-        }
     }
 
     public async loadConfiguration(): Promise<void> {
         await this.armService.loadSessionSettings(this.settingsProvider);
         const designTimeSettings = await this.sessionManager.getItem<object>(SettingNames.designTimeSettings) || {};
+        designTimeSettings[SettingNames.isEditorMode] = true;
 
         /* Identity providers */
         const identityProviders = await this.identityService.getIdentityProviders();

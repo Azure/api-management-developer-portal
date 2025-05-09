@@ -1,6 +1,6 @@
 import { Utils } from "../utils";
 
-const enum TokenType {
+export const enum TokenType {
     sharedAccessSignature = "SharedAccessSignature",
     bearer = "Bearer"
 }
