@@ -1,8 +1,6 @@
 import * as React from "react";
 
-export class ProfileViewModel extends React.Component{
-    public state: any;
-
+export class ProfileViewModel extends React.Component<any, any> {
     constructor(props) {
         super(props);
 
