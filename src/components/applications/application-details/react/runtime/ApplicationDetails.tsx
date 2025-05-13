@@ -1,5 +1,6 @@
 import * as React from "react";
 import { useEffect, useState } from "react";
+import { Logger } from "@paperbits/common/logging";
 import {
     Button,
     MessageBar,
@@ -38,12 +39,14 @@ export const ApplicationDetails = ({
     usersService,
     productService,
     applicationService,
+    logger,
     applicationName,
     getProductReferenceUrl
 }: {
     usersService: UsersService,
     applicationService: ApplicationService,
     productService: ProductService,
+    logger: Logger,
     applicationName: string,
     getProductReferenceUrl: (productName: string) => string
 }) => {
@@ -74,7 +77,7 @@ export const ApplicationDetails = ({
                     return;
                 }
 
-                throw new Error(`Unable to load application ${applicationName}. Error: ${error.message}`);
+                logger.trackError(error, { message: `Unable to load application ${applicationName}.` });
             });
 
         loadApplicationProducts(applicationName)
@@ -94,8 +97,8 @@ export const ApplicationDetails = ({
         try {
             application = await applicationService.getApplication(userId, applicationName);
         } catch (error) {
-            setError("Application is not selected.");
-            //throw new Error(`Unable to load application ${applicationName}. Error: ${error.message}`);
+            setError(`Unable to load application.`);
+            logger.trackError(error, { message: `Unable to load application ${applicationName}.` });
         }
     
         return application;
@@ -107,7 +110,7 @@ export const ApplicationDetails = ({
         try {
             clientSecret = await applicationService.createNewSecret(userId, applicationName);
         } catch (error) {
-            throw new Error(`Unable to generate client secret for application ${applicationName}. Error: ${error.message}`);
+            logger.trackError(error, { message: `Unable to generate client secret for application ${applicationName}.` });
         }
     
         return clientSecret;
@@ -119,7 +122,7 @@ export const ApplicationDetails = ({
         try {
             products = await applicationService.getApplicationProducts(userId, applicationName);
         } catch (error) {
-            //throw new Error(`Unable to load products for application ${applicationName}. Error: ${error.message}`);
+            logger.trackError(error, { message: `Unable to load products for application ${applicationName}.` });
         }
     
         return products;
@@ -133,7 +136,7 @@ export const ApplicationDetails = ({
 
     return (
         <>
-            {error ? (
+            {(error || !application) ? (
                 <MessageBar intent="error">
                     <MessageBarBody>{error}</MessageBarBody>
                 </MessageBar>
@@ -141,6 +144,14 @@ export const ApplicationDetails = ({
                 <>
                     <h1>{application.name}</h1>
                     <span className="caption1">Application</span>
+                    <MessageBar intent="info" className="mt-15 mb-20">
+                        <MessageBarBody>
+                            <span className="caption1">
+                                To call the API, you will need to retrieve the OAuth token and call the API gateway endpoint.{` `}
+                                <a href="http://aka.ms/apimappsclientcredflow" target="_blank">View documentation</a>
+                            </span>
+                        </MessageBarBody>
+                    </MessageBar>
                     <div className={"fui-application-details-container"}>
                         <h3>Application</h3>
                         <ScrollableTableContainer>
@@ -149,6 +160,7 @@ export const ApplicationDetails = ({
                                     <TableRow className={"fui-table-headerRow"}>
                                         <TableHeaderCell><span className="strong">Entra Application ID</span></TableHeaderCell>
                                         <TableHeaderCell><span className="strong">Client Secret</span></TableHeaderCell>
+                                        <TableHeaderCell><span className="strong">Token URL</span></TableHeaderCell>
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
@@ -216,6 +228,7 @@ export const ApplicationDetails = ({
                                                 </PopoverSurface>
                                             </Popover>
                                         </TableCell>
+                                        <TableCell>{application.entraTenantId && `https://login.microsoftonline.com/${application.entraTenantId}/oauth2/v2.0/token`}</TableCell>
                                     </TableRow>
                                 </TableBody>
                             </Table>
@@ -223,6 +236,7 @@ export const ApplicationDetails = ({
                         <ApplicationsProducts
                             products={products}
                             productService={productService}
+                            logger={logger}
                             getProductReferenceUrl={getProductReferenceUrl}
                         />
                     </div>

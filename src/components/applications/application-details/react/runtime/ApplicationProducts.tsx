@@ -1,5 +1,6 @@
 import * as React from "react";
 import { useEffect, useState } from "react";
+import { Logger } from "@paperbits/common/logging";
 import { Spinner, Table, TableBody, TableCell, TableHeader, TableHeaderCell, TableRow } from "@fluentui/react-components";
 import { CheckmarkCircleFilled, ChevronDownRegular, ChevronRightRegular } from "@fluentui/react-icons";
 import { Product } from "../../../../../models/product";
@@ -53,10 +54,12 @@ const ProductRow = ({
 export const ApplicationsProducts = ({
     products,
     productService,
+    logger,
     getProductReferenceUrl
 }: {
     products: Product[],
     productService: ProductService,
+    logger: Logger,
     getProductReferenceUrl: (productName: string) => string
 }) => {
     const [loadedProducts, setLoadedProducts] = useState<Product[]>([]);
@@ -81,7 +84,7 @@ export const ApplicationsProducts = ({
         try {
             product = await productService.getProduct(productName);
         } catch (error) {
-            throw new Error(`Unable to load product ${productName}. Error: ${error.message}`);
+            logger.trackError(error, { message: `Unable to load product ${productName}.` });
         }
 
         return product;

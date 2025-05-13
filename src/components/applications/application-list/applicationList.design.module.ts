@@ -46,6 +46,9 @@ export class ApplicationListDesignModule implements IInjectorModule {
                         handlerComponent: ApplicationListHandlers
                     });
                 }
+            })
+            .catch((error) => {
+                logger.trackError(error, { message: "Failed to get feature value for client applications in ApplicationListDesignModule." });
             }
         );
     }

@@ -2,6 +2,7 @@ import * as React from "react";
 import { FluentProvider } from "@fluentui/react-components";
 import { Resolve } from "@paperbits/react/decorators";
 import { Router } from "@paperbits/common/routing";
+import { Logger } from "@paperbits/common/logging";
 import { RouteHelper } from "../../../../../routing/routeHelper";
 import { ProductService } from "../../../../../services/productService";
 import { UsersService } from "../../../../../services";
@@ -33,6 +34,9 @@ export class ApplicationsDetailsRuntime extends React.Component<ApplicationsDeta
     @Resolve("router")
     public router: Router;
 
+    @Resolve("logger")
+    public logger: Logger;
+
     constructor(props) {
         super(props);
 
@@ -63,6 +67,7 @@ export class ApplicationsDetailsRuntime extends React.Component<ApplicationsDeta
                     usersService={this.usersService}
                     productService={this.productService}
                     applicationService={this.applicationService}
+                    logger={this.logger}
                     applicationName={this.state.applicationName}
                     getProductReferenceUrl={(productName) => this.getProductReferenceUrl(productName)}
                 />

@@ -1,6 +1,7 @@
 import * as React from "react";
 import { FluentProvider } from "@fluentui/react-components";
 import { Resolve } from "@paperbits/react/decorators";
+import { Logger } from "@paperbits/common/logging";
 import { ApplicationService } from "../../../../../services/applicationService";
 import { UsersService } from "../../../../../services";
 import { Application } from "../../../../../models/application";
@@ -26,6 +27,7 @@ export type TApplicationsListRuntimeFCProps = Omit<ApplicationsListProps, "detai
     getReferenceUrl: (applicationName: string) => string;
     userId: string;
     applicationService: ApplicationService;
+    logger: Logger;
     selectedApplication?: Application | null;
 };
 
@@ -38,6 +40,9 @@ export class ApplicationsListRuntime extends React.Component<ApplicationsListPro
 
     @Resolve("routeHelper")
     public routeHelper: RouteHelper;
+
+    @Resolve("logger")
+    public logger: Logger;
 
     constructor(props) {
         super(props);
@@ -80,6 +85,7 @@ export class ApplicationsListRuntime extends React.Component<ApplicationsListPro
                     {...this.props}
                     userId={this.state.userId}
                     applicationService={this.applicationService}
+                    logger={this.logger}
                     getReferenceUrl={(applicationName) => this.getReferenceUrl(applicationName)}
                 />
             </FluentProvider>

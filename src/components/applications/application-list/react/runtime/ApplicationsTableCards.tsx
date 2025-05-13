@@ -16,6 +16,7 @@ type TApplicationTableCards = TApplicationsListRuntimeFCProps;
 
 export const ApplicationsTableCards = ({
     getReferenceUrl,
+    logger,
     userId,
     applicationService,
     layoutDefault,
@@ -38,18 +39,19 @@ export const ApplicationsTableCards = ({
         setWorking(true);
         setError(null);
         loadApplications(query)
-            .then((loadedApplications) => setApplications(loadedApplications))
-            .finally(() => setWorking(false));
-    }, [applicationService, pageNumber, pattern]);
+            .then((loadedApplications) => {
+                loadedApplications instanceof Page ? setApplications(loadedApplications) : setError(loadedApplications);
+            }).finally(() => setWorking(false));
+    }, [applicationService, pageNumber, pattern, userId]);
 
     const loadApplications = async (query: SearchQuery) => {
-        let applications: Page<Application>;
+        let applications: Page<Application> | string;
     
         try {
             applications = await applicationService.getClientApplications(userId, query);
         } catch (error) {
-            setError("Application is not selected.");
-            //throw new Error(`Unable to load applications. Error: ${error.message}`);
+            setError("Unable to load applications.");
+            logger.trackError(error, { message: "Unable to load applications." });
         }
     
         return applications;

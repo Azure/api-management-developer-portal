@@ -18,6 +18,11 @@ export class Application {
      * Application identifier in Entra platform.
      */
     public entraApplicationId: string;
+    
+    /**
+     * Tenant identifier in Entra platform.
+     */
+    public entraTenantId?: string;
 
     /**
      * Application state.
@@ -38,6 +43,7 @@ export class Application {
         this.id = contract.id;
         this.name = contract.id;
         this.entraApplicationId = contract.entraApplicationId;
+        this.entraTenantId = contract.entraTenantId;
         this.state = contract.state || "approved";
         this.description = contract.description;
     }

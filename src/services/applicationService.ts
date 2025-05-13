@@ -13,9 +13,9 @@ import { EntraSecret } from "../models/entraSecret";
 export class ApplicationService {
      constructor(private readonly apiClient: IApiClient) { }
 
-    public async getClientApplications(userId: string, searchQuery?: SearchQuery): Promise<Page<Application>> {
+    public async getClientApplications(userId: string, searchQuery?: SearchQuery): Promise<Page<Application> | string> {
         if (!userId) {
-            throw new Error(`Parameter "userId" not specified.`);
+            return "Parameter \"userId\" not specified.";
         }
 
         const skip = searchQuery && searchQuery.skip || 0;
@@ -43,11 +43,7 @@ export class ApplicationService {
             return pageOfApplications;
         }
         catch (error) {
-            if (error?.code === "ResourceNotFound") {
-                return pageOfApplications;
-            }
-
-            throw new Error(`Unable to retrieve applications for user with ID "${userId}". Error: ${error.message}`);
+            return pageOfApplications;
         }
     }
 

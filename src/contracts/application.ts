@@ -15,6 +15,11 @@ export interface ApplicationContract {
     entraApplicationId: string;
 
     /**
+     * Tenant identifier in Entra platform.
+     */
+    entraTenantId?: string;
+
+    /**
      * Application state.
      * Possible values: pending, active, rejected, approved.
      */

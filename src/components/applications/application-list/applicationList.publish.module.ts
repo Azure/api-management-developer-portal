@@ -32,6 +32,9 @@ export class ApplicationListPublishModule implements IInjectorModule {
                         componentFlow: ComponentFlow.Block
                     });
                 }
+            })
+            .catch((error) => {
+                logger.trackError(error, { message: "Failed to get feature value for client applications in ApplicationListPublishModule." });
             }
         );
     }
