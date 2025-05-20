@@ -1,4 +1,5 @@
 import { RouteGuard, Route } from "@paperbits/common/routing";
+import { Logger } from "@paperbits/common/logging";
 import { IAuthenticator } from "../authentication";
 import * as Constants from "../constants";
 import { IApiClient } from "../clients";
@@ -11,7 +12,8 @@ export class SignOutRouteGuard implements RouteGuard {
     constructor(
         private readonly apiClient: IApiClient,
         private readonly authenticator: IAuthenticator,
-        private readonly delegationService: IDelegationService
+        private readonly delegationService: IDelegationService,
+        private readonly logger: Logger
     ) { }
 
     public async canActivate(route: Route): Promise<boolean> {
@@ -45,11 +47,14 @@ export class SignOutRouteGuard implements RouteGuard {
                     catch (error) {
                         const errorMessage: string = error.message;
                         const requestedUrl: string = error.requestedUrl;
+                        await this.logger.trackError(error);
                         if (errorMessage.startsWith("Could not complete the request.") && requestedUrl.endsWith("/delegation-url")) {
                             alert("Delegation CORS error: self-hosted portal and Dev portal must have the same domain");
                         }
                         return true;
                     }
+                } else {
+                    await this.logger.trackEvent("Logout", { message: "Was not able to get token for delegated auth." });
                 }
             }
         } else {
