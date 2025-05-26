@@ -155,7 +155,7 @@ export class TelemetryConfigurator {
 
         if (navigation?.href) {
             eventMessage["navigationTo"] = logSanitizer.sanitizeUrl(navigation.href);
-            eventMessage["navigationText"] = navigation.innerText;
+            eventMessage["navigationText"] = logSanitizer.cleanUrlSensitiveDataFromValue(navigation.innerText);
         } else {
             if (targetElement.tagName === "BUTTON") {
                 eventAction = `BUTTON clicked with text '${targetElement.innerText?.trim()}'`;

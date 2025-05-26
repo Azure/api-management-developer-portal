@@ -17,6 +17,13 @@ describe("sanitizeUrl", () => {
         assert.equal(sanitizedUrl, "https://example.com/path?test=***&token=***&other=123");
     });
 
+       it("should remove jwt data from query part parameters", async () => {
+        const jwt = await generateTestJwt({ testJwt: true}, "test_secret");
+        const url = `https://example.com/path?test=Bearer+${jwt}&token=xyz&other=123`;
+        const sanitizedUrl = sanitizeUrl(url);
+        assert.equal(sanitizedUrl, "https://example.com/path?test=Bearer+***&token=***&other=123");
+    });
+
     it("should remove sensitive data from hash parameters", () => {
         const url = "https://example.com/path#client_secret=abc&token=xyz&other=123";
         const sanitizedUrl = sanitizeUrl(url);
@@ -134,6 +141,12 @@ describe("cleanUrlSensitiveDataFromValue", () => {
         const dataValue = `test=${await generateTestJwt({ testJwt: true}, "test_secret")}&token=xyz&other=123`;
         const cleanedValue = cleanUrlSensitiveDataFromValue(dataValue);
         assert.equal(cleanedValue, "test=***&token=***&other=123");
+    });
+
+     it("should replace all jwt data in header values with ***", async () => {
+        const dataValue = `${await generateTestJwt({ testJwt: true}, "test_secret")}`;
+        const cleanedValue = cleanUrlSensitiveDataFromValue(dataValue);
+        assert.equal(cleanedValue, "***");
     });
 
     it("should handle values without sensitive data", () => {
