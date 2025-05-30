@@ -56,16 +56,16 @@ const SignInRuntimeFC = ({ usersService, eventManager, handleSignIn, delegationU
 
 export class SignInRuntime extends React.Component<SignInRuntimeProps> {
     @Resolve("usersService")
-    public usersService: UsersService;
+    public declare usersService: UsersService;
 
     @Resolve("eventManager")
-    public eventManager: EventManager;
+    public declare eventManager: EventManager;
 
     @Resolve("routeHelper")
-    public routeHelper: RouteHelper;
+    public declare routeHelper: RouteHelper;
 
     @Resolve("router")
-    public router: Router;
+    public declare router: Router;
 
     handleSignIn = async (email: string, password: string) => {
         const clientReturnUrl = sessionStorage.getItem("returnUrl");

@@ -56,7 +56,7 @@ const ValidationSummaryRuntimeFC = ({
 
 export class ValidationSummaryRuntime extends React.Component<ValidationSummaryRuntimeProps> {
     @Resolve("eventManager")
-    public eventManager: EventManager;
+    public declare eventManager: EventManager;
 
     render() {
         return (

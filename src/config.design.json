@@ -3,13 +3,13 @@
     "useHipCaptcha": false,
     "integration": {
         "googleFonts": {
-            "apiKey": "<Google API Key>"
+            "apiKey": ""
         }
     },
     "armEndpoint": "management.azure.com",
-    "subscriptionId":"<service subscription>",
-    "resourceGroupName":"<service resource group>",
-    "serviceName":"<service name>",
-    "clientId": "<Optional. The Client ID of the Microsoft Entra application that users will sign into>",
-    "tenantId": "<Optional. The Microsoft Entra tenant (directory) ID>"
+    "subscriptionId":"536dfdb0-81b2-47a9-b7ef-430cd074f987",
+    "resourceGroupName":"eugene-test-group",
+    "serviceName":"eugene-apim-v2",
+    "clientId": "",
+    "tenantId": ""
 }

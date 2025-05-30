@@ -108,22 +108,22 @@ const SignUpAadRuntimeFC = ({ logger, router, routeHelper, signUp, termsOfUse, t
 
 export class SignUpAadRuntime extends React.Component<SignUpAadRuntimeProps> {
     @Resolve("eventManager")
-    public eventManager: EventManager;
+    public declare eventManager: EventManager;
 
     @Resolve("settingsProvider")
-    public settingsProvider: ISettingsProvider;
+    public declare settingsProvider: ISettingsProvider;
 
     @Resolve("usersService")
-    public usersService: UsersService;
+    public declare usersService: UsersService;
 
     @Resolve("logger")
-    public logger: Logger;
+    public declare logger: Logger;
 
     @Resolve("routeHelper")
-    public routeHelper: RouteHelper;
+    public declare routeHelper: RouteHelper;
 
     @Resolve("router")
-    public router: Router;
+    public declare router: Router;
 
     public async signUp(provider: string, idToken: string, email: string, firstName: string, lastName: string, consented: boolean): Promise<void> {
         const validationGroup = {

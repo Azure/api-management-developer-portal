@@ -85,22 +85,22 @@ const SignUpRuntimeFC = ({ backendService, usersService, eventManager, handleSig
 
 export class SignUpRuntime extends React.Component<SignUpRuntimeProps> {
     @Resolve("backendService")
-    public backendService: BackendService;
+    public declare backendService: BackendService;
 
     @Resolve("usersService")
-    public usersService: UsersService;
+    public declare usersService: UsersService;
 
     @Resolve("eventManager")
-    public eventManager: EventManager;
+    public declare eventManager: EventManager;
 
     @Resolve("routeHelper")
-    public routeHelper: RouteHelper;
+    public declare routeHelper: RouteHelper;
 
     @Resolve("router")
-    public router: Router;
+    public declare router: Router;
 
     @Resolve("logger")
-    public logger: Logger;
+    public declare logger: Logger;
 
     handleSignUp: THandleSignUp = async (
         email,

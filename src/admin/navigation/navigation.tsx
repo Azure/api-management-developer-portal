@@ -34,10 +34,10 @@ const iconStyles = { width: '16px' };
 
 export class Navigation extends React.Component<PagesProps, NavigationState> {
     @Resolve('navigationService')
-    public navigationService: INavigationService;
+    public declare navigationService: INavigationService;
 
     @Resolve('eventManager')
-    public eventManager: EventManager;
+    public declare eventManager: EventManager;
 
     constructor(props: PagesProps) {
         super(props);
@@ -73,7 +73,7 @@ export class Navigation extends React.Component<PagesProps, NavigationState> {
                 targetKey: navItem.targetKey || '',
                 isExpanded: true
             };
-            
+
             if (navItem.navigationItems) newNode.links = this.structureNavItems(navItem.navigationItems);
 
             return newNode;
@@ -96,7 +96,7 @@ export class Navigation extends React.Component<PagesProps, NavigationState> {
     removeNavItem = (navItems: NavigationItemContract[], removableNavItemKey: string): NavigationItemContract[] => (
         navItems.filter(navItem => {
             const keep = navItem.key !== removableNavItemKey;
-            
+
             if (keep && navItem.navigationItems) {
                 navItem.navigationItems = this.removeNavItem(navItem.navigationItems, removableNavItemKey);
             }
@@ -280,11 +280,11 @@ export class Navigation extends React.Component<PagesProps, NavigationState> {
 
     render(): JSX.Element {
         return <>
-            {this.state.showDeleteConfirmation && 
+            {this.state.showDeleteConfirmation &&
                 <DeleteConfirmationOverlay
                     deleteItemTitle={this.state.currentNavItem.label}
                     onConfirm={this.deleteNavItem.bind(this)}
-                    onDismiss={this.closePopUps.bind(this)} 
+                    onDismiss={this.closePopUps.bind(this)}
                 />
             }
             {this.state.showNavigationItemModal &&
@@ -310,7 +310,7 @@ export class Navigation extends React.Component<PagesProps, NavigationState> {
                 {this.state.isLoading && <Spinner />}
                 {this.state.navigationItemsToRender.length === 0 && !this.state.isLoading
                     ? <Text block className="nav-item-description-container">It seems that you don't have site menu items yet. Would you like to create one?</Text>
-                    : 
+                    :
                         <Nav
                             ariaLabel="Site menu"
                             groups={this.state.navigationItemsToRender}
