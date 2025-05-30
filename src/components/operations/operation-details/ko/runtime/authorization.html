@@ -128,6 +128,8 @@
                 <!-- ko if: (!$component.products() || $component.products().length === 0) && !isSubscriptionListEmptyDueToFilter() -->
                 <div class="input-group">
                     <input id="subscriptionKey" class="form-control" placeholder="subscription key"
+                        name="subscription-key"
+                        autoComplete="new-password"
                         data-bind="textInput: $component.selectedSubscriptionKey.value, attr: { type: subscriptionKeyRevealed() ? 'text' : 'password' }"
                         aria-required="true" />
                     <button data-bind="click: toggleSubscriptionKey" class="input-group-addon">

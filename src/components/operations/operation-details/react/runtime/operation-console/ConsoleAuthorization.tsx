@@ -154,11 +154,13 @@ export const ConsoleAuthorization = ({
                     : <Stack className="auth-detail">
                         <Label htmlFor="subscription-key-input">Subscription key</Label>
                         <Input
-                            id="subscription-key-input"
-                            type="password"
-                            placeholder="Enter subscription key"
-                            value={selectedSubscriptionKey?.value}
-                            onChange={(_, data) => selectSubscriptionKey(data.value)}
+                          id="subscription-key-input"
+                          type="password"
+                          name="subscription-key"
+                          autoComplete="new-password"
+                          placeholder="Enter subscription key"
+                          value={selectedSubscriptionKey?.value}
+                          onChange={(_, data) => selectSubscriptionKey(data.value)}
                         />
                     </Stack>
             )}
