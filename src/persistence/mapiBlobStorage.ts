@@ -1,4 +1,4 @@
-import { AzureBlobStorage } from "@paperbits/azure";
+import { AzureBlobStorage } from "@paperbits/azure/persistence/azureBlobStorage";
 import { Logger } from "@paperbits/common/logging";
 import { ISettingsProvider } from "@paperbits/common/configuration";
 import { StaticSettingsProvider } from "../configuration/staticSettingsProvider";
@@ -9,18 +9,28 @@ import { IStreamBlobStorage } from "./IStreamBlobStorage";
 
 const defaultContainerName = "content";
 
+
+export class StorageClientFactory {
+    constructor(private ctor: new (settingsProvider: ISettingsProvider, logger: Logger) => AzureBlobStorage) { }
+
+    public async createBlobStorageClient(settingsProvider: ISettingsProvider, logger: Logger): Promise<AzureBlobStorage> {
+        return new this.ctor(settingsProvider, logger);
+    }
+}
+
 export class MapiBlobStorage implements IStreamBlobStorage {
-    private storageClient: AzureBlobStorage;
+    private azureStorageClient: IStreamBlobStorage;
 
     constructor(
+        private readonly storageClientFactory: StorageClientFactory,
         private readonly tenantService: TenantService,
         private readonly settingsProvider: ISettingsProvider,
         private readonly logger: Logger
     ) { }
 
-    private async getStorageClient(): Promise<AzureBlobStorage> {
-        if (this.storageClient) {
-            return this.storageClient;
+    private async getStorageClient(): Promise<IStreamBlobStorage> {
+        if (this.azureStorageClient) {
+            return this.azureStorageClient;
         }
 
         let storageSettingsProvider: ISettingsProvider;
@@ -56,9 +66,10 @@ export class MapiBlobStorage implements IStreamBlobStorage {
             });
         }
 
-        this.storageClient = new AzureBlobStorage(storageSettingsProvider, this.logger);
+        this.azureStorageClient = await this.storageClientFactory
+            .createBlobStorageClient(storageSettingsProvider, this.logger);
 
-        return this.storageClient;
+        return this.azureStorageClient;
     }
 
     /**
@@ -130,7 +141,7 @@ export class MapiBlobStorage implements IStreamBlobStorage {
     }
 
     /**
-     * Get blob from storage in Node.JS
+     * Get blob as a stream from storage in Node.JS
      * @param blobKey {string} Blob key.
      */
     public async getBlobAsStream(blobKey: string): Promise<NodeJS.ReadableStream> {

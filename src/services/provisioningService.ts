@@ -1,14 +1,14 @@
+import { ISettingsProvider } from "@paperbits/common/configuration";
 import { HttpClient } from "@paperbits/common/http";
-import { IAuthenticator } from "../authentication";
-import { ViewManager } from "@paperbits/common/ui";
-import { Router } from "@paperbits/common/routing";
-import { AzureBlobStorage } from "@paperbits/azure";
-import { ISettingsProvider } from "@paperbits/common/configuration/ISettingsProvider";
 import { Logger } from "@paperbits/common/logging/logger";
-import * as Constants from "../constants";
+import { IBlobStorage } from "@paperbits/common/persistence";
+import { Router } from "@paperbits/common/routing";
+import { ViewManager } from "@paperbits/common/ui";
+import { IAuthenticator } from "../authentication";
 import { IApiClient } from "../clients";
-import { KnownMimeTypes } from "../models/knownMimeTypes";
+import * as Constants from "../constants";
 import { KnownHttpHeaders } from "../models/knownHttpHeaders";
+import { KnownMimeTypes } from "../models/knownMimeTypes";
 import { Utils } from "../utils";
 
 export class ProvisionService {
@@ -18,7 +18,7 @@ export class ProvisionService {
         private readonly authenticator: IAuthenticator,
         private readonly viewManager: ViewManager,
         private readonly router: Router,
-        private readonly blobStorage: AzureBlobStorage,
+        private readonly blobStorage: IBlobStorage,
         private readonly settingsProvider: ISettingsProvider,
         private readonly logger: Logger
     ) { }

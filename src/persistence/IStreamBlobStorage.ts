@@ -15,4 +15,10 @@ export interface IStreamBlobStorage extends IBlobStorage {
      * @param blobKey {string} Blob key.
      */
     getBlobAsStream?(blobKey: string): Promise<NodeJS.ReadableStream>
+
+    /**
+     * Lists blobs with a specified prefix.
+     * @param blobPrefix Optional prefix to filter blobs.
+     */
+    listBlobs?(blobPrefix?: string): Promise<string[]>;
 }
