@@ -89,22 +89,22 @@ const newItemKey = 'new-item';
 
 export class NavigationItemModal extends React.Component<NavigationItemModalProps, NavigationItemModalState> {
     @Resolve('navigationService')
-    public navigationService: INavigationService;
+    public declare navigationService: INavigationService;
 
     @Resolve('pageService')
-    public pageService: IPageService;
+    public declare pageService: IPageService;
 
     @Resolve('urlService')
-    public urlService: IUrlService;
+    public declare urlService: IUrlService;
 
     @Resolve('mediaService')
-    public mediaService: IMediaService;
+    public declare mediaService: IMediaService;
 
     @Resolve('permalinkService')
-    public permalinkService: PermalinkService;
+    public declare permalinkService: PermalinkService;
 
     @Resolve('eventManager')
-    public eventManager: EventManager;
+    public declare eventManager: EventManager;
 
     constructor(props: NavigationItemModalProps) {
         super(props);
@@ -298,14 +298,14 @@ export class NavigationItemModal extends React.Component<NavigationItemModalProp
     processNavItemsForDropdown = (navItems: NavigationItemContract[], dropdownItems: IDropdownOption[], currentNodeLabel: string = ''): IDropdownOption[] => {
         navItems.forEach(navItem => {
             if (navItem.key === this.props.navItem?.key) return;
-            
+
             const newNodeText = currentNodeLabel ? currentNodeLabel + '/' + navItem.label : navItem.label;
 
             dropdownItems.push({
                 key: navItem.key,
                 text: newNodeText
             });
-            
+
             if (navItem.navigationItems) this.processNavItemsForDropdown(navItem.navigationItems, dropdownItems, newNodeText);
         });
 
@@ -519,11 +519,11 @@ export class NavigationItemModal extends React.Component<NavigationItemModalProp
 
     render(): JSX.Element {
         return <>
-            {this.state.showDeleteConfirmation && 
+            {this.state.showDeleteConfirmation &&
                 <DeleteConfirmationOverlay
                     deleteItemTitle={this.state.navItem.label}
                     onConfirm={this.props.onDelete}
-                    onDismiss={this.closeDeleteConfirmation.bind(this)} 
+                    onDismiss={this.closeDeleteConfirmation.bind(this)}
                 />
             }
             {this.state.showMediaSelectionModal &&
@@ -545,7 +545,7 @@ export class NavigationItemModal extends React.Component<NavigationItemModalProp
                             onClick={() => this.saveItem()}
                             disabled={
                                 !isEmpty(this.state.errors) ||
-                                (isEqual(this.props.navItem, this.state.navItem) 
+                                (isEqual(this.props.navItem, this.state.navItem)
                                     && this.props.navItem?.targetWindow === this.state.targetWindow
                                     && ((this.props.navItem?.targetKey && this.state.selectedLinkOption !== LinkOptionKey.NoLink)
                                     || (this.props.navItem?.anchor && this.state.selectedLinkOption === LinkOptionKey.Anchor)))
@@ -555,7 +555,7 @@ export class NavigationItemModal extends React.Component<NavigationItemModalProp
                     </Stack>
                 </Stack>
                 <div className="admin-modal-content">
-                    {this.props.navItem && 
+                    {this.props.navItem &&
                         <CommandBarButton
                             iconProps={deleteIcon}
                             text="Delete"
@@ -607,7 +607,7 @@ export class NavigationItemModal extends React.Component<NavigationItemModalProp
                         />
                     }
 
-                    {this.state.selectedLinkOption === LinkOptionKey.Anchor && 
+                    {this.state.selectedLinkOption === LinkOptionKey.Anchor &&
                         <Dropdown
                             label="Select anchor"
                             placeholder="Click to select an anchor..."
@@ -623,7 +623,7 @@ export class NavigationItemModal extends React.Component<NavigationItemModalProp
                         />
                     }
 
-                    {this.state.selectedLinkOption === LinkOptionKey.Url && 
+                    {this.state.selectedLinkOption === LinkOptionKey.Url &&
                         <ChoiceGroup
                             label="Select method"
                             options={urlTypeOptions}
@@ -673,9 +673,9 @@ export class NavigationItemModal extends React.Component<NavigationItemModalProp
                     {this.state.selectedLinkOption === LinkOptionKey.Media &&
                         <>
                             {this.state.selectedMedia && <Text block styles={{ root: { paddingBottom: 15, fontWeight: 'bold' } }}>{this.state.selectedMedia.fileName}</Text>}
-                            {this.state.errors[LinkOptionKey.Media] && 
-                                <Text 
-                                    block 
+                            {this.state.errors[LinkOptionKey.Media] &&
+                                <Text
+                                    block
                                     styles={{ root: { paddingBottom: 15, color: lightTheme.callingPalette.callRed } }}
                                 >
                                     {this.state.errors[LinkOptionKey.Media]}
@@ -688,12 +688,12 @@ export class NavigationItemModal extends React.Component<NavigationItemModalProp
                             />
                         </>
                     }
-                    
+
                     <Dropdown
-                        onRenderLabel={() => 
+                        onRenderLabel={() =>
                             <LabelWithInfo
                                 label="Assign location"
-                                info={`Assign to an existing menu item or select new menu item to create a top-level menu item.`} 
+                                info={`Assign to an existing menu item or select new menu item to create a top-level menu item.`}
                             />
                         }
                         ariaLabel="Assign location"

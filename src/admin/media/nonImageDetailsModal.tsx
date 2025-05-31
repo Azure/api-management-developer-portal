@@ -26,10 +26,10 @@ const textFieldStyles = { root: { paddingBottom: 15 } };
 
 export class NonImageDetailsModal extends React.Component<NonImageDetailsModalProps, NonImageDetailsModalState> {
     @Resolve('mediaService')
-    public mediaService: IMediaService;
+    public declare mediaService: IMediaService;
 
     @Resolve('eventManager')
-    public eventManager: EventManager;
+    public declare eventManager: EventManager;
 
     constructor(props: NonImageDetailsModalProps) {
         super(props);

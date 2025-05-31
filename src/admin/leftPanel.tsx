@@ -59,19 +59,19 @@ const iconStyles = { root: { color: lightTheme.palette.themePrimary, fontSize: 2
 
 export class LeftPanel extends React.Component<{}, LeftPanelState> {
     @Resolve('siteService')
-    public siteService: ISiteService;
+    public declare siteService: ISiteService;
 
     @Resolve('eventManager')
-    public eventManager: EventManager;
-    
+    public declare eventManager: EventManager;
+
     @Resolve('viewManager')
-    public viewManager: ViewManager;
+    public declare viewManager: ViewManager;
 
     @Resolve('router')
-    public router: Router;
+    public declare router: Router;
 
     @Resolve('logger')
-    public logger: Logger;
+    public declare logger: Logger;
 
     constructor(props: any) {
         super(props);
@@ -128,7 +128,7 @@ export class LeftPanel extends React.Component<{}, LeftPanelState> {
         this.setState({ selectedNavItem: NavItem.Main });
         this.viewManager.setHost({ name: 'page-host' });
     }
-    
+
     handleOnboardingModalClose = (): void => {
         this.setState({ showOnboardingModal: false });
         localStorage.setItem('isOnboardingSeen', 'true');
@@ -210,7 +210,7 @@ export class LeftPanel extends React.Component<{}, LeftPanelState> {
                         />
                         <CommandBarButton
                             iconProps={feedbackIcon}
-                            onRenderText={() => 
+                            onRenderText={() =>
                                 <Text block styles={{ root: { flexGrow: 1, margin: '0 4px' } }}>
                                     Give feedback
                                     <Icon iconName="OpenInNewWindow" styles={{ root: { paddingLeft: 5 } }} />
@@ -268,7 +268,7 @@ export class LeftPanel extends React.Component<{}, LeftPanelState> {
                                 this.logger.trackEvent(`${checked ? 'Checked' : 'Unchecked'}: Preview new UI design`);
                                 this.eventManager.dispatchEvent('onSaveChanges');
                                 this.eventManager.dispatchEvent('onDataPush'); // Needed to reload the runtime part
-                            }} 
+                            }}
                         />
                     }
                 </div>

@@ -130,19 +130,19 @@ export class ProductSubscribeRuntime extends React.Component<
     { productName?: string | null }
 > {
     @Resolve("delegationService")
-    public delegationService: IDelegationService;
+    public declare delegationService: IDelegationService;
 
     @Resolve("usersService")
-    public usersService: UsersService;
+    public declare usersService: UsersService;
 
     @Resolve("productService")
-    public productService: ProductService;
+    public declare productService: ProductService;
 
     @Resolve("routeHelper")
-    public routeHelper: RouteHelper;
+    public declare routeHelper: RouteHelper;
 
     @Resolve("router")
-    public router: Router;
+    public declare router: Router;
 
     constructor(props: ProductSubscribeRuntimeProps) {
         super(props);

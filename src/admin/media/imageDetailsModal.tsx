@@ -34,10 +34,10 @@ const flipHorizontallyStyles = { root: { color: '#000', transform: 'rotate(45deg
 
 export class ImageDetailsModal extends React.Component<ImageDetailsModalProps, ImageDetailsModalState> {
     @Resolve('mediaService')
-    public mediaService: IMediaService;
+    public declare mediaService: IMediaService;
 
     @Resolve('eventManager')
-    public eventManager: EventManager;
+    public declare eventManager: EventManager;
 
     cropper: Cropper;
 
@@ -132,11 +132,11 @@ export class ImageDetailsModal extends React.Component<ImageDetailsModalProps, I
 
     render(): JSX.Element {
         return <>
-            {this.state.showDeleteConfirmation && 
+            {this.state.showDeleteConfirmation &&
                 <DeleteConfirmationOverlay
                     deleteItemTitle={this.state.mediaItem.fileName}
                     onConfirm={this.deleteMedia.bind(this)}
-                    onDismiss={this.closeDeleteConfirmation.bind(this)} 
+                    onDismiss={this.closeDeleteConfirmation.bind(this)}
                 />
             }
             <Modal

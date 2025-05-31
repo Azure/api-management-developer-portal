@@ -19,16 +19,16 @@ type ResetPasswordRuntimeProps = {
 
 export class ResetPasswordRuntime extends React.Component<ResetPasswordRuntimeProps> {
     @Resolve("usersService")
-    public usersService: UsersService;
+    public declare usersService: UsersService;
 
     @Resolve("eventManager")
-    public eventManager: EventManager;
+    public declare eventManager: EventManager;
 
     @Resolve("backendService")
-    public backendService: BackendService;
+    public declare backendService: BackendService;
 
     @Resolve("logger")
-    public logger: Logger;
+    public declare logger: Logger;
 
     async componentDidMount() {
         const isUserSignedIn = await this.usersService.isUserSignedIn();
