@@ -16,7 +16,7 @@ const headerStyles = { root: { paddingTop: 15, margin: 0 } };
 
 export class HelpModal extends React.Component<HelpModalProps, HelpModalState> {
     @Resolve('policyService')
-    public policyService: PolicyService;
+    public declare policyService: PolicyService;
 
     constructor(props: HelpModalProps) {
         super(props);
@@ -64,7 +64,7 @@ export class HelpModal extends React.Component<HelpModalProps, HelpModalState> {
                         <li><Text block><Link href="https://aka.ms/apimdocs/portal" target="_blank">Overview</Link> of the developer portal.</Text></li>
                         <li><Text block><Link href="https://aka.ms/apimdocs/customizeportal" target="_blank">Access and customize the developer portal</Link> with a step-by-step tutorial.</Text></li>
                     </ul>
-                    
+
                     <Text as="h3" block variant="large" styles={headerStyles}>How-to</Text>
                     <ul>
                         <li><Text block><Link href="https://aka.ms/apimdocs/portal/cors" target="_blank">Enable CORS</Link></Text></li>

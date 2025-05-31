@@ -81,7 +81,7 @@ export abstract class GraphQLTreeNode {
 }
 
 export class GraphQLOutputTreeNode extends GraphQLTreeNode {
-    public data: GraphQL.GraphQLField<any, any>;
+    public data: GraphQL.GraphQLField<any, any> = null;
     public level: number;
 
     public variables: {
@@ -127,14 +127,12 @@ export class GraphQLOutputTreeNode extends GraphQLTreeNode {
 }
 
 export class GraphQLInputTreeNode extends GraphQLTreeNode {
-    public children: ko.ObservableArray<GraphQLInputTreeNode>;
-    public data: GraphQL.GraphQLInputField;
     public inputValue?: ko.Observable<string>;
     public options?: ko.ObservableArray<string>;
 
     constructor(label: string, data: GraphQL.GraphQLInputField, generateDocument: () => void, parent: GraphQLTreeNode) {
         super(label, generateDocument, parent);
-        this.children = ko.observableArray([]); 
+        this.children = ko.observableArray([]);
         this.data = data;
         this.isRequired = ko.observable(isNonNull(data.type));
         if (this.isRequired()) {

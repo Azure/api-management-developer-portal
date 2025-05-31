@@ -133,25 +133,25 @@ const SubscriptionsRuntimeFC = ({
 
 export class SubscriptionsRuntime extends React.Component<SubscriptionsRuntimeProps> {
     @Resolve("usersService")
-    public usersService: UsersService;
+    public declare usersService: UsersService;
 
     @Resolve("productService")
-    public productService: ProductService;
+    public declare productService: ProductService;
 
     @Resolve("eventManager")
-    public eventManager: EventManager;
+    public declare eventManager: EventManager;
 
     @Resolve("delegationService")
-    public delegationService: IDelegationService;
+    public declare delegationService: IDelegationService;
 
     @Resolve("routeHelper")
-    public routeHelper: RouteHelper;
+    public declare routeHelper: RouteHelper;
 
     @Resolve("router")
-    public router: Router;
+    public declare router: Router;
 
     @Resolve("logger")
-    public logger: Logger;
+    public declare logger: Logger;
 
     private async applyDelegation(subscriptionId: string): Promise<boolean> {
         const isDelegationEnabled = await this.delegationService.isSubscriptionDelegationEnabled();

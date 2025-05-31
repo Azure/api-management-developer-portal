@@ -33,10 +33,10 @@ export type TProductListRuntimeFCProps = Omit<ProductsListProps, "detailsPageUrl
 
 export class ProductsListRuntime extends React.Component<ProductsListProps, ProductsListState> {
     @Resolve("productService")
-    public productService: ProductService;
+    public declare productService: ProductService;
 
     @Resolve("routeHelper")
-    public routeHelper: RouteHelper;
+    public declare routeHelper: RouteHelper;
 
     constructor(props) {
         super(props);

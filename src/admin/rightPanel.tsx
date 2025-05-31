@@ -54,28 +54,28 @@ const anonymousName: string = 'Anonymous';
 
 export class RightPanel extends React.Component<{}, RightPanelState> {
     @Resolve('viewManager')
-    public viewManager: ViewManager;
+    public declare viewManager: ViewManager;
 
     @Resolve('eventManager')
-    public eventManager: EventManager;
+    public declare eventManager: EventManager;
 
     @Resolve('offlineObjectStorage')
-    public offlineObjectStorage: OfflineObjectStorage;
+    public declare offlineObjectStorage: OfflineObjectStorage;
 
     @Resolve('contentWorkshop')
-    public contentWorkshop: ContentWorkshop;
+    public declare contentWorkshop: ContentWorkshop;
 
     @Resolve('router')
-    public router: Router;
+    public declare router: Router;
 
     @Resolve('pageService')
-    public pageService: IPageService;
+    public declare pageService: IPageService;
 
     @Resolve('layoutService')
-    public layoutService: ILayoutService;
+    public declare layoutService: ILayoutService;
 
     @Resolve('roleService')
-    public roleService: RoleService;
+    public declare roleService: RoleService;
 
     constructor(props: any) {
         super(props);
@@ -106,7 +106,7 @@ export class RightPanel extends React.Component<{}, RightPanelState> {
 
     componentWillUnmount() {
         this.eventManager.removeEventListener('onDataChange', this.onDataChange.bind(this));
-        window.removeEventListener('resize', this.checkScreenSize.bind(this));        
+        window.removeEventListener('resize', this.checkScreenSize.bind(this));
         this.router.removeRouteChangeListener(() => this.getPageName());
     }
 
@@ -225,7 +225,7 @@ export class RightPanel extends React.Component<{}, RightPanelState> {
 
     renderTitle = (options: IDropdownOption[]): JSX.Element => {
         const option = options[0];
-      
+
         return this.renderDropdownOption(option);
     }
 
@@ -292,14 +292,14 @@ export class RightPanel extends React.Component<{}, RightPanelState> {
                     this.toggleFocusedState();
                     this.viewManager.setHost({ name: 'page-host' });
                 }}
-                styles={{ 
+                styles={{
                     root: { backgroundColor: '#ffffff', color: '#323130' },
                     rootHovered: { backgroundColor: '#ffffff', color: '#323130' }
                 }}
             />
         </>
     )
- 
+
     public render(): JSX.Element {
         return (
             <>

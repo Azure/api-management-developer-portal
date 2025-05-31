@@ -27,10 +27,10 @@ const iconStyles = { width: '16px', color: lightTheme.palette.themePrimary };
 
 export class CustomWidgets extends React.Component<CustomWidgetsProps, CustomWidgetsState> {
     @Resolve('viewManager')
-    public viewManager: ViewManager;
+    public declare viewManager: ViewManager;
 
     @Resolve('blobStorage')
-    public blobStorage: MapiBlobStorage;
+    public declare blobStorage: MapiBlobStorage;
 
     constructor(props: CustomWidgetsProps) {
         super(props);
@@ -63,7 +63,7 @@ export class CustomWidgets extends React.Component<CustomWidgetsProps, CustomWid
             configsAll.forEach(config => {
                 if (config.override) configs[config.name] = config;
             });
-            
+
             this.setState({ customWidgets: Object.values(configs)});
         }).finally(() => this.setState({ isLoading: false }));
     }
@@ -109,7 +109,7 @@ export class CustomWidgets extends React.Component<CustomWidgetsProps, CustomWid
             <BackButton onClick={this.props.onBackButtonClick} />
             <Stack className="nav-item-description-container">
                 <Text className="description-text">
-                    Custom widgets let you extend the developer portal's functionality in a modular way. For example, you can implement an integration 
+                    Custom widgets let you extend the developer portal's functionality in a modular way. For example, you can implement an integration
                     with a support system, reuse it on several pages, and source-control the code in a git repository.
                 </Text>
             </Stack>

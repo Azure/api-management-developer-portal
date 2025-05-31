@@ -35,16 +35,16 @@ const inputStyles = { root: { paddingBottom: 15 } };
 
 export class SettingsModal extends React.Component<SettingsModalProps, SettingsModalState> {
     @Resolve('siteService')
-    public siteService: ISiteService;
+    public declare siteService: ISiteService;
 
     @Resolve('mediaService')
-    public mediaService: IMediaService;
+    public declare mediaService: IMediaService;
 
     @Resolve('eventManager')
-    public eventManager: EventManager;
+    public declare eventManager: EventManager;
 
     @Resolve('resetDetailsWorkshop')
-    public resetDetailsWorkshop: ResetDetailsWorkshop;
+    public declare resetDetailsWorkshop: ResetDetailsWorkshop;
 
     constructor(props: SettingsModalProps) {
         super(props);
@@ -75,12 +75,12 @@ export class SettingsModal extends React.Component<SettingsModalProps, SettingsM
     }
 
     loadSettings = async (): Promise<void> => {
-        const settings = await this.siteService.getSetting<SiteSettingsContract>('site');        
+        const settings = await this.siteService.getSetting<SiteSettingsContract>('site');
         this.setState({ initialSettings: settings, settings: settings });
 
         if (settings.faviconSourceKey) {
             const faviconFile = await this.mediaService.getMediaByKey(settings.faviconSourceKey);
-            this.getFaviconThumbnailUrl(faviconFile); 
+            this.getFaviconThumbnailUrl(faviconFile);
         }
     }
 

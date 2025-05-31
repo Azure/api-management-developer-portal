@@ -127,13 +127,13 @@ const ApiHistoryFC = ({
 
 export class ApiHistory extends React.Component<ApiHistoryProps, ApiHistoryState> {
     @Resolve("apiService")
-    public apiService: ApiService;
+    public declare apiService: ApiService;
 
     @Resolve("routeHelper")
-    public routeHelper: RouteHelper;
+    public declare routeHelper: RouteHelper;
 
     @Resolve("router")
-    public router: Router;
+    public declare router: Router;
 
     constructor(props: ApiHistoryProps) {
         super(props);

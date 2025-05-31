@@ -37,13 +37,13 @@ const deleteIcon: IIconProps = { iconName: 'Delete' };
 
 export class MediaModal extends React.Component<MediaModalProps, MediaModalState> {
     @Resolve('mediaService')
-    public mediaService: IMediaService;
+    public declare mediaService: IMediaService;
 
     @Resolve('eventManager')
-    public eventManager: EventManager;
-    
+    public declare eventManager: EventManager;
+
     @Resolve('viewManager')
-    public viewManager: ViewManager;
+    public declare viewManager: ViewManager;
 
     constructor(props: MediaModalProps) {
         super(props);
@@ -104,7 +104,7 @@ export class MediaModal extends React.Component<MediaModalProps, MediaModalState
         for (const file of this.state.selectedFiles) {
             await this.mediaService.deleteMedia(file);
         }
-    
+
         this.setState({ selectedFiles: [], showDeleteConfirmation: false });
         this.eventManager.dispatchEvent('onSaveChanges');
         this.searchMedia();
@@ -129,7 +129,7 @@ export class MediaModal extends React.Component<MediaModalProps, MediaModalState
             {item.name}
         </Link>
     );
-      
+
     onRenderOverflowButton = (overflowItems: any[] | undefined): JSX.Element => {
         return (
             <IconButton
@@ -152,7 +152,7 @@ export class MediaModal extends React.Component<MediaModalProps, MediaModalState
 
     renderMediaItem = (mediaItem: MediaContract): JSX.Element => {
         const thumbnailUrl: string = getThumbnailUrl(mediaItem);
-        
+
         return (
             <div className="media-box" key={mediaItem.key}>
                 <Stack horizontal horizontalAlign="space-between" verticalAlign="center">
@@ -249,7 +249,7 @@ export class MediaModal extends React.Component<MediaModalProps, MediaModalState
                 <DeleteConfirmationOverlay
                     deleteItemTitle={this.state.selectedFiles.length === 1 ? this.state.selectedFiles[0].fileName : 'selected files'}
                     onConfirm={this.deleteMedia.bind(this)}
-                    onDismiss={this.closeDeleteConfirmation.bind(this)} 
+                    onDismiss={this.closeDeleteConfirmation.bind(this)}
                 />
             }
             <Modal
@@ -288,7 +288,7 @@ export class MediaModal extends React.Component<MediaModalProps, MediaModalState
                                 onClick={() => this.linkMedia()}
                             />
                         </Stack.Item>
-                        {this.state.selectedFiles.length > 0 && 
+                        {this.state.selectedFiles.length > 0 &&
                             <Stack.Item>
                                 <DefaultButton
                                     iconProps={deleteIcon}

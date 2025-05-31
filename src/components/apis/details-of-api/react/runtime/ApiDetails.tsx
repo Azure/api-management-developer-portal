@@ -201,13 +201,13 @@ const ApiDetailsFC = ({
 
 export class ApiDetails extends React.Component<ApiDetailsProps, ApiDetailsState> {
     @Resolve("apiService")
-    public apiService: ApiService;
+    public declare apiService: ApiService;
 
     @Resolve("routeHelper")
-    public routeHelper: RouteHelper;
+    public declare routeHelper: RouteHelper;
 
     @Resolve("router")
-    public router: Router;
+    public declare router: Router;
 
     constructor(props: ApiDetailsProps) {
         super(props);

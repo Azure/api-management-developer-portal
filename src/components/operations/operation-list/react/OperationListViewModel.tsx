@@ -1,9 +1,9 @@
 import { StyleModel } from "@paperbits/common/styles";
 import * as React from "react";
 
-export class OperationListViewModel extends React.Component {
-    public state: {
-        isRedesignEnabled: boolean;
+
+interface ComponentProps {
+    isRedesignEnabled: boolean;
         styles: StyleModel,
         allowSelection: boolean,
         wrapText: boolean,
@@ -12,9 +12,12 @@ export class OperationListViewModel extends React.Component {
         defaultGroupByTagToEnabled: boolean,
         defaultAllGroupTagsExpanded: boolean,
         detailsPageUrl: string
-    };
+}
 
-    constructor(props) {
+interface ComponentState extends ComponentProps { }
+
+export class OperationListViewModel extends React.Component<ComponentProps, ComponentState> {
+    constructor(props: ComponentProps) {
         super(props);
 
         this.state = {...props};

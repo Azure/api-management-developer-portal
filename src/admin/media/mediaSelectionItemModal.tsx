@@ -27,13 +27,13 @@ const linkIcon: IIconProps = { iconName: 'Link' };
 
 export class MediaSelectionItemModal extends React.Component<MediaSelectionItemModalProps, MediaSelectionItemModalState> {
     @Resolve('mediaService')
-    public mediaService: IMediaService;
+    public declare mediaService: IMediaService;
 
     @Resolve('eventManager')
-    public eventManager: EventManager;
+    public declare eventManager: EventManager;
 
     @Resolve('viewManager')
-    public viewManager: ViewManager;
+    public declare viewManager: ViewManager;
 
     constructor(props: MediaSelectionItemModalProps) {
         super(props);

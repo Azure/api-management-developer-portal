@@ -34,16 +34,16 @@ const iconStyles = { width: '16px', color: lightTheme.palette.themePrimary };
 
 export class Pages extends React.Component<PagesProps, PagesState> {
     @Resolve('pageService')
-    public pageService: IPageService;
+    public declare pageService: IPageService;
 
     @Resolve('layoutService')
-    public layoutService: ILayoutService;
+    public declare layoutService: ILayoutService;
 
     @Resolve('router')
-    public router: Router;
+    public declare router: Router;
 
     @Resolve('viewManager')
-    public viewManager: ViewManager;
+    public declare viewManager: ViewManager;
 
     constructor(props: PagesProps) {
         super(props);
@@ -204,7 +204,7 @@ export class Pages extends React.Component<PagesProps, PagesState> {
                 </PivotItem>
                 <PivotItem headerText="Layouts" itemKey="layouts">
                     <Stack className="nav-item-description-container">
-                        <Text className="description-text">Add or edit layouts. Layouts let you centralize common content (e.g., navigation bar, footer), which will be applied to pages. 
+                        <Text className="description-text">Add or edit layouts. Layouts let you centralize common content (e.g., navigation bar, footer), which will be applied to pages.
                         Each page is automatically matched with a layout based on the URL template.</Text>
                     </Stack>
                     <CommandBarButton

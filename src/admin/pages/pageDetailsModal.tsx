@@ -29,13 +29,13 @@ const textFieldStyles = { root: { paddingBottom: 15 } };
 
 export class PageDetailsModal extends React.Component<PageDetailsModalProps, PageDetailsModalState> {
     @Resolve('pageService')
-    public pageService: IPageService;
-    
+    public declare pageService: IPageService;
+
     @Resolve('permalinkService')
-    public permalinkService: PermalinkService;
+    public declare permalinkService: PermalinkService;
 
     @Resolve('eventManager')
-    public eventManager: EventManager;
+    public declare eventManager: EventManager;
 
     constructor(props: PageDetailsModalProps) {
         super(props);
@@ -101,7 +101,7 @@ export class PageDetailsModal extends React.Component<PageDetailsModalProps, Pag
                 errors = rest;
             }
         }
-        
+
         this.setState({ errors });
     }, 300);
 
@@ -160,11 +160,11 @@ export class PageDetailsModal extends React.Component<PageDetailsModalProps, Pag
 
     render(): JSX.Element {
         return <>
-            {this.state.showDeleteConfirmation && 
+            {this.state.showDeleteConfirmation &&
                 <DeleteConfirmationOverlay
                     deleteItemTitle={this.state.page.title}
                     onConfirm={this.deletePage.bind(this)}
-                    onDismiss={this.closeDeleteConfirmation.bind(this)} 
+                    onDismiss={this.closeDeleteConfirmation.bind(this)}
                 />
             }
             <Modal
@@ -204,7 +204,7 @@ export class PageDetailsModal extends React.Component<PageDetailsModalProps, Pag
                         </>
                     }
                     <TextField
-                        onRenderLabel={() => 
+                        onRenderLabel={() =>
                             <LabelWithInfo
                                 label="Name"
                                 info="This is how the page name will be displayed in the site menu."
@@ -218,10 +218,10 @@ export class PageDetailsModal extends React.Component<PageDetailsModalProps, Pag
                         styles={textFieldStyles}
                     />
                     <TextField
-                        onRenderLabel={() => 
+                        onRenderLabel={() =>
                             <LabelWithInfo
                                 label="Permalink path"
-                                info={`URL path of the page that's -appended to the developer portal hostname. For example, "/contact" would make this page available under "www.contoso.com/contact". Permalink path needs to be unique for every page and is used to match it against a defined layout.`} 
+                                info={`URL path of the page that's -appended to the developer portal hostname. For example, "/contact" would make this page available under "www.contoso.com/contact". Permalink path needs to be unique for every page and is used to match it against a defined layout.`}
                                 required
                             />
                         }

@@ -119,7 +119,7 @@ const ReportsRuntimeFC = ({ analyticsService }: ReportsRuntimeFCProps) => {
 
 export class ReportsRuntime extends React.Component<ReportsRuntimeProps> {
     @Resolve("analyticsService")
-    public analyticsService: AnalyticsService;
+    public declare analyticsService: AnalyticsService;
 
     render() {
         return (

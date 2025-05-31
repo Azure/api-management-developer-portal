@@ -24,7 +24,7 @@ export class SigninSocialViewModelBinder implements ViewModelBinder<SigninSocial
     }
 
     public stateToInstance(state: WidgetState, componentInstance: SignInSocialViewModel): void {
-        componentInstance.setState(prevState => ({
+        componentInstance.setState(prevState => <any>({
             ...state
         }));
     }

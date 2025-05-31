@@ -1,13 +1,16 @@
 import * as React from "react";
 import { StyleModel } from "@paperbits/common/styles";
 
-export class HistoryOfApiViewModel extends React.Component {
-    public state: {
-        isRedesignEnabled: boolean;
-        styles: StyleModel;
-        detailsPageUrl: string;
-    };
 
+interface ComponentProps {
+    isRedesignEnabled: boolean;
+    styles: StyleModel;
+    detailsPageUrl: string;
+}
+
+interface ComponentState extends ComponentProps { }
+
+export class HistoryOfApiViewModel extends React.Component<ComponentProps, ComponentState> {
     constructor(props) {
         super(props);
 
