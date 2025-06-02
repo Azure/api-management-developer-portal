@@ -3,11 +3,11 @@ import { Logger } from "@paperbits/common/logging";
 import { Utils } from "../utils";
 import { USER_ACTION, USER_ID, USER_SESSION } from "../constants";
 import { Events } from "@paperbits/common/events/commonEvents";
+import * as logSanitizer from "../logging/utils/logSanitizer"
 
 const TrackingEventElements = ["BUTTON", "A"];
 
 export class TelemetryConfigurator {
-
     constructor(private injector: IInjector) {
         // required for user session init.
         const userId = this.userId
@@ -154,8 +154,8 @@ export class TelemetryConfigurator {
         const navigation = (targetElement.tagName === "A" && targetElement) as HTMLAnchorElement;
 
         if (navigation?.href) {
-            eventMessage["navigationTo"] = navigation.href;
-            eventMessage["navigationText"] = navigation.innerText;
+            eventMessage["navigationTo"] = logSanitizer.sanitizeUrl(navigation.href);
+            eventMessage["navigationText"] = logSanitizer.cleanUrlSensitiveDataFromValue(navigation.innerText);
         } else {
             if (targetElement.tagName === "BUTTON") {
                 eventAction = `BUTTON clicked with text '${targetElement.innerText?.trim()}'`;

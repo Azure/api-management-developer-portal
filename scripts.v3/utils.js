@@ -2,8 +2,7 @@ const fs = require("fs");
 const path = require("path");
 const https = require("https");
 const { execSync } = require("child_process");
-const { BlobServiceClient } = require("@azure/storage-blob");
-const blobStorageContainer = "content";
+const { ContainerClient } = require("@azure/storage-blob");
 const mime = require("mime");
 const apiVersion = "2021-08-01"; //"2020-06-01-preview";
 const managementApiEndpoint = "management.azure.com";
@@ -88,7 +87,7 @@ class HttpClient {
                             reject({ code: "Forbidden", message: `Looks like you are not allowed to perform this operation. Please check with your administrator.` });
                             break;
                         default:
-                            reject({ code: "UnhandledError", message: `Could not complete request to ${requestUrl}. Status: ${resp.statusCode} ${resp.statusMessage}` });
+                            reject({ code: "UnhandledError", message: `Could not complete request to ${requestUrl}. Status: ${resp.statusCode} ${resp.statusMessage}, Data: ${data}` });
                     }
                 });
             });
@@ -240,8 +239,7 @@ class ImporterExporter {
         try {
             const snapshotMediaFolder = `${this.snapshotFolder}/media`;
             const blobStorageUrl = await this.getStorageSasUrl();
-            const blobServiceClient = new BlobServiceClient(blobStorageUrl.replace(`/${blobStorageContainer}`, ""));
-            const containerClient = blobServiceClient.getContainerClient(blobStorageContainer);
+            const containerClient = new ContainerClient(blobStorageUrl);
 
             await this.downloadBlobsRecursive(containerClient, snapshotMediaFolder);
         }
@@ -284,8 +282,7 @@ class ImporterExporter {
 
         try {
             const blobStorageUrl = await this.getStorageSasUrl();
-            const blobServiceClient = new BlobServiceClient(blobStorageUrl.replace(`/${blobStorageContainer}`, ""));
-            const containerClient = blobServiceClient.getContainerClient(blobStorageContainer);
+            const containerClient = new ContainerClient(blobStorageUrl);
             const fileNames = this.listFilesInDirectory(snapshotMediaFolder);
 
             for (const fileName of fileNames) {
@@ -322,8 +319,7 @@ class ImporterExporter {
     async deleteBlobs() {
         try {
             const blobStorageUrl = await this.getStorageSasUrl();
-            const blobServiceClient = new BlobServiceClient(blobStorageUrl.replace(`/${blobStorageContainer}`, ""));
-            const containerClient = blobServiceClient.getContainerClient(blobStorageContainer);
+            const containerClient = new ContainerClient(blobStorageUrl);
 
             let blobs = containerClient.listBlobsFlat();
 
@@ -411,7 +407,7 @@ class ImporterExporter {
      * Gets a storage SAS URL.
      */
     async getStorageSasUrl() {
-        const response = await this.httpClient.sendRequest("POST", `/portalSettings/mediaContent/listSecrets`);
+        const response = await this.httpClient.sendRequest("POST", `/portalconfigs/default/listMediaContentSecrets`);
         return response.containerSasUrl;
     }
 
