@@ -21,13 +21,13 @@ interface ApiProductsState {
 
 export class ApiProductsRuntime extends React.Component<ApiProductsProps, ApiProductsState> {
     @Resolve("apiService")
-    public apiService: ApiService;
+    public declare apiService: ApiService;
 
     @Resolve("routeHelper")
-    public routeHelper: RouteHelper;
+    public declare routeHelper: RouteHelper;
 
     @Resolve("router")
-    public router: Router;
+    public declare router: Router;
 
     constructor(props: ApiProductsProps) {
         super(props);

@@ -1,8 +1,7 @@
 import * as React from "react";
 
-export class SubscriptionsViewModel extends React.Component{
-    public state: any;
 
+export class SubscriptionsViewModel extends React.Component<any, any> {
     constructor(props) {
         super(props);
 

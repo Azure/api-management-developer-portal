@@ -38,43 +38,43 @@ interface OperationDetailsRuntimeState {
 
 export class OperationDetailsRuntime extends React.Component<OperationDetailsRuntimeProps, OperationDetailsRuntimeState> {
     @Resolve("apiService")
-    public apiService: ApiService;
+    public declare apiService: ApiService;
 
     @Resolve("tagService")
-    public tagService: TagService;
+    public declare tagService: TagService;
 
     @Resolve("graphqlService")
-    public graphqlService: GraphqlService;
+    public declare graphqlService: GraphqlService;
 
     @Resolve("graphDocService")
-    public graphDocService: GraphDocService;
+    public declare graphDocService: GraphDocService;
 
     @Resolve("usersService")
-    public usersService: UsersService;
+    public declare usersService: UsersService;
 
     @Resolve("productService")
-    public productService: ProductService;
+    public declare productService: ProductService;
 
     @Resolve("oauthService")
-    public oauthService: OAuthService;
+    public declare oauthService: OAuthService;
 
     @Resolve("routeHelper")
-    public routeHelper: RouteHelper;
+    public declare routeHelper: RouteHelper;
 
     @Resolve("router")
-    public router: Router; 
+    public declare router: Router;
 
     @Resolve("settingsProvider")
-    public settingsProvider: ISettingsProvider;
+    public declare settingsProvider: ISettingsProvider;
 
     @Resolve("sessionManager")
-    public sessionManager: SessionManager;
+    public declare sessionManager: SessionManager;
 
     @Resolve("httpClient")
-    public httpClient: HttpClient;
+    public declare httpClient: HttpClient;
 
     @Resolve("logger")
-    public logger: Logger;
+    public declare logger: Logger;
 
     constructor(props: OperationDetailsRuntimeProps) {
         super(props);
@@ -122,7 +122,7 @@ export class OperationDetailsRuntime extends React.Component<OperationDetailsRun
     render() {
         return (
             <FluentProvider theme={fuiTheme}>
-                {this.state.apiType === TypeOfApi.webSocket 
+                {this.state.apiType === TypeOfApi.webSocket
                     ? <OperationDetailsWebsocket
                             {...this.props}
                             apiName={this.state.apiName}

@@ -6,10 +6,10 @@ import { ApiListProps, ApiListRuntime } from "../../../../apis/list-of-apis/reac
 
 export class ProductApisRuntime extends React.Component<ApiListProps, { productName: string }> {
     @Resolve("routeHelper")
-    public routeHelper: RouteHelper;
+    public declare routeHelper: RouteHelper;
 
     @Resolve("router")
-    public router: Router;
+    public declare router: Router;
 
     constructor(props: ApiListProps) {
         super(props);

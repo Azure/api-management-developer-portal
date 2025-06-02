@@ -3,7 +3,7 @@ import { AadConfigPublisher } from "./publishing/aadConfigPublisher";
 import { IInjector, IInjectorModule } from "@paperbits/common/injection";
 import { ConsoleLogger } from "@paperbits/common/logging";
 import { RoleBasedSecurityPublishModule } from "@paperbits/core/security/roleBasedSecurity.publish.module";
-import { MapiObjectStorage, MapiBlobStorage } from "./persistence";
+import { MapiObjectStorage, MapiBlobStorage, StorageClientFactory } from './persistence';
 import { ListOfApisPublishModule } from "./components/apis/list-of-apis/listOfApis.publish.module";
 import { DetailsOfApiPublishModule } from "./components/apis/details-of-api/detailsOfApi.publish.module";
 import { HistoryOfApiPublishModule } from "./components/apis/history-of-api/historyOfApi.publish.module";
@@ -46,6 +46,7 @@ import { StaticDelegationService } from "./services/staticDelegationService";
 import { PublishingRetryStrategy } from "./clients/retryStrategy/publishingRetryStrategy";
 import MapiClientDirect from "./clients/mapiClientDirect";
 import { RedesignConfigPublisher } from "./publishing/redesignConfigPublisher";
+import { BrowserAzureBlobStorage } from '@paperbits/azure/persistence/azureBlobStorage.browser';
 
 export class ApimPublishModule implements IInjectorModule {
     public register(injector: IInjector): void {
@@ -85,6 +86,7 @@ export class ApimPublishModule implements IInjectorModule {
         injector.bindSingleton("authenticator", StaticAuthenticator);
         injector.bindSingleton("retryStrategy", PublishingRetryStrategy);
         injector.bindSingleton("apiClient", MapiClientDirect);
+        injector.bindInstance("storageClientFactory", new StorageClientFactory(BrowserAzureBlobStorage));
         injector.bindSingleton("objectStorage", MapiObjectStorage);
         injector.bindSingleton("blobStorage", MapiBlobStorage);
         injector.bindSingleton("logger", ConsoleLogger);

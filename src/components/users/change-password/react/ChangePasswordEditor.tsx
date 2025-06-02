@@ -1,8 +1,7 @@
 import * as React from "react";
 import { ChangePasswordModel } from "../changePasswordModel";
 
-export class ChangePasswordEditor extends React.Component {
-    public state: any;
+export class ChangePasswordEditor extends React.Component<any, any> {
     private onChange: any;
     private model: ChangePasswordModel;
 

@@ -1,17 +1,19 @@
 import * as React from "react";
 import { StyleModel } from "@paperbits/common/styles";
 
-export class ProductSubscribeViewModel extends React.Component {
-    public state: {
-        isRedesignEnabled: boolean;
-        styles: StyleModel,
-        showTermsByDefault: boolean
-    };
 
-    constructor(props) {
+interface ComponentState {
+    isRedesignEnabled: boolean;
+    styles: StyleModel;
+    showTermsByDefault: boolean;
+}
+
+interface ComponentProps extends ComponentState { }
+
+export class ProductSubscribeViewModel extends React.Component<ComponentProps, ComponentState> {
+    constructor(props: ComponentProps) {
         super(props);
-
-        this.state = {...props};
+        this.state = { ...props };
     }
 
     public render(): JSX.Element {
@@ -20,5 +22,5 @@ export class ProductSubscribeViewModel extends React.Component {
         return this.state.isRedesignEnabled
             ? <fui-product-subscribe-runtime key={data} props={data} ></fui-product-subscribe-runtime>
             : <product-subscribe-runtime params={data}></product-subscribe-runtime>;
-        }
+    }
 }

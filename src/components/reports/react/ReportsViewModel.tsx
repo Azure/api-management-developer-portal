@@ -1,12 +1,7 @@
 import * as React from "react";
 import { LocalStyles } from "@paperbits/common/styles";
 
-export class ReportsViewModel extends React.Component {
-    public state: {
-        isRedesignEnabled: boolean;
-        styles: LocalStyles;
-    };
-
+export class ReportsViewModel extends React.Component<any, any> {
     constructor(props) {
         super(props);
 

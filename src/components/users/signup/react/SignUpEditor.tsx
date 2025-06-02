@@ -1,8 +1,7 @@
 import * as React from "react";
 import { SignupModel } from "../signupModel";
 
-export class SignUpEditor extends React.Component {
-    public state: any;
+export class SignUpEditor extends React.Component<any, any> {
     private onChange: any;
     private model: SignupModel;
 

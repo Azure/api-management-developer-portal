@@ -25,13 +25,13 @@ const textFieldStyles = { root: { paddingBottom: 15 } };
 
 export class PopupDetailsModal extends React.Component<PopupDetailsModalProps, PopupDetailsModalState> {
     @Resolve('popupService')
-    public popupService: IPopupService;
+    public declare popupService: IPopupService;
 
     @Resolve('eventManager')
-    public eventManager: EventManager;
+    public declare eventManager: EventManager;
 
     @Resolve('viewManager')
-    public viewManager: ViewManager;
+    public declare viewManager: ViewManager;
 
     constructor(props: PopupDetailsModalProps) {
         super(props);
@@ -106,11 +106,11 @@ export class PopupDetailsModal extends React.Component<PopupDetailsModalProps, P
 
     render(): JSX.Element {
         return <>
-            {this.state.showDeleteConfirmation && 
+            {this.state.showDeleteConfirmation &&
                 <DeleteConfirmationOverlay
                     deleteItemTitle={this.state.popup.title}
                     onConfirm={this.deletePopup.bind(this)}
-                    onDismiss={this.closeDeleteConfirmation.bind(this)} 
+                    onDismiss={this.closeDeleteConfirmation.bind(this)}
                 />
             }
             <Modal
@@ -133,7 +133,7 @@ export class PopupDetailsModal extends React.Component<PopupDetailsModalProps, P
                     </Stack>
                 </Stack>
                 <div className="admin-modal-content">
-                    {this.props.popup && 
+                    {this.props.popup &&
                         <CommandBarButton
                             iconProps={deleteIcon}
                             text="Delete"
@@ -157,7 +157,7 @@ export class PopupDetailsModal extends React.Component<PopupDetailsModalProps, P
                         onChange={(event, newValue) => this.onInputChange('description', newValue)}
                         styles={textFieldStyles}
                     />
-                    {this.props.popup && 
+                    {this.props.popup &&
                         <DefaultButton
                             text="Open pop-up"
                             onClick={() => this.openPopup()}

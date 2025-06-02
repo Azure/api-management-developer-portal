@@ -55,7 +55,7 @@ export const loadGQLSchema = async (
             globalNodes = availableGraphqlTypes.map(type => {
                 const node = operationNodes[type.toLowerCase()];
                 node.toggle(true);
-                
+
                 if (type.toLowerCase() === selectedGraphType) {
                     node.children().forEach(child => {
                         if (child.label() === selectedGraphName) {
@@ -72,15 +72,15 @@ export const loadGQLSchema = async (
     return { operationNodes, globalNodes, schema, availableGraphqlTypes };
 }
 
- /**
-     * @param nodes list of root nodes to generate from
-     * @param level level for indent
-     * @returns string of generated node, for example:
-     * {
-     *    dragon
-     * }
-     */
- export const createFieldStringFromNodes = (nodes: GraphQLTreeNode[], level: number): string => {
+/**
+    * @param nodes list of root nodes to generate from
+    * @param level level for indent
+    * @returns string of generated node, for example:
+    * {
+    *    dragon
+    * }
+    */
+export const createFieldStringFromNodes = (nodes: GraphQLTreeNode[], level: number): string => {
     let selectedNodes: string[] = [];
     for (const node of nodes) {
         const inputNodes: GraphQLInputTreeNode[] = [];
@@ -135,7 +135,7 @@ export const createVariableString = (node: GraphQLOutputTreeNode): string => {
  * @param firstLevel true if this is the first level of object argument ({a: {b: 2}})
  * @returns string of argument of the declaration. For example, (a : 1)
  */
-export const createArgumentStringFromNode = (nodes: GraphQLInputTreeNode[], firstLevel: boolean): string => {
+export const createArgumentStringFromNode = (nodes: any[], firstLevel: boolean): string => {
     const selectedNodes: string[] = [];
     for (const node of nodes) {
         if (node.selected()) {
@@ -174,7 +174,7 @@ export const documentToTree = (document: string, globalNodes) => {
                     } else if (node.kind === GraphQL.Kind.INLINE_FRAGMENT) {
                         targetNode = curNode.children().find(n => !n.isInputNode() && n.label() === node.typeCondition.name.value);
                     } else {
-                        const inputNode = (curNode as GraphQLInputTreeNode).children().find(n => n.isInputNode() && n.label() === node.name.value);
+                        const inputNode: any = (curNode as GraphQLInputTreeNode).children().find(n => n.isInputNode() && n.label() === node.name.value);
                         if (node.value.kind === GraphQL.Kind.STRING) {
                             inputNode.inputValue(`"${node.value.value}"`);
                         } else if (node.value.kind === GraphQL.Kind.BOOLEAN || node.value.kind === GraphQL.Kind.INT

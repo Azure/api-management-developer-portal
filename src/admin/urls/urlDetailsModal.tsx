@@ -25,13 +25,13 @@ const textFieldStyles = { root: { paddingBottom: 15 } };
 
 export class UrlDetailsModal extends React.Component<UrlDetailsModalProps, UrlDetailsModalState> {
     @Resolve('urlService')
-    public urlService: IUrlService;
+    public declare urlService: IUrlService;
 
     @Resolve('permalinkService')
-    public permalinkService: PermalinkService;
+    public declare permalinkService: PermalinkService;
 
     @Resolve('eventManager')
-    public eventManager: EventManager;
+    public declare eventManager: EventManager;
 
     constructor(props: UrlDetailsModalProps) {
         super(props);
@@ -117,11 +117,11 @@ export class UrlDetailsModal extends React.Component<UrlDetailsModalProps, UrlDe
 
     render(): JSX.Element {
         return <>
-            {this.state.showDeleteConfirmation && 
+            {this.state.showDeleteConfirmation &&
                 <DeleteConfirmationOverlay
                     deleteItemTitle={this.state.url.title}
                     onConfirm={this.deleteUrl.bind(this)}
-                    onDismiss={this.closeDeleteConfirmation.bind(this)} 
+                    onDismiss={this.closeDeleteConfirmation.bind(this)}
                 />
             }
             <Modal
@@ -144,7 +144,7 @@ export class UrlDetailsModal extends React.Component<UrlDetailsModalProps, UrlDe
                     </Stack>
                 </Stack>
                 <div className="admin-modal-content">
-                    {this.props.url && 
+                    {this.props.url &&
                         <CommandBarButton
                             iconProps={deleteIcon}
                             text="Delete"

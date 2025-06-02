@@ -31,22 +31,22 @@ interface OperationListRuntimeState {
 
 export class OperationListRuntime extends React.Component<OperationListRuntimeProps, OperationListRuntimeState> {
     @Resolve("apiService")
-    public apiService: ApiService;
+    public declare apiService: ApiService;
 
     @Resolve("tagService")
-    public tagService: TagService;
+    public declare tagService: TagService;
 
     @Resolve("graphqlService")
-    public graphqlService: GraphqlService;
+    public declare graphqlService: GraphqlService;
 
     @Resolve("graphDocService")
-    public graphDocService: GraphDocService;
+    public declare graphDocService: GraphDocService;
 
     @Resolve("routeHelper")
-    public routeHelper: RouteHelper;
+    public declare routeHelper: RouteHelper;
 
     @Resolve("router")
-    public router: Router;
+    public declare router: Router;
 
     constructor(props: OperationListRuntimeProps) {
         super(props);
@@ -94,7 +94,7 @@ export class OperationListRuntime extends React.Component<OperationListRuntimePr
     render() {
         return (
             <FluentProvider theme={fuiTheme}>
-                {this.state.apiType === TypeOfApi.webSocket 
+                {this.state.apiType === TypeOfApi.webSocket
                     ? <div className={"operation-list-container"}><Body1>WebSocket APIs don't expose API operations.</Body1></div>
                     : this.state.apiType === TypeOfApi.graphQL
                         ? <OperationListGql

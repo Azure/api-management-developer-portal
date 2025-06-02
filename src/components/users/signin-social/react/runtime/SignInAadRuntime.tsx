@@ -31,19 +31,19 @@ const SignInAadRuntimeFC = ({ label, signIn, classNames }: SignInAadRuntimeFCPro
 
 export class SignInAadRuntime extends React.Component<SignInAadRuntimeProps> {
     @Resolve("aadService")
-    public aadService: AadService;
+    public declare aadService: AadService;
 
     @Resolve("aadServiceV2")
-    public aadServiceV2: AadServiceV2;
+    public declare aadServiceV2: AadServiceV2;
 
     @Resolve("eventManager")
-    public eventManager: EventManager;
+    public declare eventManager: EventManager;
 
     @Resolve("settingsProvider")
-    public settingsProvider: ISettingsProvider;
+    public declare settingsProvider: ISettingsProvider;
 
     @Resolve("logger")
-    public logger: Logger;
+    public declare logger: Logger;
 
     private selectedService: IAadService;
     private aadConfig: AadClientConfig;

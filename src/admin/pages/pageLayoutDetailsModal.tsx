@@ -28,10 +28,10 @@ const textFieldStyles = { root: { paddingBottom: 15 } };
 
 export class PageLayoutDetailsModal extends React.Component<PageLayoutModalProps, PageLayoutModalState> {
     @Resolve('layoutService')
-    public layoutService: ILayoutService;
+    public declare layoutService: ILayoutService;
 
     @Resolve('eventManager')
-    public eventManager: EventManager;
+    public declare eventManager: EventManager;
 
     constructor(props: PageLayoutModalProps) {
         super(props);
@@ -109,7 +109,7 @@ export class PageLayoutDetailsModal extends React.Component<PageLayoutModalProps
         // TODO: find a root cause of an ability to click Save button when name is empty or permalink is not unique
         const permalinkError = await this.validatePermalink(this.state.layout.permalinkTemplate);
         const titleError = validateField(REQUIRED, this.state.layout.title);
- 
+
         if (permalinkError || titleError) {
             const errors = {};
             if (permalinkError) errors['permalinkTemplate'] = permalinkError;
@@ -132,11 +132,11 @@ export class PageLayoutDetailsModal extends React.Component<PageLayoutModalProps
 
     render(): JSX.Element {
         return <>
-            {this.state.showDeleteConfirmation && 
+            {this.state.showDeleteConfirmation &&
                 <DeleteConfirmationOverlay
                     deleteItemTitle={this.state.layout.title}
                     onConfirm={this.deleteLayout.bind(this)}
-                    onDismiss={this.closeDeleteConfirmation.bind(this)} 
+                    onDismiss={this.closeDeleteConfirmation.bind(this)}
                 />
             }
             <Modal
@@ -185,7 +185,7 @@ export class PageLayoutDetailsModal extends React.Component<PageLayoutModalProps
                         required
                     />
                     <TextField
-                        onRenderLabel={() => 
+                        onRenderLabel={() =>
                             <LabelWithInfo
                                 label="Permalink path template"
                                 info={`Permalink path template determines the pages that are displayed using this layout. For example, "*" would apply this layout to all pages, "/contact" would apply this layout only to a page with permalink path "/contact", and "/contact/*" would apply this layout to all pages with permalink starting with "/contact/". `}

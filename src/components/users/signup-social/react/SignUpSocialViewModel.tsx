@@ -1,8 +1,6 @@
 import * as React from "react";
 
-export class SignUpSocialViewModel extends React.Component {
-    public state: any;
-
+export class SignUpSocialViewModel extends React.Component<any, any> {
     constructor(props) {
         super(props);
 
@@ -22,11 +20,11 @@ export class SignUpSocialViewModel extends React.Component {
             if (this.state.mode !== "publishing") {
                 return <placeholder-content>
                     <div className="not-configured">This widget will display a sign-up form when you configure <a
-                    href="https://aka.ms/apim-how-to-aad" target="_blank">Azure Active Directory</a> or <a
-                    href="https://aka.ms/apim-how-to-aadb2c" target="_blank">Azure Active Directory B2C</a> integration in your API
-                    Management service. This message appears only in the portal's administrative mode and the widget will be rendered as
-                    an empty space in the published portal, so you don't need to remove it.
-                </div>
+                        href="https://aka.ms/apim-how-to-aad" target="_blank">Azure Active Directory</a> or <a
+                            href="https://aka.ms/apim-how-to-aadb2c" target="_blank">Azure Active Directory B2C</a> integration in your API
+                        Management service. This message appears only in the portal's administrative mode and the widget will be rendered as
+                        an empty space in the published portal, so you don't need to remove it.
+                    </div>
                 </placeholder-content>;
             }
             return <placeholder-content></placeholder-content>;

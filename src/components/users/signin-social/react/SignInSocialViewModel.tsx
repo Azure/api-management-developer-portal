@@ -2,16 +2,19 @@ import * as React from "react";
 import { StyleModel } from "@paperbits/common/styles";
 import { SecurityModel } from "@paperbits/common/security";
 
-export class SignInSocialViewModel extends React.Component {
-    public state: {
-        isRedesignEnabled: boolean;
+
+interface ComponentProps {
+    isRedesignEnabled: boolean;
         styles: StyleModel;
         security: SecurityModel;
         aadConfig: string;
         aadB2CConfig: string;
         mode: string;
-    };
+}
 
+interface ComponentState extends ComponentProps { }
+
+export class SignInSocialViewModel extends React.Component<ComponentProps, ComponentState> {
     constructor(props) {
         super(props);
 

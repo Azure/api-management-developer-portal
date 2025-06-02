@@ -18,13 +18,13 @@ interface ConfirmPasswordRuntimeState {
 
 export class ConfirmPasswordRuntime extends React.Component<{}, ConfirmPasswordRuntimeState> {
     @Resolve("usersService")
-    public usersService: UsersService;
+    public declare usersService: UsersService;
 
     @Resolve("eventManager")
-    public eventManager: EventManager;
+    public declare eventManager: EventManager;
 
     @Resolve("logger")
-    public logger: Logger;
+    public declare logger: Logger;
 
     constructor(props) {
         super(props);
