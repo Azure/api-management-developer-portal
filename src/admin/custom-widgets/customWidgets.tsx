@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Resolve } from '@paperbits/react/decorators';
 import { ViewManager } from '@paperbits/common/ui';
-import { MapiBlobStorage } from '../../persistence';
+import { MapiBlobStorage } from '../../persistence/mapiBlobStorage.browser';
 import { TCustomWidgetConfig } from '../../components/custom-widget';
 import { listConfigBlobs, loadCustomWidgetConfigs } from '../../components/custom-widget-list/loadCustomWidgetConfigs';
 import { CommandBarButton, FontIcon, IIconProps, Spinner, Stack, Text } from '@fluentui/react';

@@ -2,7 +2,7 @@ import { ViewManager } from "@paperbits/common/ui";
 import { OVERRIDE_PORT_KEY, OVERRIDE_DEFAULT_PORT } from "@azure/api-management-custom-widgets-scaffolder";
 import { BLOB_ROOT, BLOB_CONFIGS_FOLDER, APIM_CONFIG_FILE_NAME } from "@azure/api-management-custom-widgets-tools";
 import * as Constants from "../../constants";
-import { MapiBlobStorage } from "../../persistence";
+import { MapiBlobStorage } from "../../persistence/mapiBlobStorage.browser";
 import { TCustomWidgetConfig } from "../custom-widget";
 
 export async function listConfigBlobs(blobStorage: MapiBlobStorage): Promise<TCustomWidgetConfig[]> {

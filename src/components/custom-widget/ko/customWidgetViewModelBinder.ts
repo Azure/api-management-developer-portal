@@ -2,7 +2,7 @@ import { Environment } from "@azure/api-management-custom-widgets-tools";
 import { ViewModelBinder, WidgetState } from "@paperbits/common/widgets";
 import { StyleCompiler } from "@paperbits/common/styles";
 import { ISettingsProvider } from "@paperbits/common/configuration";
-import { MapiBlobStorage } from "../../../persistence";
+import { MapiBlobStorage } from "../../../persistence/mapiBlobStorage.browser";
 import { CustomWidgetModel } from "../customWidgetModel";
 import { CustomWidgetViewModel } from "./customWidgetViewModel";
 import { buildWidgetSource } from "./utils";

@@ -2,7 +2,7 @@ import { IPublisher } from "@paperbits/common/publishing";
 import { Logger } from "@paperbits/common/logging";
 import { IStreamBlobStorage } from "../persistence/IStreamBlobStorage";
 import { ReadStream } from "node:fs";
-import { MapiBlobStorage } from "../persistence/mapiBlobStorage";
+import { MapiBlobStorage } from "../persistence/mapiBlobStorage.server";
 import { BLOB_DATA_FOLDER, BLOB_ROOT } from "@azure/api-management-custom-widgets-tools";
 import { WellKnownEventTypes } from "../logging/wellKnownEventTypes";
 
