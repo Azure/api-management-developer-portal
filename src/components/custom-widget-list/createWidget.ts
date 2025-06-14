@@ -6,7 +6,7 @@ import { IWidgetService } from "@paperbits/common/widgets";
 import { Component, OnMounted, Param } from "@paperbits/common/ko/decorators";
 import * as Utils from "@paperbits/common/utils";
 import { Logger } from "@paperbits/common/logging";
-import { MapiBlobStorage } from "../../persistence";
+import { MapiBlobStorage } from "../../persistence/mapiBlobStorage.browser";
 import { CustomWidgetHandlers, CustomWidgetModelBinder, TCustomWidgetConfig, widgetCategory } from "../custom-widget";
 import { CustomWidgetModel } from "./customWidgetModel";
 import template from "./createWidget.html";

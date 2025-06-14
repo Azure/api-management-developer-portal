@@ -1,7 +1,7 @@
 import { ViewManager } from "@paperbits/common/ui";
 import { IWidgetService } from "@paperbits/common/widgets";
 import { IInjectorModule, IInjector } from "@paperbits/common/injection";
-import { MapiBlobStorage } from "../../persistence";
+import { MapiBlobStorage } from "../../persistence/mapiBlobStorage.browser";
 import { CustomWidgetHandlers, CustomWidgetModel, CustomWidgetModelBinder, widgetCategory } from "../custom-widget";
 import { ContentWorkshop } from "./customWidgetList";
 import { OperationsSectionToolButton } from "./operationsSection";

@@ -8,7 +8,7 @@ import {
     BLOB_DATA_FOLDER
 } from "@azure/api-management-custom-widgets-tools";
 import * as Constants from "../../../constants";
-import { MapiBlobStorage } from "../../../persistence";
+import { MapiBlobStorage } from "../../../persistence/mapiBlobStorage.browser";
 import { CustomWidgetModel } from "../customWidgetModel";
 import { ISettingsProvider } from "@paperbits/common/configuration";
 import { Logger } from "@paperbits/common/logging";
