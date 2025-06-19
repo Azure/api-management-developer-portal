@@ -1,5 +1,4 @@
 import * as ko from "knockout";
-import { Environment } from "@azure/api-management-custom-widgets-tools";
 import { WidgetEditor } from "@paperbits/common/widgets";
 import { Component, Event, OnMounted, Param } from "@paperbits/common/ko/decorators";
 import { SizeStylePluginConfig } from "@paperbits/styles/plugins";
@@ -8,7 +7,7 @@ import { ViewManager } from "@paperbits/common/ui";
 import { EventManager, Events } from "@paperbits/common/events";
 import { ISettingsProvider } from "@paperbits/common/configuration";
 import { iframeAllows, iframeSandboxAllows } from "../../../constants";
-import { MapiBlobStorage } from "../../../persistence";
+import { MapiBlobStorage } from "../../../persistence/mapiBlobStorage.browser";
 import { CustomWidgetModel } from "../customWidgetModel";
 import { widgetEditorSelector } from "..";
 import template from "./customWidgetEditorView.html";

@@ -3,8 +3,8 @@ import * as Constants from "./constants";
 import "./bindingHandlers/codeEditor";
 import "./bindingHandlers/copyToClipboard";
 import { UnsavedChangesRouteGuard } from "./routing/unsavedChangesRouteGuard";
-import { MapiObjectStorage, MapiBlobStorage } from "./persistence";
-import { DefaultAuthenticator } from "./authentication/defaultAuthenticator";
+import { MapiObjectStorage } from "./persistence";
+import { MapiBlobStorage } from "./persistence/mapiBlobStorage.browser";
 import { IInjector, IInjectorModule } from "@paperbits/common/injection";
 import { ConsoleLogger } from "@paperbits/common/logging";
 import { DefaultSessionManager } from "@paperbits/common/persistence/defaultSessionManager";
@@ -54,6 +54,7 @@ import { ArmService } from "./services/armService";
 import { StaticDelegationService } from "./services/staticDelegationService";
 import { NoRetryStrategy } from "./clients/retryStrategy/noRetryStrategy";
 
+
 export class ApimDesignModule implements IInjectorModule {
     public register(injector: IInjector): void {
         injector.bindModule(new SetupModule());
@@ -90,7 +91,6 @@ export class ApimDesignModule implements IInjectorModule {
         injector.bindSingleton("policyService", PolicyService);
         injector.bindSingleton("retryStrategy", NoRetryStrategy);
         injector.bindSingleton("backendService", BackendService);
-
         injector.bindSingleton("objectStorage", MapiObjectStorage);
         injector.bindSingleton("blobStorage", MapiBlobStorage);
         injector.bindToCollection("routeGuards", OldContentRouteGuard);
