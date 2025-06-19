@@ -10,7 +10,7 @@ import { CustomWidgetEditorViewModel, CustomWidgetViewModel, CustomWidgetViewMod
 import { CustomWidgetHandlers, CustomWidgetModelBinder, TCustomWidgetConfig, widgetCategory } from '../../components/custom-widget';
 import { CustomWidgetModel } from '../../components/custom-widget/customWidgetModel';
 import fallbackUi from '!!raw-loader!../../components/custom-widget-list/fallbackUi.html';
-import { MapiBlobStorage } from '../../persistence';
+import { MapiBlobStorage } from '../../persistence/mapiBlobStorage.browser';
 import { ChoiceGroup, CommandBarButton, DefaultButton, IChoiceGroupOption, Icon, IIconProps, Link, Modal, PrimaryButton, Stack, Text, TextField } from '@fluentui/react';
 import { DeleteConfirmationOverlay } from '../utils/components/deleteConfirmationOverlay';
 import { CopyableTextField } from '../utils/components/copyableTextField';

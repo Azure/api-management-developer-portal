@@ -1,31 +1,20 @@
-import { AzureBlobStorage } from "@paperbits/azure/persistence/azureBlobStorage";
-import { Logger } from "@paperbits/common/logging";
+import { ServerAzureBlobStorage } from "@paperbits/azure/persistence/azureBlobStorage.server";
 import { ISettingsProvider } from "@paperbits/common/configuration";
-import { StaticSettingsProvider } from "../configuration/staticSettingsProvider";
-import { Utils } from "../utils";
-import { TenantService } from "../services/tenantService";
+import { Logger } from "@paperbits/common/logging/logger";
 import { ReadStream } from "fs";
+import { StaticSettingsProvider } from "../configuration";
+import { TenantService } from "../services/tenantService";
 import { IStreamBlobStorage } from "./IStreamBlobStorage";
 
 const defaultContainerName = "content";
-
-
-export class StorageClientFactory {
-    constructor(private ctor: new (settingsProvider: ISettingsProvider, logger: Logger) => AzureBlobStorage) { }
-
-    public async createBlobStorageClient(settingsProvider: ISettingsProvider, logger: Logger): Promise<AzureBlobStorage> {
-        return new this.ctor(settingsProvider, logger);
-    }
-}
 
 export class MapiBlobStorage implements IStreamBlobStorage {
     private azureStorageClient: IStreamBlobStorage;
 
     constructor(
-        private readonly storageClientFactory: StorageClientFactory,
+        private readonly logger: Logger,
         private readonly tenantService: TenantService,
-        private readonly settingsProvider: ISettingsProvider,
-        private readonly logger: Logger
+        private readonly settingsProvider: ISettingsProvider
     ) { }
 
     private async getStorageClient(): Promise<IStreamBlobStorage> {
@@ -37,7 +26,6 @@ export class MapiBlobStorage implements IStreamBlobStorage {
 
         const blobStorageContainer = await this.settingsProvider.getSetting<string>("blobStorageContainer");
         const blobStorageConnectionString = await this.settingsProvider.getSetting<string>("blobStorageConnectionString");
-        const blobStorageUrl = await this.settingsProvider.getSetting<string>("blobStorageUrl");
 
         if (blobStorageConnectionString) {
             storageSettingsProvider = new StaticSettingsProvider({
@@ -45,30 +33,8 @@ export class MapiBlobStorage implements IStreamBlobStorage {
                 blobStorageContainer: blobStorageContainer || defaultContainerName
             });
         }
-        else if (blobStorageUrl) {
-            const parsedUrl = new URL(blobStorageUrl);
 
-            const containerSegment = blobStorageContainer
-                ? blobStorageContainer
-                : defaultContainerName;
-
-            const normalizedBlobStorageUrl = `${parsedUrl.protocol}//${parsedUrl.hostname}${Utils.ensureLeadingSlash(containerSegment)}${parsedUrl.search}`;
-
-            storageSettingsProvider = new StaticSettingsProvider({
-                blobStorageUrl: normalizedBlobStorageUrl
-            });
-        }
-        else {
-            const containerSasUrl = await this.tenantService.getMediaContentBlobUrl();
-
-            storageSettingsProvider = new StaticSettingsProvider({
-                blobStorageUrl: containerSasUrl
-            });
-        }
-
-        this.azureStorageClient = await this.storageClientFactory
-            .createBlobStorageClient(storageSettingsProvider, this.logger);
-
+        this.azureStorageClient = new ServerAzureBlobStorage(storageSettingsProvider, this.logger)
         return this.azureStorageClient;
     }
 
@@ -78,7 +44,7 @@ export class MapiBlobStorage implements IStreamBlobStorage {
      */
     public async listBlobs?(blobPrefix?: string): Promise<string[]> {
         const client = await this.getStorageClient();
-        return await client.listBlobs(blobPrefix);
+        return client.listBlobs();
     }
 
     /**
@@ -89,7 +55,7 @@ export class MapiBlobStorage implements IStreamBlobStorage {
      */
     public async uploadBlob(blobKey: string, content: Uint8Array, contentType?: string): Promise<void> {
         const client = await this.getStorageClient();
-        return await client.uploadBlob(blobKey, content, contentType);
+        return client.uploadBlob(blobKey, content, contentType);
     }
 
     /**
@@ -98,7 +64,7 @@ export class MapiBlobStorage implements IStreamBlobStorage {
      */
     public async downloadBlob?(blobKey: string): Promise<Uint8Array> {
         const client = await this.getStorageClient();
-        return await client.downloadBlob(blobKey);
+        return client.downloadBlob(blobKey);
     }
 
     /**
@@ -107,7 +73,7 @@ export class MapiBlobStorage implements IStreamBlobStorage {
      */
     public async getDownloadUrl(blobKey: string): Promise<string> {
         const client = await this.getStorageClient();
-        return await client.getDownloadUrl(blobKey);
+        return client.getDownloadUrl(blobKey);
     }
 
     /**
@@ -126,7 +92,7 @@ export class MapiBlobStorage implements IStreamBlobStorage {
      */
     public async deleteBlob(blobKey: string): Promise<void> {
         const client = await this.getStorageClient();
-        return await client.deleteBlob(blobKey);
+        return client.deleteBlob(blobKey);
     }
 
     /**

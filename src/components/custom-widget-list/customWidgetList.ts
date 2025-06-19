@@ -2,7 +2,7 @@
 import { View, ViewManager } from "@paperbits/common/ui";
 import { IWidgetService } from "@paperbits/common/widgets";
 import { Component } from "@paperbits/common/ko/decorators";
-import { MapiBlobStorage } from "../../persistence";
+import { MapiBlobStorage } from "../../persistence/mapiBlobStorage.browser";
 import { TCustomWidgetConfig } from "../custom-widget";
 import template from "./customWidgetList.html";
 import { listConfigBlobs } from "./loadCustomWidgetConfigs";

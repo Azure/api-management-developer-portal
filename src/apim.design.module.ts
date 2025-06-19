@@ -3,8 +3,8 @@ import * as Constants from "./constants";
 import "./bindingHandlers/codeEditor";
 import "./bindingHandlers/copyToClipboard";
 import { UnsavedChangesRouteGuard } from "./routing/unsavedChangesRouteGuard";
-import { MapiObjectStorage, MapiBlobStorage, StorageClientFactory } from "./persistence";
-import { DefaultAuthenticator } from "./authentication/defaultAuthenticator";
+import { MapiObjectStorage } from "./persistence";
+import { MapiBlobStorage } from "./persistence/mapiBlobStorage.browser";
 import { IInjector, IInjectorModule } from "@paperbits/common/injection";
 import { ConsoleLogger } from "@paperbits/common/logging";
 import { DefaultSessionManager } from "@paperbits/common/persistence/defaultSessionManager";
@@ -49,11 +49,11 @@ import { RuntimeConfigurator } from "./services/runtimeConfigurator";
 import { CustomHtmlDesignModule } from "./components/custom-html/customHtml.design.module";
 import { CustomWidgetDesignModule } from "./components/custom-widget/customWidget.design.module";
 import { CodeEditor } from "./components/code-editor/code-editor";
-import { DefaultSettingsProvider, StaticSettingsProvider } from "./configuration";
+import { DefaultSettingsProvider } from "./configuration";
 import { ArmService } from "./services/armService";
 import { StaticDelegationService } from "./services/staticDelegationService";
 import { NoRetryStrategy } from "./clients/retryStrategy/noRetryStrategy";
-import { BrowserAzureBlobStorage } from "@paperbits/azure/persistence/azureBlobStorage.browser";
+
 
 export class ApimDesignModule implements IInjectorModule {
     public register(injector: IInjector): void {
@@ -91,8 +91,6 @@ export class ApimDesignModule implements IInjectorModule {
         injector.bindSingleton("policyService", PolicyService);
         injector.bindSingleton("retryStrategy", NoRetryStrategy);
         injector.bindSingleton("backendService", BackendService);
-
-        injector.bindInstance("storageClientFactory", new StorageClientFactory(BrowserAzureBlobStorage));
         injector.bindSingleton("objectStorage", MapiObjectStorage);
         injector.bindSingleton("blobStorage", MapiBlobStorage);
         injector.bindToCollection("routeGuards", OldContentRouteGuard);

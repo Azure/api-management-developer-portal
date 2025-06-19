@@ -1,7 +1,6 @@
-import { ISettingsProvider } from "@paperbits/common/configuration";
+import { ISettingsProvider } from "@paperbits/common/configuration/ISettingsProvider";
 import { HttpClient } from "@paperbits/common/http";
 import { Logger } from "@paperbits/common/logging/logger";
-import { IBlobStorage } from "@paperbits/common/persistence";
 import { Router } from "@paperbits/common/routing";
 import { ViewManager } from "@paperbits/common/ui";
 import { IAuthenticator } from "../authentication";
@@ -9,6 +8,7 @@ import { IApiClient } from "../clients";
 import * as Constants from "../constants";
 import { KnownHttpHeaders } from "../models/knownHttpHeaders";
 import { KnownMimeTypes } from "../models/knownMimeTypes";
+import { MapiBlobStorage } from "../persistence/mapiBlobStorage.browser";
 import { Utils } from "../utils";
 
 export class ProvisionService {
@@ -18,7 +18,7 @@ export class ProvisionService {
         private readonly authenticator: IAuthenticator,
         private readonly viewManager: ViewManager,
         private readonly router: Router,
-        private readonly blobStorage: IBlobStorage,
+        private readonly blobStorage: MapiBlobStorage,
         private readonly settingsProvider: ISettingsProvider,
         private readonly logger: Logger
     ) { }
