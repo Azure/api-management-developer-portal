@@ -42,13 +42,13 @@ const technology: IChoiceGroupOption[] = [
 
 export class CustomWidgetDetailsModal extends React.Component<CustomWidgetDetailsModalProps, CustomWidgetDetailsModalState> {
     @Resolve('widgetService')
-    public widgetService: IWidgetService;
+    public declare widgetService: IWidgetService;
 
     @Resolve('blobStorage')
-    public blobStorage: MapiBlobStorage;
+    public declare blobStorage: MapiBlobStorage;
 
     @Resolve('eventManager')
-    public eventManager: EventManager;
+    public declare eventManager: EventManager;
 
     constructor(props: CustomWidgetDetailsModalProps) {
         super(props);
@@ -200,7 +200,7 @@ export class CustomWidgetDetailsModal extends React.Component<CustomWidgetDetail
                     }
                     <Stack className={`collapsible-section${!this.state.showInstructions ? ' hidden' : ''}`}>
                         <Text block styles={{ root: { paddingTop: 20 } }}>
-                            Follow the steps below to create, implement, and deploy a custom widget. 
+                            Follow the steps below to create, implement, and deploy a custom widget.
                             <Link href="https://aka.ms/apimdocs/portal/customwidgets" target="_blank">Learn more</Link>.
                         </Text>
                         <ol>

@@ -26,10 +26,10 @@ const iconStyles = { width: '16px', color: lightTheme.palette.themePrimary };
 
 export class Urls extends React.Component<UrlsProps, UrlsState> {
     @Resolve('urlService')
-    public urlService: IUrlService;
+    public declare urlService: IUrlService;
 
     @Resolve('viewManager')
-    public viewManager: ViewManager;
+    public declare viewManager: ViewManager;
 
     constructor(props: UrlsProps) {
         super(props);

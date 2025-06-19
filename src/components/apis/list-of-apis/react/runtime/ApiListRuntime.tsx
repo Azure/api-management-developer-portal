@@ -36,13 +36,13 @@ export type TApiListRuntimeFCProps = Omit<ApiListProps, "detailsPageUrl"> & {
 
 export class ApiListRuntime extends React.Component<ApiListProps, ApiListState> {
     @Resolve("apiService")
-    public apiService: ApiService;
+    public declare apiService: ApiService;
 
     @Resolve("tagService")
-    public tagService: TagService;
+    public declare tagService: TagService;
 
     @Resolve("routeHelper")
-    public routeHelper: RouteHelper;
+    public declare routeHelper: RouteHelper;
 
     constructor(props) {
         super(props);

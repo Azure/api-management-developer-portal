@@ -1,25 +1,28 @@
 import * as React from "react";
 import { StyleModel } from "@paperbits/common/styles";
 
-export class ProductApisViewModel extends React.Component {
-    public state: {
-        isRedesignEnabled: boolean;
-        styles: StyleModel,
-        layout: string,
-        layoutDefault: string,
-        allowSelection: boolean,
-        allowViewSwitching: boolean,
-        filtersPosition: string,
-        showApiType: boolean,
-        defaultGroupByTagToEnabled: boolean,
-        detailsPageUrl: string,
-        detailsPageTarget: string
-    };
 
-    constructor(props) {
+interface ComponentProps {
+    isRedesignEnabled: boolean;
+    styles: StyleModel,
+    layout: string,
+    layoutDefault: string,
+    allowSelection: boolean,
+    allowViewSwitching: boolean,
+    filtersPosition: string,
+    showApiType: boolean,
+    defaultGroupByTagToEnabled: boolean,
+    detailsPageUrl: string,
+    detailsPageTarget: string
+}
+
+interface ComponentState extends ComponentProps { }
+
+export class ProductApisViewModel extends React.Component<ComponentProps, ComponentState> {
+    constructor(props: ComponentProps) {
         super(props);
 
-        this.state = {...props};
+        this.state = { ...props };
     }
 
     public render(): JSX.Element {
@@ -30,5 +33,5 @@ export class ProductApisViewModel extends React.Component {
             : this.state.layout === 'tiles'
                 ? <product-apis-tiles-runtime params={data}></product-apis-tiles-runtime>
                 : <product-apis-runtime params={data}></product-apis-runtime>;
-        }
+    }
 }

@@ -26,10 +26,10 @@ const iconStyles = { width: '16px', color: lightTheme.palette.themePrimary };
 
 export class Popups extends React.Component<PopupsProps, PopupsState> {
     @Resolve('popupService')
-    public popupService: IPopupService;
+    public declare popupService: IPopupService;
 
     @Resolve('viewManager')
-    public viewManager: ViewManager;
+    public declare viewManager: ViewManager;
 
     constructor(props: PopupsProps) {
         super(props);

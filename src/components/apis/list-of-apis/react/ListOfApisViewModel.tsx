@@ -1,25 +1,28 @@
 import * as React from "react";
 import { StyleModel } from "@paperbits/common/styles";
 
-export class ListOfApisViewModel extends React.Component {
-    public state: {
-        isRedesignEnabled: boolean;
-        styles: StyleModel,
-        layout: string,
-        layoutDefault: string,
-        allowSelection: boolean,
-        allowViewSwitching: boolean,
-        filtersPosition: string,
-        showApiType: boolean,
-        defaultGroupByTagToEnabled: boolean,
-        detailsPageUrl: string,
-        detailsPageTarget: string
-    };
 
-    constructor(props) {
+interface ComponentProps {
+    isRedesignEnabled: boolean;
+    styles: StyleModel,
+    layout: string,
+    layoutDefault: string,
+    allowSelection: boolean,
+    allowViewSwitching: boolean,
+    filtersPosition: string,
+    showApiType: boolean,
+    defaultGroupByTagToEnabled: boolean,
+    detailsPageUrl: string,
+    detailsPageTarget: string
+}
+
+interface ComponentState extends ComponentProps { }
+
+export class ListOfApisViewModel extends React.Component<ComponentProps, ComponentState> {
+    constructor(props: ComponentProps) {
         super(props);
 
-        this.state = {...props};
+        this.state = { ...props };
     }
 
     public render(): JSX.Element {
@@ -29,8 +32,8 @@ export class ListOfApisViewModel extends React.Component {
             ? <fui-api-list-runtime key={data} props={data} ></fui-api-list-runtime>
             : this.state.layout === 'tiles'
                 ? <api-list-tiles params={data}></api-list-tiles>
-                    : this.state.layout === 'dropdown'
-                        ? <api-list-dropdown params={data}></api-list-dropdown>
-                        : <api-list params={data}></api-list>;
-        }
+                : this.state.layout === 'dropdown'
+                    ? <api-list-dropdown params={data}></api-list-dropdown>
+                    : <api-list params={data}></api-list>;
+    }
 }

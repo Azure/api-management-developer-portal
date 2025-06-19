@@ -32,19 +32,19 @@ const SignInAadB2cRuntimeFC = ({ label, signIn, classNames }: SignInAadB2cRuntim
 
 export class SignInAadB2cRuntime extends React.Component<SignInAadB2cRuntimeProps> {
     @Resolve("aadService")
-    public aadService: AadService;
+    public declare aadService: AadService;
 
     @Resolve("aadServiceV2")
-    public aadServiceV2: AadServiceV2;
+    public declare aadServiceV2: AadServiceV2;
 
     @Resolve("eventManager")
-    public eventManager: EventManager;
+    public declare eventManager: EventManager;
 
     @Resolve("settingsProvider")
-    public settingsProvider: ISettingsProvider;
+    public declare settingsProvider: ISettingsProvider;
 
     @Resolve("logger")
-    public logger: Logger;
+    public declare logger: Logger;
 
     private selectedService: IAadService;
     private aadConfig: AadB2CClientConfig;

@@ -108,22 +108,22 @@ const ProfileRuntimeFC = ({
 
 export class ProfileRuntime extends React.Component<ProfileRuntimeProps> {
     @Resolve("usersService")
-    public usersService: UsersService;
+    public declare usersService: UsersService;
 
     @Resolve("eventManager")
-    public eventManager: EventManager;
+    public declare eventManager: EventManager;
 
     @Resolve("delegationService")
-    public delegationService: IDelegationService;
+    public declare delegationService: IDelegationService;
 
     @Resolve("routeHelper")
-    public routeHelper: RouteHelper;
+    public declare routeHelper: RouteHelper;
 
     @Resolve("router")
-    public router: Router;
+    public declare router: Router;
 
     @Resolve("logger")
-    public logger: Logger;
+    public declare logger: Logger;
 
     private async applyDelegation(action: DelegationAction, userId: string): Promise<boolean> {
         if (!userId) return false;
