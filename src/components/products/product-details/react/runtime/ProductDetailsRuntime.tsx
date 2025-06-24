@@ -32,7 +32,7 @@ const productStateToLabel = (state: ProductState) => {
 }
 
 const loadProduct = async (productService: ProductService, productName: string) => {
-    return productService.getProduct("/products/" + productName);
+    return productService.getProduct(productName);
 };
 
 const ProductDetailsRuntimeFC = ({ usersService, productService, productName }: ProductDetailsRuntimeFCProps) => {

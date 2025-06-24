@@ -437,4 +437,5 @@ export const USER_ACTION = "data-action";
 export const FEATURE_FLAGS = "featureFlags";
 export const FEATURE_CLIENT_TELEMETRY = "clientTelemetry";
 export const FEATURE_OLD_THEME = "oldDefaultTheme";
+export const FEATURE_CLIENT_APPLICATIONS = "clientApplications";
 export const USE_COMPRESSED_ASSETS = "useCompressedAssets";

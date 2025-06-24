@@ -91,6 +91,7 @@ import { RuntimeStaticDataProvider } from "./services/runtimeStaticDataProvider"
 import { RequestRetryStrategy } from "./clients/retryStrategy/requestRetryStrategy";
 import { TraceClick } from "./bindingHandlers/traceClick";
 import { GraphqlService } from "./services/graphqlService";
+import { ApplicationService } from "./services/applicationService";
 import { ListOfApisRuntimeModule } from "./components/apis/list-of-apis/listOfApis.runtime.module";
 import { ApiProductsRuntimeModule } from "./components/apis/api-products/apiProducts.runtime.module";
 import { ProductListRuntimeModule } from "./components/products/product-list/productList.runtime.module";
@@ -112,6 +113,8 @@ import { ChangePasswordRuntimeModule } from "./components/users/change-password/
 import { ConfirmPasswordRuntimeModule } from "./components/users/confirm-password/confirmPassword.runtime.module";
 import { SubscriptionsRuntimeModule } from "./components/users/subscriptions/subscriptions.runtime.module";
 import { ReportsRuntimeModule } from "./components/reports/reports.runtime.module";
+import { ApplicationListRuntimeModule } from "./components/applications/application-list/applicationList.runtime.module";
+import { ApplicationDetailsRuntimeModule } from "./components/applications/application-details/applicationDetails.runtime.module";
 import { ValidationSummaryRuntimeModule } from "./components/users/validation-summary/validationSummary.runtime.module";
 import { ClientLogger } from "./logging/clientLogger";
 
@@ -145,6 +148,7 @@ export class ApimRuntimeModule implements IInjectorModule {
         injector.bind("fileInput", FileInput);
         injector.bind("apiService", ApiService);
         injector.bind("graphqlService", GraphqlService);
+        injector.bind("applicationService", ApplicationService);
         injector.bind("tagService", TagService);
         injector.bind("productService", ProductService);
         injector.bind("analyticsService", AnalyticsService);
@@ -214,6 +218,8 @@ export class ApimRuntimeModule implements IInjectorModule {
         injector.bindModule(new ConfirmPasswordRuntimeModule());
         injector.bindModule(new SubscriptionsRuntimeModule());
         injector.bindModule(new ReportsRuntimeModule());
+        injector.bindModule(new ApplicationListRuntimeModule());
+        injector.bindModule(new ApplicationDetailsRuntimeModule());
         injector.bindModule(new ValidationSummaryRuntimeModule());
 
         if (process.env.NODE_ENV === staticDataEnvironment) {

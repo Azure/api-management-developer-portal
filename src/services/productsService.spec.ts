@@ -101,7 +101,7 @@ describe("Product service", async () => {
         const delegationService = new DelegationService(apiClient, settingsProvider);
 
         const productService = new ProductService(apiClient, delegationService);
-        const product = await productService.getProduct("/products/starter");
+        const product = await productService.getProduct("starter");
 
         expect(starterProduct.name).to.equal(product.displayName);
     });

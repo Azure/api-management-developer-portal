@@ -1,22 +1,14 @@
 import { HyperlinkModel } from "@paperbits/common/permalinks";
 import { LocalStyles } from "@paperbits/common/styles";
 
-/**
- * Product list widget configuration.
- */
-export class ProductListModel {
+export class ApplicationListModel {
     /**
-     * Product list layout, e.g. "list", "dropdown", "tiles".
+     * Application list layout, e.g. "list", "tiles".
      */
     public layout?: string;
 
     /**
-     * Indicated that a product can be selected.
-     */
-    public allowSelection: boolean;
-
-    /**
-     * Link to a page that contains product details.
+     * Link to a page that contains application details.
      */
     public detailsPageHyperlink: HyperlinkModel;
 

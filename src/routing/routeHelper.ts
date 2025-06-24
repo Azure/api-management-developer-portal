@@ -54,6 +54,13 @@ export class RouteHelper {
     }
 
     /**
+     * Returns ARM resource name of the application specified in hash parameter of the current route, e.g. "application".
+     */
+    public getApplicationName(): string {
+        return this.getHashParameter("application");
+    }
+
+    /**
      * Returns ARM resource name of the graph type specified in hash parameter of the current route for graphQL APIs, e.g. "query".
      */
     public getGraphType(): string {
@@ -254,6 +261,26 @@ export class RouteHelper {
         }
 
         return `${path}#product=${productName}`;
+    }
+
+    /**
+     * Returns URL of application details page depending on current route.
+     * @param applicationName ARM resource name of the application.
+     * @param detailsPageUrl Relative URL of application details page.
+     */
+    public getApplicationReferenceUrl(applicationName: string, detailsPageUrl: string = ""): string {
+        if (!applicationName) {
+            throw new Error(`Parameter "applicationName" not specified.`);
+        }
+
+        let path = "";
+        const currentPath = this.router.getPath();
+
+        if (currentPath !== detailsPageUrl) {
+            path = detailsPageUrl;
+        }
+
+        return `${path}#application=${applicationName}`;
     }
 
     /**

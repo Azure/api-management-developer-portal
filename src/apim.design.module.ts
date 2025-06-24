@@ -36,6 +36,8 @@ import { ResetPasswordDesignModule } from "./components/users/reset-password/res
 import { ConfirmPasswordDesignModule } from "./components/users/confirm-password/confirmPassword.design.module";
 import { HelpModule } from "./components/help";
 import { ChangePasswordDesignModule } from "./components/users/change-password/changePassword.design.module";
+import { ApplicationListDesignModule } from "./components/applications/application-list/applicationList.design.module";
+import { ApplicationDetailsDesignModule } from "./components/applications/application-details/applicationDetails.design.module";
 import { TenantService } from "./services/tenantService";
 import { ValidationSummaryDesignModule } from "./components/users/validation-summary/validationSummary.design.module";
 import { BackendService } from "./services/backendService";
@@ -80,6 +82,8 @@ export class ApimDesignModule implements IInjectorModule {
         injector.bindModule(new ResetPasswordDesignModule());
         injector.bindModule(new ConfirmPasswordDesignModule());
         injector.bindModule(new ChangePasswordDesignModule());
+        injector.bindModule(new ApplicationListDesignModule())
+        injector.bindModule(new ApplicationDetailsDesignModule());
         injector.bindModule(new ValidationSummaryDesignModule());
         injector.bindModule(new RoleBasedSecurityDesignModule());
         injector.bindSingleton("app", App);

@@ -1,0 +1,94 @@
+import * as React from "react";
+import { FluentProvider } from "@fluentui/react-components";
+import { Resolve } from "@paperbits/react/decorators";
+import { Logger } from "@paperbits/common/logging";
+import { ApplicationService } from "../../../../../services/applicationService";
+import { UsersService } from "../../../../../services";
+import { Application } from "../../../../../models/application";
+import { fuiTheme } from "../../../../../constants";
+import { RouteHelper } from "../../../../../routing/routeHelper";
+import { TLayout } from "../../../../utils/react/TableListInfo";
+import { ApplicationsTableCards } from "./ApplicationsTableCards";
+
+export interface ApplicationsListProps {
+    allowSelection?: boolean;
+    allowViewSwitching?: boolean;
+    layoutDefault: TLayout;
+    detailsPageUrl: string;
+}
+
+interface ApplicationsListState {
+    working: boolean;
+    userId: string;
+    selectedApplication?: Application | null;
+}
+
+export type TApplicationsListRuntimeFCProps = Omit<ApplicationsListProps, "detailsPageUrl"> & {
+    getReferenceUrl: (applicationName: string) => string;
+    userId: string;
+    applicationService: ApplicationService;
+    logger: Logger;
+    selectedApplication?: Application | null;
+};
+
+export class ApplicationsListRuntime extends React.Component<ApplicationsListProps, ApplicationsListState> {
+    @Resolve("applicationService")
+    public applicationService: ApplicationService;
+
+    @Resolve("usersService")
+    public usersService: UsersService;
+
+    @Resolve("routeHelper")
+    public routeHelper: RouteHelper;
+
+    @Resolve("logger")
+    public logger: Logger;
+
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            working: false,
+            userId: undefined,
+            selectedApplication: undefined,
+        };
+    }
+
+    public componentDidMount() {
+        this.loadSelectedApplication();        
+    }
+
+    async loadSelectedApplication() {
+        const userId = await this.usersService.ensureSignedIn();
+        const applicationName = this.routeHelper.getApplicationName();
+        if (!applicationName) {
+            this.setState({ userId, selectedApplication: null });
+            return;
+        }
+
+        this.setState({ working: true, selectedApplication: undefined });
+        
+        return this.applicationService
+            .getApplication(userId, applicationName)
+            .then((selectedApplication) => this.setState({ userId, selectedApplication }))
+            .finally(() => this.setState({ working: false }));
+    }
+
+    getReferenceUrl(applicationName: string): string {
+        return this.routeHelper.getApplicationReferenceUrl(applicationName, this.props.detailsPageUrl);
+    }
+
+    render() {
+        return (
+            <FluentProvider theme={fuiTheme}>
+                <ApplicationsTableCards
+                    {...this.props}
+                    userId={this.state.userId}
+                    applicationService={this.applicationService}
+                    logger={this.logger}
+                    getReferenceUrl={(applicationName) => this.getReferenceUrl(applicationName)}
+                />
+            </FluentProvider>
+        );
+    }
+}
