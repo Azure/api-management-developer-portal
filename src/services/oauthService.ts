@@ -329,6 +329,9 @@ export class OAuthService {
 
                 const receiveMessage = async (event: MessageEvent<any>) => {
                     try {
+                        if (!popup || event.source !== popup) {
+                            return; // Ignore messages not from our popup
+                        }
                         const result = await listener(event);
                         resolve(result);
                     }
