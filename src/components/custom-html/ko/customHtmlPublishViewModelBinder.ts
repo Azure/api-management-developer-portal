@@ -8,7 +8,7 @@ import { JssCompiler } from "@paperbits/styles/jssCompiler";
 import { Logger } from "@paperbits/common/logging/logger";
 import { WellKnownEventTypes } from "../../../logging/wellKnownEventTypes";
 
-export class CustomHtmlPublishViewModelBinder implements ViewModelBinder<CustomHtmlModel, CustomHtmlViewModel>  {
+export class CustomHtmlPublishViewModelBinder implements ViewModelBinder<CustomHtmlModel, CustomHtmlViewModel> {
     constructor(
         private readonly styleCompiler: StyleCompiler,
         private readonly blobStorage: IBlobStorage,
@@ -58,22 +58,31 @@ export class CustomHtmlPublishViewModelBinder implements ViewModelBinder<CustomH
     private async getCustomFonts(): Promise<string> {
         const globalStyleSheet = await this.styleCompiler.getStyleSheet();
         const styleSheet = new StyleSheet();
+
         if (globalStyleSheet.fontFaces.length > 0) {
             for (let i = 0; i < globalStyleSheet.fontFaces.length; i++) {
                 const fontFace = globalStyleSheet.fontFaces[i];
+
                 if (fontFace.source?.startsWith("/fonts/")) {
-                    const fontData = await this.blobStorage.downloadBlob(fontFace.source);
-                    this.logger.trackEvent(WellKnownEventTypes.Publishing, { message: `CustomHtmlPublish: Adding ${fontFace.source} font as base64` });
-                    const fontDataString = Buffer.from(fontData).toString("base64");
-                    fontFace.source = `data:font/truetype;charset=utf-8;base64,${fontDataString}`
-                    styleSheet.fontFaces.push(fontFace);
+                    try {
+                        const fontData = await this.blobStorage.downloadBlob(fontFace.source);
+                        this.logger.trackEvent(WellKnownEventTypes.Publishing, { message: `CustomHtmlPublish: Adding ${fontFace.source} font as base64` });
+                        const fontDataString = Buffer.from(fontData).toString("base64");
+                        fontFace.source = `data:font/truetype;charset=utf-8;base64,${fontDataString}`
+                        styleSheet.fontFaces.push(fontFace);
+                    }
+                    catch (error) {
+                        this.logger.trackError(error, { message: `Unable to add the font ${fontFace.source} to Custom HTML widget stylesheet.` });
+                    }
                 }
             }
         }
+
         if (styleSheet.fontFaces.length > 0) {
             const compiler = new JssCompiler();
             return compiler.compile(styleSheet);
         }
+
         return "";
     }
 }

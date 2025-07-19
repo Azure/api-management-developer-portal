@@ -33,6 +33,13 @@ export class MapiBlobStorage implements IStreamBlobStorage {
                 blobStorageContainer: blobStorageContainer || defaultContainerName
             });
         }
+        else {
+            const containerSasUrl = await this.tenantService.getMediaContentBlobUrl();
+
+            storageSettingsProvider = new StaticSettingsProvider({
+                blobStorageUrl: containerSasUrl
+            });
+        }
 
         this.azureStorageClient = new ServerAzureBlobStorage(storageSettingsProvider, this.logger)
         return this.azureStorageClient;

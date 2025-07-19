@@ -24,6 +24,7 @@ h2 {
     padding: $toolbox-padding;
     z-index: $z-index-base;
     max-height: calc(100% - 40px);
+    position: fixed;
 
     @include surface();
     @include animation-fadein(0.3s);
