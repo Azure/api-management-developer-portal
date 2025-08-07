@@ -20,7 +20,7 @@ export class SigninSocialModelBinder implements IModelBinder<SigninSocialModel> 
 
         model.security = contract.security ?? { roles: [defaultRole] };
         model.styles = contract.styles || { appearance: "components/button/default" };
-        model.aadLabel = contract.aadLabel || "Azure Active Directory";
+        model.aadLabel = contract.aadLabel || "Microsoft Entra ID";
         model.aadB2CLabel = contract.aadB2CLabel || "Azure Active Directory B2C";
         model.aadReplyUrl = contract.aadReplyUrl;
         model.aadB2CReplyUrl = contract.aadB2CReplyUrl;

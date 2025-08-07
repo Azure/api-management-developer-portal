@@ -20,7 +20,7 @@ export class SigninSocialHandlers implements IWidgetHandler<SigninSocialModel> {
             requires: ["html"],
             createModel: async () => {
                 const model = new SigninSocialModel();
-                model.aadLabel = "Azure Active Directory";
+                model.aadLabel = "Microsoft Entra ID";
                 model.aadB2CLabel = "Azure Active Directory B2C";
                 return model;
             }
@@ -61,7 +61,7 @@ export class SigninSocialHandlers implements IWidgetHandler<SigninSocialModel> {
 
     public async getWidgetModel(): Promise<SigninSocialModel> {
         const model = new SigninSocialModel();
-        model.aadLabel = "Azure Active Directory";
+        model.aadLabel = "Microsoft Entra ID";
         model.aadB2CLabel = "Azure Active Directory B2C";
         return model;
     }
