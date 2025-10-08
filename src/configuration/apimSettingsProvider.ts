@@ -26,17 +26,18 @@ export class ApimSettingsProvider implements ISettingsProvider {
         const commonConfigurationResponse = await this.httpClient.send<any>({ url: ConfigEndpoints.backend });
         const commonConfiguration = commonConfigurationResponse.toObject();
 
-        const serializedDesignTimeSettings = await this.sessionManager?.getItem("designTimeSettings");
+        const serializedDesignTimeSettings = await this.sessionManager?.getItem(SettingNames.designTimeSettings);
 
         if (serializedDesignTimeSettings) {
             const designTimeSettings = serializedDesignTimeSettings;
             Object.assign(commonConfiguration, designTimeSettings);
-            // TODO: check it in self-hosted case
             const accessTokenFromEditor = designTimeSettings[SettingNames.managementApiAccessToken];
-            if(accessTokenFromEditor) {
+
+            if (accessTokenFromEditor) {
                 sessionStorage.setItem("accessToken", accessTokenFromEditor);
             }
-        } else {
+        }
+        else {
             const apimsConfigurationResponse = await this.httpClient.send<any>({ url: ConfigEndpoints.service });
 
             if (apimsConfigurationResponse.statusCode === 200) {

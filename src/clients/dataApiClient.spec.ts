@@ -1,5 +1,5 @@
 import { describe, it } from "mocha";
-import { DataApiClient } from "../clients";
+import { DataApiClient, MapiClient } from "../clients";
 import { MockHttpClient } from "./../../tests/mocks";
 import { StaticAuthenticator } from "../authentication/staticAuthenticator";
 import { StaticSettingsProvider } from "./../configuration/staticSettingsProvider";
@@ -10,7 +10,7 @@ import * as Constants from "./../constants";
 import { AccessToken } from "../authentication";
 import { ConsoleLogger } from "@paperbits/common/logging";
 import { NoRetryStrategy } from "./retryStrategy/noRetryStrategy";
-import { HttpClient, HttpResponse } from "@paperbits/common/http";
+import { HttpClient, HttpRequest, HttpResponse } from "@paperbits/common/http";
 
 interface Validity {
     isValid: boolean;
@@ -29,8 +29,8 @@ describe("Data API Client", async () => {
         const httpClient = new MockHttpClient();
         const authenticator = new StaticAuthenticator();
         const settings = await settingsProvider.getSettings<object>();
-        const path = "isValid";
-        const mockUrl = `${Utils.getDataApiUrl(settings)}/${path}`;
+        const path = "isValid"
+        const mockUrl = `${Utils.getDataApiUrl(settings)}/${path}`
         httpClient.mock()
             .get(mockUrl)
             .reply(200, {
@@ -54,11 +54,11 @@ describe("Data API Client", async () => {
         const settings = await settingsProvider.getSettings<object>();
         authenticator.setAccessToken(AccessToken.parse(settings[Constants.SettingNames.managementApiAccessToken]));
 
-        const mainPath = "/isValid";
-        const path = `/users/${(await authenticator.getAccessToken()).userId}${mainPath}`;
+        const mainPath = "/isValid"
+        const path = `/users/${(await authenticator.getAccessToken()).userId}${mainPath}`
 
-        const mockUrlWithUser = `${Utils.getDataApiUrl(settings)}${path}`;
-        const mockUrl = `${Utils.getDataApiUrl(settings)}${mainPath}`;
+        const mockUrlWithUser = `${Utils.getDataApiUrl(settings)}${path}`
+        const mockUrl = `${Utils.getDataApiUrl(settings)}${mainPath}`
 
         httpClient.mock()
             .get(mockUrlWithUser)
@@ -93,8 +93,8 @@ describe("Data API Client", async () => {
         });
         const settings = await settingsProviderMock.getSettings<object>();
 
-        const mainPath = "/isValid";
-        const mockUrl = `${Utils.getDataApiUrl(settings)}${mainPath}`;
+        const mainPath = "/isValid"
+        const mockUrl = `${Utils.getDataApiUrl(settings)}${mainPath}`
 
         httpClient.mock()
             .get(mockUrl)
@@ -124,8 +124,8 @@ describe("Data API Client", async () => {
         });
         const settings = await settingsProviderMock.getSettings<object>();
 
-        const mainPath = "/isValid";
-        const mockUrl = `${Utils.getDataApiUrl(settings)}${mainPath}`;
+        const mainPath = "/isValid"
+        const mockUrl = `${Utils.getDataApiUrl(settings)}${mainPath}`
 
         httpClient.mock()
             .get(mockUrl)
@@ -231,8 +231,8 @@ describe("Data API Client", async () => {
 
     describe("Send method", async () => {
         const testsData = [
-            { httpMethod: "GET", body: undefined },
-            { httpMethod: "POST", body: { name: "test" } }
+            { httpMethod: 'GET', body: undefined },
+            { httpMethod: 'POST', body: { name: 'test' } }
         ];
 
         testsData.forEach(testData => {
@@ -242,10 +242,10 @@ describe("Data API Client", async () => {
                 const response = <HttpResponse<any>><any>{
                     statusCode: 200,
                     headers: [],
-                    body: { message: "Success" }
+                    body: { message: 'Success' }
                 };
                 const httpClient: HttpClient = <any>{
-                    send: async () => { return response; }
+                    send: async () => { }
                 };
                 const authenticator = new StaticAuthenticator();
                 const settingsProviderMock = new StaticSettingsProvider({
@@ -259,7 +259,7 @@ describe("Data API Client", async () => {
                 const mockUrl = `${Utils.getDataApiUrl(settings)}${url}?api-version=${Constants.dataApiVersion}`;
                 const apiClient = new DataApiClient(httpClient, authenticator, settingsProviderMock, new NoRetryStrategy(), new ConsoleLogger());
 
-                const sendStub = stub(httpClient, "send").resolves(response);
+                const sendStub = stub(httpClient, 'send').resolves(response);
 
                 const result = await apiClient.send(url, httpMethod, undefined, testData.body);
 

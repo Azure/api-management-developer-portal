@@ -1,9 +1,9 @@
 import { expect } from "chai";
 import { describe, it } from "mocha";
 import { ApiService } from "./apiService";
-import { DataApiClient, MapiClient } from "../clients";
+import { DataApiClient } from "../clients";
 import { MockHttpClient, bookStoreApi, mapiApiBookStoreSchema, dataApiBookStoreSchema, bookStoreApiProductsWithNextLink, bookStoreApiProducts } from "./../../tests/mocks";
-import { StaticAuthenticator } from "./../authentication/staticAuthenticator";
+import { StaticAuthenticator } from "../authentication/staticAuthenticator";
 import { StaticSettingsProvider } from "./../configuration/staticSettingsProvider";
 import { NoRetryStrategy } from "../clients/retryStrategy/noRetryStrategy";
 import { ConsoleLogger } from "@paperbits/common/logging";
@@ -12,7 +12,9 @@ import { SchemaContract } from "../contracts/schema";
 import "fake-indexeddb/auto";
 import { clear } from "idb-keyval";
 import { AccessToken } from "../authentication";
-import { MapiClientSelfhosted } from "../clients/mapiClientSelfhosted";
+import { MapiClient } from "../clients/mapiClient";
+import { AzureResourceManagementService } from "./armService";
+
 
 describe("API service", async () => {
     const runs = [
@@ -98,21 +100,6 @@ describe("API service", async () => {
             const apiSchema = await apiService.getApiSchema("apis/book-store-api/schemas/test-schema");
 
             expect(apiSchema.definitions).to.deep.equal(new Schema(dataApiBookStoreSchema).definitions);
-        })
-
-        it(`${run.it} - ManagementApi Returns ApiSchema`, async () => {
-            const schemaResource = buildResourceUri(null, "apis/book-store-api/schemas/test-schema", true); // for mapi do not add users/userId in url
-            const httpClient = new MockHttpClient();
-
-            httpClient.mock()
-                .get(schemaResource)
-                .reply(200, mapiApiBookStoreSchema);
-
-            const apiClient = new MapiClientSelfhosted(httpClient, authenticator, settingsProvider, new NoRetryStrategy(), new ConsoleLogger());
-            const apiService = new ApiService(apiClient);
-            const apiSchema = await apiService.getApiSchema("apis/book-store-api/schemas/test-schema");
-
-            expect(apiSchema).to.deep.equal(new Schema(<SchemaContract><unknown>mapiApiBookStoreSchema.properties));
         })
 
         it(`${run.it} - ManagementApi Returns ApiSchema`, async () => {

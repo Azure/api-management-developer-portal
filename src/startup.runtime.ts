@@ -65,7 +65,7 @@ function initFeatures() {
             logger.trackEvent("FeatureFlag", {
                 feature: isRedesignEnabledSetting,
                 enabled: isEnabled.toString(),
-                message: `Feature flag '${isRedesignEnabledSetting}' - ${isEnabled ? "enabled" : "disabled"}`
+                message: `Feature flag '${isRedesignEnabledSetting}' - ${isEnabled ? 'enabled' : 'disabled'}`
             });
         });
 }

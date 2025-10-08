@@ -2,7 +2,6 @@ import { IInjector, IInjectorModule } from "@paperbits/common/injection";
 import { IWidgetService } from "@paperbits/common/widgets";
 import { KnockoutComponentBinder } from "@paperbits/core/ko";
 import { ReactComponentBinder } from "@paperbits/react/bindings";
-import { ComponentFlow } from "@paperbits/common/components";
 import { SigninSocialHandlers } from "./signinSocialHandlers";
 import { SignInSocialEditor } from "./ko/signinSocialEditor";
 import { SigninSocialModel } from "./signinSocialModel";
@@ -25,7 +24,6 @@ export class SigninSocialDesignModule implements IInjectorModule {
             componentDefinition: SignInSocialViewModel,
             modelBinder: SigninSocialModelBinder,
             viewModelBinder: SigninSocialViewModelBinder,
-            componentFlow: ComponentFlow.Block
         });
 
         widgetService.registerWidgetEditor("signin-social", {

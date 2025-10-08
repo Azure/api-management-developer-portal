@@ -71,33 +71,57 @@ if (isServiceWorker) {
 
         event.respondWith(
             (async () => {
-                const response = await fetch(request);
+                try {
+                    const response = await fetch(request);
 
-                if (request.url.endsWith("/trace")) {
-                    return response;
-                }
-
-                const cleanedUrl = logSanitizer.sanitizeUrl(request.url);
-
-                const telemetryData = {
-                    url: cleanedUrl,
-                    method: request.method.toUpperCase(),
-                    status: response.status.toString(),
-                    responseHeaders: ""
-                };
-
-                const headers: { [key: string]: string } = {};
-
-                response.headers.forEach((value, key) => {
-                    if (allowedHeaders.has(key.toLowerCase())) {
-                        headers[key] = logSanitizer.cleanUrlSensitiveDataFromValue(value);
+                    if (request.url.endsWith("/trace")) {
+                        return response;
                     }
-                });
-                telemetryData.responseHeaders = JSON.stringify(headers);
 
-                sendMessageToClients(telemetryData);
+                    const cleanedUrl = logSanitizer.sanitizeUrl(request.url);
 
-                return response;
+                    const telemetryData = {
+                        url: cleanedUrl,
+                        method: request.method.toUpperCase(),
+                        status: response.status.toString(),
+                        responseHeaders: ""
+                    };
+
+                    const headers: { [key: string]: string } = {};
+
+                    response.headers.forEach((value, key) => {
+                        if (allowedHeaders.has(key.toLowerCase())) {
+                            headers[key] = logSanitizer.cleanUrlSensitiveDataFromValue(value);
+                        }
+                    });
+                    telemetryData.responseHeaders = JSON.stringify(headers);
+
+                    sendMessageToClients(telemetryData);
+
+                    return response;
+                } catch (error) {
+                    console.error("Error in service worker fetch handler:", error);
+
+                    // Send telemetry about the error
+                    const errorTelemetry = {
+                        url: logSanitizer.sanitizeUrl(request.url),
+                        method: request.method.toUpperCase(),
+                        status: "error",
+                        error: error.message || "Network error"
+                    };
+
+                    try {
+                        sendMessageToClients(errorTelemetry);
+                    } catch (e) {
+                        // Ignore errors in sending telemetry
+                    }
+
+                    // Return a fallback response
+                    return new Response("Network error occurred", {
+                        status: 503,
+                        headers: { "Content-Type": "text/plain" }
+                    });
+                }
             })()
         );
     });

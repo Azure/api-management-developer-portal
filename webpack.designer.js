@@ -34,10 +34,14 @@ const designerConfig = {
             },
             {
                 test: /\.tsx?$/,
-                loader: "ts-loader",
-                options: {
-                    allowTsInNodeModules: true
-                }
+                use: [
+                    { loader: "ts-loader", options: { allowTsInNodeModules: true } },
+                    { loader: "ifdef-loader", options: {
+                        SkuV2: false,
+                        "ifdef-verbose": true,
+                        "ifdef-fill-with-blanks": true
+                    } }
+                ]
             },
             {
                 test: /\.html$/,

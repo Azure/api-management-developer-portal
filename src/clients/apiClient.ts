@@ -57,9 +57,11 @@ export default abstract class ApiClient implements IApiClient {
 
         let managementApiAccessToken = await this.authenticator.getAccessTokenAsString();
 
-        if(!managementApiAccessToken) {
+        if (!managementApiAccessToken) {
+            // fallback to configuration file
             managementApiAccessToken = settings[Constants.SettingNames.managementApiAccessToken] || settings[Constants.SettingNames.armAccessToken];
-            if(managementApiAccessToken) {
+
+            if (managementApiAccessToken) {
                 const accessToken = AccessToken.parse(managementApiAccessToken);
                 await this.authenticator.setAccessToken(accessToken);
             }
@@ -165,10 +167,10 @@ export default abstract class ApiClient implements IApiClient {
 
         try {
             response = await this.httpClient.send<T>(httpRequest);
-            this.logger.trackEvent(eventTypes.clientRequest, { message: `request response`, method: httpRequest.method, requestUrl: httpRequest.url, responseCode: response.statusCode+""});
+            this.logger.trackEvent(eventTypes.clientRequest, { message: `request response`, method: httpRequest.method, requestUrl: httpRequest.url, responseCode: response.statusCode + "" });
         }
         catch (error) {
-            this.logger.trackEvent(eventTypes.clientRequest, { message: `request error: ${error?.message}`, method: httpRequest.method, requestUrl: httpRequest.url, responseCode: response?.statusCode+"" });
+            this.logger.trackEvent(eventTypes.clientRequest, { message: `request error: ${error?.message}`, method: httpRequest.method, requestUrl: httpRequest.url, responseCode: response?.statusCode + "" });
             throw new Error(`Unable to complete request. Error: ${error.message}`);
         }
 
@@ -200,10 +202,10 @@ export default abstract class ApiClient implements IApiClient {
     private async handleError(errorResponse: HttpResponse<any>, requestedUrl: string): Promise<void> {
         if (errorResponse.statusCode === 429) {
             const retryAfterHeader = errorResponse.headers.find(h => h.name.toLowerCase() === "retry-after");
-            throw new MapiError(MapiErrorCodes.TooManyRequest, "Too Many Requests made. Please try later.", retryAfterHeader? [{
+            throw new MapiError(MapiErrorCodes.TooManyRequest, "Too Many Requests made. Please try later.", retryAfterHeader ? [{
                 message: retryAfterHeader.name,
                 target: retryAfterHeader.value
-            }]: []);
+            }] : []);
         }
 
         if (errorResponse.statusCode === 401) {
@@ -291,7 +293,6 @@ export default abstract class ApiClient implements IApiClient {
         // TODO: fix caching for getAll
         return this.get(url, headers).then(takeResult);
     }
-
 
     protected prepareNextLink(nextLink: string): string {
         if (!nextLink)

@@ -1,14 +1,139 @@
-import * as Constants from "../constants";
-import { AccessToken, IAuthenticator } from ".";
+import * as Msal from "@azure/msal-browser";
+import { IAuthenticator, AccessToken } from ".";
+import { AadLoginRequest, SettingNames } from "../constants";
+import { IEditorSettings } from "./IEditorSettings";
+import { Logger } from "@paperbits/common/logging";
+
 
 const ARM_TOKEN = "armAccessToken";
+const TOKEN_REFRESH_BEFORE = 15 * 60 * 1000; // 15 min before token expiration
 
-export class SelfHostedArmAuthenticator implements IAuthenticator {
+export class ArmAuthenticator implements IAuthenticator {
+    private msalInstance: Msal.PublicClientApplication;
+    private authPromise: Promise<AccessToken>;
+
+    private readonly loginRequest: Msal.SilentRequest;
+
+    constructor(
+        private readonly editorSettings: IEditorSettings,
+        private readonly logger: Logger
+    ) {
+        this.loginRequest = { ...AadLoginRequest, forceRefresh: true };
+        this.refreshToken = this.refreshToken.bind(this);
+        this.getAccount = this.getAccount.bind(this);
+        this.acquireToken = this.acquireToken.bind(this);
+        setInterval(() => this.refreshToken(), 5 * 60 * 1000); // check token expiration every 5 min
+    }
+
+    public get armEndpoint() {
+        return this.editorSettings.editorArmEndpoint;
+    }
+
+    private async checkCallbacks(): Promise<Msal.AuthenticationResult> {
+        try {
+            return await this.msalInstance.handleRedirectPromise();
+        }
+        catch (error) {
+            this.logger.trackError(error, { message: "Error on checkCallbacks." });
+            return null;
+        }
+    }
+
+    private async authenticate(): Promise<AccessToken> {
+        const clientId = this.editorSettings.editorAadClientId;
+        const authority = this.editorSettings.editorAadAuthority;
+
+        if (!clientId) {
+            throw new Error(`Settings "editorAadClientId" was not provided. It is required for MSAL configuration.`);
+        }
+
+        if (!authority) {
+            throw new Error(`Settings "editorAadAuthority" was not provided. It is required for MSAL configuration.`);
+        }
+
+        const redirectUri = location.origin;
+
+        const msalConfig: Msal.Configuration = {
+            auth: {
+                clientId: clientId,
+                authority: authority,
+                redirectUri: redirectUri
+            },
+            cache: {
+                cacheLocation: "sessionStorage", // This configures where your cache will be stored
+                storeAuthStateInCookie: false, // Set this to "true" if you are having issues on IE11 or Edge
+            }
+        };
+
+        this.msalInstance = new Msal.PublicClientApplication(msalConfig);
+        const result = await this.acquireToken();
+
+        return result;
+    }
+
+    private async refreshToken(): Promise<void> {
+        const current = await this.getAccessToken();
+
+        if (current.expiresInMs() < TOKEN_REFRESH_BEFORE) {
+            await this.acquireToken();
+            this.logger.trackEvent("ArmAuthenticator", { message: "Token refreshed." });
+        }
+    }
+
+    private async acquireToken(): Promise<AccessToken | null> {
+        const account = await this.getAccount();
+
+        let authenticationResult: Msal.AuthenticationResult;
+
+        if (account) {
+            authenticationResult = await this.acquireTokenSilent(account);
+        }
+        else {
+            authenticationResult = await this.checkCallbacks();
+        }
+
+        if (!authenticationResult) {
+            await this.msalInstance.acquireTokenRedirect(this.loginRequest);
+        }
+
+        const accessToken = AccessToken.parse(`${authenticationResult.tokenType} ${authenticationResult.accessToken}`);
+
+        await this.setAccessToken(accessToken);
+
+        return accessToken;
+    }
+
+    private async acquireTokenSilent(account: Msal.AccountInfo): Promise<Msal.AuthenticationResult> {
+        try {
+            this.msalInstance.setActiveAccount(account);
+            const result = await this.msalInstance.acquireTokenSilent(this.loginRequest);
+
+            return result;
+        }
+        catch (error) {
+            this.logger.trackError(error, { message: "Error on acquireTokenSilent." });
+            return null;
+        }
+    }
+
+    private async getAccount(): Promise<Msal.AccountInfo> {
+        if (!this.msalInstance) {
+            await this.authenticate();
+        }
+        const accounts = this.msalInstance.getAllAccounts();
+
+        if (accounts.length === 0) {
+            return null;
+        }
+
+        return accounts[0];
+    }
+
     public async getAccessToken(): Promise<AccessToken> {
-        const storedToken = sessionStorage.getItem(ARM_TOKEN);
+        const accessTokenString = sessionStorage.getItem(ARM_TOKEN)
 
-        if (storedToken) {
-            const accessToken = AccessToken.parse(storedToken);
+        if (accessTokenString) {
+            const accessToken = AccessToken.parse(accessTokenString);
 
             if (!accessToken.isExpired()) {
                 return accessToken;
@@ -16,19 +141,15 @@ export class SelfHostedArmAuthenticator implements IAuthenticator {
             else {
                 this.clearAccessToken();
                 alert("You session expired. Please sign-in again.");
-                window.location.assign(Constants.pageUrlSignIn);
-            }
-        } else {
-            if (process.env.ARM_TOKEN) {
-                const token = AccessToken.parse(process.env.ARM_TOKEN);
-                await this.setAccessToken(token);
-                return token;
-            } else {
-                alert("ARM token was not provided. Please sign-in.");
             }
         }
 
-        return null;
+        if (this.authPromise) {
+            return this.authPromise;
+        }
+
+        this.authPromise = this.authenticate();
+        return this.authPromise;
     }
 
     public getStoredAccessToken(): AccessToken {
@@ -54,7 +175,7 @@ export class SelfHostedArmAuthenticator implements IAuthenticator {
 
     public async setAccessToken(accessToken: AccessToken): Promise<void> {
         if (accessToken.isExpired()) {
-            console.warn(`Cannot set expired access token.`);
+            this.logger.trackEvent("ArmAuthenticator", { message: "Cannot set expired access token." });
             return;
         }
         sessionStorage.setItem(ARM_TOKEN, accessToken.toString());

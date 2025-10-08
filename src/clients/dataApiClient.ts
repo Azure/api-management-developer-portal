@@ -7,13 +7,14 @@ import * as Constants from "./../constants";
 import { IRetryStrategy } from "./retryStrategy/retryStrategy";
 import { Logger } from "@paperbits/common/logging";
 
-export default class DataApiClient extends ApiClient {
+export class DataApiClient extends ApiClient {
     constructor(
         readonly httpClient: HttpClient,
         readonly authenticator: IAuthenticator,
         readonly settingsProvider: ISettingsProvider,
         readonly retryStrategy: IRetryStrategy,
-        readonly logger: Logger) {
+        readonly logger: Logger
+    ) {
         super(httpClient, authenticator, settingsProvider, retryStrategy, logger)
     }
 

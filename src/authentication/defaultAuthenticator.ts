@@ -32,17 +32,7 @@ export class DefaultAuthenticator implements IAuthenticator {
     }
 
     public getStoredAccessToken(): AccessToken {
-        let storedToken = sessionStorage.getItem("accessToken");
-        if (!storedToken) {
-            const designSettings = sessionStorage.getItem(Constants.SettingNames.designTimeSettings);
-            if (designSettings) {
-                const settings = JSON.parse(designSettings);
-                storedToken = settings[Constants.SettingNames.managementApiAccessToken];
-                if (storedToken) {
-                    sessionStorage.setItem("accessToken", storedToken);
-                }
-            }
-        }
+        const storedToken = sessionStorage.getItem("accessToken");
 
         if (storedToken) {
             const accessToken = AccessToken.parse(storedToken);

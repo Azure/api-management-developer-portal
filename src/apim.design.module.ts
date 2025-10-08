@@ -50,7 +50,7 @@ import { CustomHtmlDesignModule } from "./components/custom-html/customHtml.desi
 import { CustomWidgetDesignModule } from "./components/custom-widget/customWidget.design.module";
 import { CodeEditor } from "./components/code-editor/code-editor";
 import { DefaultSettingsProvider } from "./configuration";
-import { ArmService } from "./services/armService";
+import { AzureResourceManagementService } from "./services/armService";
 import { StaticDelegationService } from "./services/staticDelegationService";
 import { NoRetryStrategy } from "./clients/retryStrategy/noRetryStrategy";
 
@@ -102,8 +102,9 @@ export class ApimDesignModule implements IInjectorModule {
 
         injector.bindSingleton("sessionManager", DefaultSessionManager);
         injector.bindInstance("configFileUri", Constants.ConfigEndpoints.backend);
+        injector.bindInstance("configCacheDurationMs", Constants.DEFAULT_CONFIG_CACHE_DURATION_MS);
         injector.bindSingleton("settingsProvider", DefaultSettingsProvider);
-        injector.bindSingleton("armService", ArmService);
+        injector.bindSingleton("armService", AzureResourceManagementService);
         injector.bindSingleton("delegationService", StaticDelegationService);
         injector.bind("CodeEditor", CodeEditor);
         injector.bindModule(new ContentModule());

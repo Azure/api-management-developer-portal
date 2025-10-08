@@ -3,8 +3,7 @@ import * as ko from "knockout";
 import { eventTypes } from "../logging/clientLogger";
 
 export class TraceClick {
-    constructor(private readonly logger: Logger) {
-    }
+    constructor(private readonly logger: Logger) { }
 
     public setupBinding(): void {
         ko.bindingHandlers["traceClick"] = {

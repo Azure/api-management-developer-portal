@@ -1,0 +1,38 @@
+
+.icon-emb-ctrl-right:before {
+    @extend .icon-emb;
+    content: "\e90a";
+}
+
+
+.accordion {
+    border: 1px solid #ccc;
+    margin-bottom: 12px;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+
+    .accordion-item {
+        border-bottom: 1px solid #ccc;
+
+        .accordion-header {
+            border-bottom: 1px solid #ccc;
+            padding: 8px 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            color: #333;
+
+            &:last-child {
+                border-bottom: none;
+            }
+        }
+
+        &[open] {
+            .icon-emb-ctrl-right {
+                transform: rotate(180deg);
+            }
+        }
+    }
+}

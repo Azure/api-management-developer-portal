@@ -101,7 +101,7 @@ describe("Product service", async () => {
         const delegationService = new DelegationService(apiClient, settingsProvider);
 
         const productService = new ProductService(apiClient, delegationService);
-        const product = await productService.getProduct("/products/starter");
+        const product = await productService.getProduct("starter");
 
         expect(starterProduct.name).to.equal(product.displayName);
     });
@@ -136,20 +136,20 @@ describe("Product service", async () => {
         const delegationService = new DelegationService(apiClient, settingsProvider);
         const productService = new ProductService(apiClient, delegationService);
 
-        const searchQuery: SearchQuery = { pattern: "test" }
+        var searchQuery: SearchQuery = { pattern: "test" }
         await productService.getSubscriptions("/users/1234", "/products/starter", searchQuery);
 
         const expectedUrl = "/users/1234/subscriptions?$top=50&$skip=0&$filter=(endswith(scope,'/products/starter')) and (contains(name,'test'))";
         expect(apiClient.get.getCall(0).calledWith(expectedUrl)).to.be.true;
     });
 
-    it("Automatically add products prefix filter", async () => {
+    it("Automaticaly add products prefix filter", async () => {
         const apiClient: SinonStubbedInstance<IApiClient> = createStubInstance(DataApiClient);
         apiClient.get.resolves(new Page<Subscription>());
         const delegationService = new DelegationService(apiClient, settingsProvider);
         const productService = new ProductService(apiClient, delegationService);
 
-        const searchQuery: SearchQuery = { pattern: "test" }
+        var searchQuery: SearchQuery = { pattern: "test" }
         await productService.getSubscriptions("/users/1234", "starter", searchQuery);
 
         const expectedUrl = "/users/1234/subscriptions?$top=50&$skip=0&$filter=(endswith(scope,'/products/starter')) and (contains(name,'test'))";
@@ -196,7 +196,7 @@ describe("Product service", async () => {
         const delegationService = new DelegationService(apiClient, settingsProvider);
         const productService = new ProductService(apiClient, delegationService);
 
-        const searchQuery: SearchQuery = { pattern: "test" }
+        var searchQuery: SearchQuery = { pattern: "test" }
         await productService.getProductsAllSubscriptions("book-store-api", [starterProduct], "/users/1234", searchQuery);
 
         const expectedUrl = "/users/1234/subscriptions?$top=100&$skip=0&$filter=(contains(name,'test'))";

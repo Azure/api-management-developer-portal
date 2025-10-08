@@ -1,17 +1,25 @@
 import { IAuthenticator, AccessToken } from ".";
 
+/**
+ * Static implementation of the IAuthenticator interface to mimic actual authentication in publish time.
+ */
 export class StaticAuthenticator implements IAuthenticator {
     private accessToken: AccessToken;
 
-    public async getAccessToken(): Promise<AccessToken> {
-        if (!this.accessToken) {
-            if (process.env.ARM_TOKEN) {
-                const token = AccessToken.parse(process.env.ARM_TOKEN);
-                this.accessToken = token;
-            } else {
-                console.log("Token was not provided. Please sign-in.");
-            }
+    constructor() {
+        /*
+         * The ARM token injected acquired in build-time. It's used in on local development only.
+         * TODO: Static authenticator is used in production publishing, therefore it's safer to introduce dedicated implementation.
+         */
+        if (!process.env.ARM_TOKEN) {
+            return;
         }
+
+        const token = AccessToken.parse(process.env.ARM_TOKEN);
+        this.accessToken = token;
+    }
+
+    public async getAccessToken(): Promise<AccessToken> {
         return this.accessToken;
     }
 

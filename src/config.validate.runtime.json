@@ -1,5 +1,5 @@
 {
     "environment": "runtime",
-    "managementApiUrl": "http://127.0.0.1:8181/subscriptions/sid/resourceGroups/rgid/providers/Microsoft.ApiManagement/service/sid",
-    "backendUrl": "http://127.0.0.1:8181/"
+    "managementApiUrl": "http://localhost:8181/",
+    "backendUrl": "http://localhost:8181/"
 }

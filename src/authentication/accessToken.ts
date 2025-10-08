@@ -29,7 +29,7 @@ export class AccessToken {
     }
 
     private static parseExtendedSharedAccessSignature(value: string): AccessToken {
-        const regex = /token=\"(.*==)\"/gm;
+        const regex = /token=\"([^\"]+)\"/gm;
         const match = regex.exec(value);
 
         if (match && match.length >= 2) {

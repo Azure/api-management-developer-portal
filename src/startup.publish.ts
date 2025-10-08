@@ -11,38 +11,21 @@ import { ApimPublishModule } from "./apim.publish.module";
 import { FileSystemBlobStorage } from "./components/filesystemBlobStorage";
 import { StaticSettingsProvider } from "./configuration/staticSettingsProvider";
 import { PublishingCacheModule } from "./persistence/publishingCacheModule";
-import { SettingNames } from "./constants";
-
 
 /* Reading settings from configuration file */
 let settingsProvider: ISettingsProvider;
-
-function getMapiUrl(configuration: object): string {
-    const armEndpoint = configuration[SettingNames.armEndpoint];
-    const subscriptionId = configuration[SettingNames.subscriptionId];
-    const resourceGroupName = configuration[SettingNames.resourceGroupName];
-    const serviceName = configuration[SettingNames.serviceName];
-
-    if (!subscriptionId || !resourceGroupName || !serviceName) {
-        throw new Error("Required service parameters (like subscription, resource group, service name) were not provided to start publisher");
-    }
-
-    return `https://${armEndpoint}/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.ApiManagement/service/${serviceName}`;
-}
 
 if (process.env.NODE_ENV === staticDataEnvironment || process.env.NODE_ENV === mockStaticDataEnvironment) {
     settingsProvider = new StaticSettingsProvider({
         "environment": "publishing",
         "backendUrl": "https://contoso.developer.azure-api.net",
         "managementApiAccessToken": "SharedAccessSignature&1&",
-        "useHipCaptcha": false,
-        "managementApiUrl": "https://contoso.developer.azure-api.net/mapi"
+        "useHipCaptcha": false
     });
 }
 else {
     const configFile = path.resolve(__dirname, "./config.json");
     const configuration = JSON.parse(fs.readFileSync(configFile, "utf8").toString());
-    configuration[SettingNames.managementApiUrl] = getMapiUrl(configuration);
     settingsProvider = new StaticSettingsProvider(configuration);
 }
 

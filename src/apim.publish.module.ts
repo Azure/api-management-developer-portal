@@ -45,8 +45,9 @@ import { staticDataEnvironment, mockStaticDataEnvironment } from "./../environme
 import { TenantService } from "./services/tenantService";
 import { StaticDelegationService } from "./services/staticDelegationService";
 import { PublishingRetryStrategy } from "./clients/retryStrategy/publishingRetryStrategy";
-import MapiClientDirect from "./clients/mapiClientDirect";
 import { RedesignConfigPublisher } from "./publishing/redesignConfigPublisher";
+import { MapiClient } from "./clients";
+import { AzureResourceManagementService } from "./services/armService";
 
 export class ApimPublishModule implements IInjectorModule {
     public register(injector: IInjector): void {
@@ -85,11 +86,13 @@ export class ApimPublishModule implements IInjectorModule {
         injector.bindSingleton("router", StaticRouter);
         injector.bindSingleton("authenticator", StaticAuthenticator);
         injector.bindSingleton("retryStrategy", PublishingRetryStrategy);
-        injector.bindSingleton("apiClient", MapiClientDirect);
+        injector.bindSingleton("apiClient", MapiClient);
         injector.bindSingleton("objectStorage", MapiObjectStorage);
         injector.bindSingleton("blobStorage", MapiBlobStorage);
         injector.bindSingleton("logger", ConsoleLogger);
         injector.bindSingleton("oauthService", OAuthService);
+        injector.bindSingleton("armService", AzureResourceManagementService);
+
         injector.bindSingleton("runtimeConfigBuilder", RuntimeConfigBuilder);
         injector.bindSingleton("delegationService", StaticDelegationService);
         injector.bindToCollection("publishers", AadConfigPublisher);

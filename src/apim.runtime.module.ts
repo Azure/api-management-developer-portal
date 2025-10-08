@@ -81,7 +81,7 @@ import { AnalyticsService } from "./services/analyticsService";
 import { ApiService } from "./services/apiService";
 import { BackendService } from "./services/backendService";
 import { DelegationService } from "./services/delegationService";
-import DataApiClient from "./clients/dataApiClient";
+import { DataApiClient } from "./clients/dataApiClient";
 import { UsersService } from "./services/usersService";
 import { TagService } from "./services/tagService";
 import { StaticDataHttpClient } from "./services/staticDataHttpClient";
@@ -113,7 +113,7 @@ import { ConfirmPasswordRuntimeModule } from "./components/users/confirm-passwor
 import { SubscriptionsRuntimeModule } from "./components/users/subscriptions/subscriptions.runtime.module";
 import { ReportsRuntimeModule } from "./components/reports/reports.runtime.module";
 import { ValidationSummaryRuntimeModule } from "./components/users/validation-summary/validationSummary.runtime.module";
-import { ClientLogger } from "./logging/clientLogger";
+
 
 export class ApimRuntimeModule implements IInjectorModule {
     public register(injector: IInjector): void {

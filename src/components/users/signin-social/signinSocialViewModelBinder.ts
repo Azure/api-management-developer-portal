@@ -8,6 +8,9 @@ import { IdentityService } from "../../../services/identityService";
 import { SigninSocialModel } from "./signinSocialModel";
 import { SignInSocialViewModel } from "./react/SignInSocialViewModel";
 import { isRedesignEnabledSetting } from "../../../constants";
+import { BuiltInRoles } from "@paperbits/common/user";
+import { StaticUserService } from "../../../services";
+
 
 export class SigninSocialViewModelBinder implements ViewModelBinder<SigninSocialModel, SignInSocialViewModel> {
     constructor(
@@ -15,8 +18,10 @@ export class SigninSocialViewModelBinder implements ViewModelBinder<SigninSocial
         private readonly styleCompiler: StyleCompiler,
         private readonly settingsProvider: ISettingsProvider,
         private readonly siteService: ISiteService,
+        private readonly userService: StaticUserService,
         private readonly logger: Logger
-    ) { }
+    ) {
+    }
 
     public async getTermsOfService(): Promise<TermsOfService> {
         const termsOfService = await this.identityService.getTermsOfService();
@@ -75,13 +80,26 @@ export class SigninSocialViewModelBinder implements ViewModelBinder<SigninSocial
             state.styles = await this.styleCompiler.getStyleModelAsync(model.styles);
         }
 
+        const widgetRoles = state.security?.roles || [BuiltInRoles.everyone.key];
+
+        const userRoles = await this.userService.getUserRoles();
+
+        const visibleToUser =
+            userRoles.some((x) => widgetRoles.includes(x)) ||
+            widgetRoles.includes(BuiltInRoles.everyone.key);
+
+        state.visible = visibleToUser;
+        state.roles = widgetRoles.join(",");
+
         let isRedesignEnabled = false;
-        
+
         try {
             isRedesignEnabled = !!(await this.siteService.getSetting(isRedesignEnabledSetting));
-        } catch (error) {
+        }
+        catch (error) {
             this.logger?.trackError(error, { message: `Failed to get setting: ${isRedesignEnabledSetting} - SigninSocialViewModelBinder` });
-        } finally {
+        }
+        finally {
             state.isRedesignEnabled = isRedesignEnabled;
         }
     }

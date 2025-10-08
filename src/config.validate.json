@@ -1,13 +1,23 @@
 {
     "environment": "validation",
-    "isLocalRun": true,
-    "root": "http://localhost:8080",
+    "isLocalRun": false,
+    "root": "https://<service>.developer.azure-api.net",
+    "managementUrl": "https://<service>.management.azure-api.net",
+    "accessToken": "SharedAccessSignature ...",
+    "useArmAuth": false,
+    "useExternalEditor": false,
+    "isMultitenant": false,
+    "externalEditorUrl": "",
+    "certificate": "",
     "urls": {
         "home": "/",
         "signin": "/signin",
         "signup": "/signup",
         "profile": "/profile",
         "products": "/products",
-        "apis": "/apis"
+        "apis": "/apis",
+        "apiDetails": "/api-details/#api=",
+        "confirmPassword":"/confirm-password",
+        "changePassword":"/change-password"
     }
 }

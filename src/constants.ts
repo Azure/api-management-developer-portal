@@ -438,3 +438,5 @@ export const FEATURE_FLAGS = "featureFlags";
 export const FEATURE_CLIENT_TELEMETRY = "clientTelemetry";
 export const FEATURE_OLD_THEME = "oldDefaultTheme";
 export const USE_COMPRESSED_ASSETS = "useCompressedAssets";
+
+export const DEFAULT_CONFIG_CACHE_DURATION_MS = 5 * 60 * 1000; // 5 minutes in milliseconds

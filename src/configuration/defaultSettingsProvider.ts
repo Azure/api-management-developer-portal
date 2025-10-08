@@ -5,19 +5,37 @@ import { ISettingsProvider } from "@paperbits/common/configuration";
 export class DefaultSettingsProvider implements ISettingsProvider {
     private configuration: Object;
     private loadingPromise: Promise<Object>;
+    private configurationLoadTime: number;
 
     constructor(
         private readonly httpClient: HttpClient,
         private readonly eventManager: EventManager,
-        private readonly configFileUri: string
-    ) {
-    }
+        private readonly configFileUri: string,
+        private readonly configCacheDurationMs: number
+    ) { }
 
     private async loadSettings(): Promise<Object> {
+        this.configurationLoadTime = Date.now();
+        if (!this.configuration) {
+            this.configuration = {};
+        }
+
         const response = await this.httpClient.send<any>({ url: this.configFileUri });
-        this.configuration = response.toObject();
+        const configurationData = response.toObject();
+        if (configurationData){
+            for (const key in configurationData) {
+                this.configuration[key] = configurationData[key];
+            }
+        }
 
         return this.configuration;
+    }
+
+    private isConfigurationExpired(): boolean {
+        if (!this.configurationLoadTime) {
+            return true;
+        }
+        return (Date.now() - this.configurationLoadTime) > this.configCacheDurationMs;
     }
 
     public async getSetting<T>(name: string): Promise<T> {
@@ -42,7 +60,7 @@ export class DefaultSettingsProvider implements ISettingsProvider {
     }
 
     public getSettings(): Promise<any> {
-        if (!this.loadingPromise) {
+        if (!this.loadingPromise || this.isConfigurationExpired()) {
             this.loadingPromise = this.loadSettings();
         }
 

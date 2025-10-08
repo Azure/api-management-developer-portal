@@ -6,14 +6,14 @@ import { ServiceDescriptionContract } from "../contracts/service";
 import { SettingNames } from "../constants";
 import { Logger } from "@paperbits/common/logging/logger";
 import { IAuthenticator } from "../authentication/IAuthenticator";
-import { SessionManager } from "@paperbits/common/persistence/sessionManager";
 
-export class ArmService {
+
+export class AzureResourceManagementService {
     private loadSettingsPromise: Promise<void>;
+
     constructor(
         private readonly httpClient: HttpClient,
         private readonly authenticator: IAuthenticator,
-        private readonly sessionManager: SessionManager,
         private readonly logger: Logger
     ) { }
 
@@ -74,41 +74,31 @@ export class ArmService {
     }
 
     private async loadSettings(settingsProvider: ISettingsProvider): Promise<void> {
-        const managementApiUrl = await settingsProvider.getSetting(SettingNames.managementApiUrl);
-        if (!managementApiUrl) {
-            let settingsForRuntime = await this.sessionManager.getItem<object>(SettingNames.designTimeSettings) || {};
-            const armEndpoint = await settingsProvider.getSetting(SettingNames.armEndpoint);
-            const armUri = await this.getTenantArmUriAsync(settingsProvider);
+        const managementApiUrlDefined = await settingsProvider.getSetting(SettingNames.managementApiUrl);
 
-            if (!armUri || !armEndpoint) {
-                throw new Error("Required service parameters (like subscription, resource group, service name) were not provided to start editor");
-            }
-
-            const managementApiUrl = `https://${armEndpoint}${armUri}`;
-            await settingsProvider.setSetting(SettingNames.managementApiUrl, managementApiUrl);
-            this.logger.trackEvent("ArmService", { message: `Management API URL: ${managementApiUrl}` });
-
-            const userId = Constants.adminUserId; // Admin user ID for editor DataApi
-            const userTokenValue = await this.getUserAccessToken(userId, managementApiUrl);
-            const serviceDescription = await this.getServiceDescription(managementApiUrl);
-            const dataApiUrl = serviceDescription.properties.dataApiUrl;
-            const developerPortalUrl = serviceDescription.properties.developerPortalUrl;
-            const isMultitenant = serviceDescription.sku.name.includes("V2");
-
-            await settingsProvider.setSetting(SettingNames.backendUrl, developerPortalUrl);
-            await settingsProvider.setSetting(SettingNames.dataApiUrl, dataApiUrl);
-            await settingsProvider.setSetting(SettingNames.isMultitenant, isMultitenant);
-
-            settingsForRuntime = {
-                [SettingNames.backendUrl]: developerPortalUrl,
-                [SettingNames.dataApiUrl]: dataApiUrl,
-                [SettingNames.directDataApi]: !!dataApiUrl,
-                [SettingNames.managementApiAccessToken]: userTokenValue,
-                [SettingNames.isMultitenant]: isMultitenant,
-                ...settingsForRuntime
-            };
-            await this.sessionManager.setItem(SettingNames.designTimeSettings, settingsForRuntime);
+        if (managementApiUrlDefined) {
+            return;
         }
+
+        const armEndpoint = await settingsProvider.getSetting(SettingNames.armEndpoint) || "management.azure.com";
+        const armUri = await this.getTenantArmUriAsync(settingsProvider);
+
+        if (!armUri || !armEndpoint) {
+            throw new Error("Required service parameters (like subscription, resource group, service name) were not provided to start editor");
+        }
+
+        const managementApiUrl = `https://${armEndpoint}${armUri}`;
+        await settingsProvider.setSetting(SettingNames.managementApiUrl, managementApiUrl);
+        this.logger.trackEvent("ArmService", { message: `Management API URL: ${managementApiUrl}` });
+
+        const serviceDescription = await this.getServiceDescription(managementApiUrl);
+        const dataApiUrl = serviceDescription.properties.dataApiUrl;
+        const developerPortalUrl = serviceDescription.properties.developerPortalUrl;
+        const isMultitenant = serviceDescription.sku.name.includes("V2");
+
+        await settingsProvider.setSetting(SettingNames.backendUrl, developerPortalUrl);
+        await settingsProvider.setSetting(SettingNames.dataApiUrl, dataApiUrl);
+        await settingsProvider.setSetting(SettingNames.isMultitenant, isMultitenant);
     }
 
     public async getTenantArmUriAsync(settingsProvider: ISettingsProvider): Promise<string> {
@@ -117,7 +107,7 @@ export class ArmService {
         const serviceName = await settingsProvider.getSetting(SettingNames.serviceName);
 
         if (!subscriptionId || !resourceGroupName || !serviceName) {
-            throw new Error("Required service parameters (like subscription, resource group, service name) were not provided to start editor");
+            throw new Error("Required service parameters (like subscription, resource group, service name, tenant Id) were not provided to start editor");
         }
 
         return `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.ApiManagement/service/${serviceName}`;

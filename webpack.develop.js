@@ -1,27 +1,49 @@
 const { merge } = require("webpack-merge");
-const CopyWebpackPlugin = require("copy-webpack-plugin");
-const asyncDesignerConfig = require("./webpack.designer.arm.js");
+const webpack = require("webpack");
+const {
+    designerConfig,
+    designerRuntimeConfig,
+} = require("./webpack.designer.js");
+const { getArmToken } = require("./auth/arm-auth");
 
-const developmentConfig = {
-    mode: "development",
-    devtool: "inline-source-map",
-    devServer: {
-        hot: true,
-        historyApiFallback: true
-    },
-    plugins: [
-        new CopyWebpackPlugin({
-            patterns: [
-                { from: `./src/config.design.json`, to: `./config.json` }
-            ]
+module.exports = async (env) => {
+    const armToken = await getArmToken({});
+    const patterns = designerConfig.plugins[1].patterns;
+    const rules = designerConfig.module.rules;
+
+    patterns.push({
+        from: `./src/config.design.json`,
+        to: `./editor-config.json`,
+    });
+
+    for (let i = 0; i < rules.length; i++) {
+        if (rules[i].test.source === "\\.tsx?$") {
+            rules[i].use = [
+                {
+                    loader: "ts-loader",
+                    options: { allowTsInNodeModules: true },
+                }
+            ];
+        }
+    }
+
+    const developmentConfig = {
+        mode: "development",
+        devtool: "inline-source-map",
+        devServer: {
+            hot: true,
+            historyApiFallback: true,
+        },
+    };
+
+    const resultDesignerConfig = merge(designerConfig, developmentConfig);
+
+    // Comment out if you need to sumulate SKUv2 editor sign-in flow
+    resultDesignerConfig.plugins.push(
+        new webpack.DefinePlugin({
+            "process.env.ARM_TOKEN": JSON.stringify(armToken),
         })
-    ]
-}
+    );
 
-module.exports = async () => {
-    const resolvedDesignerConfig = await asyncDesignerConfig();
-    return [
-      merge(resolvedDesignerConfig.designerConfig, developmentConfig),
-      resolvedDesignerConfig.designerRuntimeConfig
-    ];
+    return [resultDesignerConfig, designerRuntimeConfig];
 };

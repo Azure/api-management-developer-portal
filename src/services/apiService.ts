@@ -427,7 +427,7 @@ export class ApiService {
         if (!contract)
             return null;
         // Request from MAPI case
-        if (contract["properties"])
+        if (contract.hasOwnProperty("properties"))
             return <SchemaContract>contract["properties"];
         // DataApi contract doesn't have properties property
         return contract;

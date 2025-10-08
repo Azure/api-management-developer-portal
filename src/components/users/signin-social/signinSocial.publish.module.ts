@@ -19,8 +19,7 @@ export class SigninSocialPublishModule implements IInjectorModule {
             componentBinder: ReactComponentBinder,
             componentDefinition: SignInSocialViewModel,
             modelBinder: SigninSocialModelBinder,
-            viewModelBinder: SigninSocialViewModelBinder,
-            componentFlow: ComponentFlow.Block
+            viewModelBinder: SigninSocialViewModelBinder
         });
     }
 }

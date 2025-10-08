@@ -5,7 +5,7 @@ import * as Utils from "@paperbits/common/utils";
 import { StaticSettingsProvider } from "../configuration";
 import { TenantService } from "../services/tenantService";
 import { IStreamBlobStorage } from "./IStreamBlobStorage";
-
+import { EventManager } from "@paperbits/common/events";
 
 const defaultContainerName = "content";
 
@@ -15,6 +15,7 @@ export class MapiBlobStorage implements IStreamBlobStorage {
     constructor(
         private readonly logger: Logger,
         private readonly tenantService: TenantService,
+        private readonly eventManager: EventManager,
         private readonly settingsProvider: ISettingsProvider
     ) { }
 
@@ -23,11 +24,29 @@ export class MapiBlobStorage implements IStreamBlobStorage {
             return this.azureStorageClient;
         }
 
-        let storageSettingsProvider: ISettingsProvider;
 
+        const storageSettingsProvider: ISettingsProvider = new StaticSettingsProvider({ blobStorageUrl: await this.getStorageUrl() }, this.eventManager);
+        setInterval(async () => {
+            try {
+                const url = await this.getStorageUrl();
+                storageSettingsProvider.setSetting("blobStorageUrl", url);
+            } catch (error) {
+                this.logger.trackError(error, { message:  "Failed to update blob storage URL" });
+            }
+        }, 1000 * 60 * 5); // Keep the connection string updated every 5 minutes
+        this.azureStorageClient = new BrowserAzureBlobStorage(storageSettingsProvider, this.logger)
+        return this.azureStorageClient;
+    }
+
+    /**
+     * Returns storage url.
+     */
+
+    private async getStorageUrl(): Promise<string> {
         const blobStorageContainer = await this.settingsProvider.getSetting<string>("blobStorageContainer");
         const blobStorageUrl = await this.settingsProvider.getSetting<string>("blobStorageUrl");
 
+        let storageUri: string;
         if (blobStorageUrl) {
             const parsedUrl = new URL(blobStorageUrl);
 
@@ -35,22 +54,13 @@ export class MapiBlobStorage implements IStreamBlobStorage {
                 ? blobStorageContainer
                 : defaultContainerName;
 
-            const normalizedBlobStorageUrl = `${parsedUrl.protocol}//${parsedUrl.hostname}${Utils.ensureLeadingSlash(containerSegment)}${parsedUrl.search}`;
-
-            storageSettingsProvider = new StaticSettingsProvider({
-                blobStorageUrl: normalizedBlobStorageUrl
-            });
+            storageUri = `${parsedUrl.protocol}//${parsedUrl.hostname}${Utils.ensureLeadingSlash(containerSegment)}${parsedUrl.search}`;
         }
         else {
-            const containerSasUrl = await this.tenantService.getMediaContentBlobUrl();
-
-            storageSettingsProvider = new StaticSettingsProvider({
-                blobStorageUrl: containerSasUrl
-            });
+            storageUri = await this.tenantService.getMediaContentBlobUrl();
         }
 
-        this.azureStorageClient = new BrowserAzureBlobStorage(storageSettingsProvider, this.logger)
-        return this.azureStorageClient;
+        return storageUri;
     }
 
     /**

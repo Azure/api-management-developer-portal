@@ -1,6 +1,6 @@
 import { IMediaService, MediaContract } from "@paperbits/common/media";
 import { Query, Page } from "@paperbits/common/persistence";
-import { ArmService } from "./armService";
+import { AzureResourceManagementService } from "./armService";
 import { HttpClient } from "@paperbits/common/http";
 import { IAuthenticator } from "../authentication";
 import { ISettingsProvider } from "@paperbits/common/configuration";
@@ -11,7 +11,7 @@ import { Logger } from "@paperbits/common/logging";
 export class ApimMediaService implements IMediaService {
     public constructor(
         private readonly viewManager: ViewManager,
-        private readonly armService: ArmService,
+        private readonly armService: AzureResourceManagementService,
         private readonly authenticator: IAuthenticator,
         private readonly httpClient: HttpClient,
         private readonly mediaService: IMediaService,
@@ -42,8 +42,8 @@ export class ApimMediaService implements IMediaService {
 
     public async createMedia(name: string, content: Uint8Array, contentType?: string): Promise<MediaContract> {
         const formData = new FormData();
-        const blob = new Blob([content], { type: contentType ?? "application/octet-stream" });
-        formData.append("file", blob, name);
+        let blob = new Blob([content], { type: contentType ?? 'application/octet-stream' });
+        formData.append('file', blob, name);
 
         const accessToken = await this.authenticator.getAccessToken();
 
@@ -61,12 +61,13 @@ export class ApimMediaService implements IMediaService {
             return result.toObject()[0];
         }
 
-        if (result.statusCode === 400 && result.body) {
-            const reason = JSON.parse(new TextDecoder().decode(result.body));
-            this.viewManager.notifyError(`Could not upload file ${name}`, reason.message);
-            return null;
-        } else {
-            throw new Error("Unable to upload file.");
+        switch (result.statusCode) {
+            case 400:
+                const reason = JSON.parse(new TextDecoder().decode(result.body));
+                this.viewManager.notifyError(`Could not upload file ${name}`, reason.message);
+                return null;
+            default:
+                throw new Error("Unable to upload file.");
         }
     }
 

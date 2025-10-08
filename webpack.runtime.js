@@ -4,9 +4,10 @@ const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 const packageJson = require("./package.json");
 
+const NODE_ENV = process.env.NODE_ENV || "development";
 
 const runtimeConfig = {
-    mode: "development",
+    mode: NODE_ENV,
     target: "web",
     entry: {
         "scripts/theme": ["./src/startup.runtime.ts"],

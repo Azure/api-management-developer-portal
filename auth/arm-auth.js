@@ -11,8 +11,10 @@ async function getArmToken(options = {}) {
     try {
         const credential = new InteractiveBrowserCredential({
             tenantId: options.tenantId,
-            clientId: options.clientId
+            clientId: options.clientId,
+            loginStyle: "popup"
         });
+        
         console.log("Please sign in via the browser window that will open...");
 
         // Get the token - this will open a browser window for authentication
@@ -21,11 +23,14 @@ async function getArmToken(options = {}) {
 
         if (response && response.token) {
             console.log("Successfully acquired token with expiration at:", (new Date(response.expiresOnTimestamp)).toLocaleString());
+            
             return `${response.tokenType} ${response.token}`;
-        } else {
+        }
+        else {
             throw new Error("Failed to acquire token: Empty response");
         }
-    } catch (error) {
+    }
+    catch (error) {
         console.error("Error acquiring portal token:", error.message);
         throw error;
     }
