@@ -20,7 +20,6 @@
         "test": "node node_modules/mocha/bin/_mocha -r mocha.js src/**/*.spec.ts",
         "deploy-function": "npm run build-function && cd dist/function && func azure functionapp publish < function app name >",
         "publish": "webpack --config webpack.publisher.js && node dist/publisher/index.js && npm run serve-website",
-        "publish-arm": "webpack --config webpack.publisher.arm.js && node dist/publisher/index.js && npm run serve-website",
         "serve-website": "webpack serve --open --static ./dist/website --no-stats",
         "build-mock-static-data": "webpack --config webpack.mockStaticData.js && node dist/publisher/index.js",
         "build-static-data": "webpack --config webpack.staticData.js && node dist/publisher/index.js",
