@@ -4,7 +4,7 @@ const { merge } = require("webpack-merge");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const runtimeConfig = require("./webpack.runtime");
-const { getArmToken } = require("./auth/arm-auth");
+const getArmToken = require("./auth/authenticator");
 const config = require("./src/config.publish.json");
 
 const publisherRuntimeConfig = merge(runtimeConfig, {

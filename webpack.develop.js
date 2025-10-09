@@ -4,7 +4,7 @@ const {
     designerConfig,
     designerRuntimeConfig,
 } = require("./webpack.designer.js");
-const { getArmToken } = require("./auth/arm-auth");
+const getArmToken = require("./auth/authenticator");
 
 module.exports = async (env) => {
     const armToken = await getArmToken({});
