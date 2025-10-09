@@ -46,7 +46,7 @@ export const AadLoginRequest = { "scopes": ["openid", "profile", "https://manage
 export enum ConfigEndpoints {
     backend = "/config.json",
     service = "/config-apim.json",
-    editor = "/editor-config.json"
+    editor = "/config.json"
 }
 
 export enum AadClientLibrary {

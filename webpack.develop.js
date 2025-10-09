@@ -8,13 +8,7 @@ const { getArmToken } = require("./auth/arm-auth");
 
 module.exports = async (env) => {
     const armToken = await getArmToken({});
-    const patterns = designerConfig.plugins[1].patterns;
     const rules = designerConfig.module.rules;
-
-    patterns.push({
-        from: `./src/config.design.json`,
-        to: `./editor-config.json`,
-    });
 
     for (let i = 0; i < rules.length; i++) {
         if (rules[i].test.source === "\\.tsx?$") {
