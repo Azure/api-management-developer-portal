@@ -17,7 +17,6 @@ import { AuthenticatorResolver } from "./authentication/authenticatorResolver";
 import { MapiClient } from "./clients/mapiClient";
 import { UnhandledErrorHandler } from "./errors";
 import { SessionExpirationErrorHandler } from "./errors/sessionExpirationErrorHandler";
-import { AccessToken } from "./authentication";
 
 
 /* Initializing dependency injection container */
@@ -32,10 +31,8 @@ async function startApp() {
     injector.bindSingleton("logger", ConsoleLogger);
     injector.bindSingleton("authenticatorResolver", AuthenticatorResolver);
     const authenticatorResolver = injector.resolve<AuthenticatorResolver>("authenticatorResolver");
-    const authenticator = await authenticatorResolver.resolveAuthenticator();
+    const authenticator = await authenticatorResolver.getAuthenticator();
     injector.bindInstance("authenticator", authenticator);
-
-    await authenticator.setAccessToken(AccessToken.parse(process.env.ARM_TOKEN));
 
     injector.bindModule(new CoreDesignModule());
     injector.bindModule(new StylesDesignModule());

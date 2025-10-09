@@ -11,11 +11,11 @@ export class StaticAuthenticator implements IAuthenticator {
          * The ARM token injected acquired in build-time. It's used in on local development only.
          * TODO: Static authenticator is used in production publishing, therefore it's safer to introduce dedicated implementation.
          */
-        if (!process.env.ARM_TOKEN) {
+        if (!ARM_TOKEN) {
             return;
         }
 
-        const token = AccessToken.parse(process.env.ARM_TOKEN);
+        const token = AccessToken.parse(ARM_TOKEN);
         this.accessToken = token;
     }
 

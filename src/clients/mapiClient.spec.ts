@@ -12,7 +12,6 @@ import { NoRetryStrategy } from "./retryStrategy/noRetryStrategy";
 import { ConsoleLogger } from "@paperbits/common/logging";
 import { HttpClient, HttpResponse } from "@paperbits/common/http";
 import { StaticAuthenticator } from "../authentication/staticAuthenticator";
-import { DefaultSessionManager } from "@paperbits/common/persistence/defaultSessionManager";
 
 interface Validity {
     isValid: boolean;
@@ -30,23 +29,21 @@ describe("Mapi Client", async () => {
         clear: () => { global.sessionStorage._values.clear(); }
     }
 
-    const sessionManager = new DefaultSessionManager();
-
     const settingsProvider = new StaticSettingsProvider({
         managementApiUrl: "https://contoso.management.azure-api.net",
         backendUrl: "https://contoso.developer.azure-api.net",
         managementApiAccessToken: createMockToken()
     });
 
-    const authenticator = new ArmAuthenticator({
-        isArmAuthEnabled: true,
-        editorArmEndpoint: "management.azure.com",
-        editorAadClientId: "a962e1ed-5694-4abe-9e9b-d08d35877efc",
-        editorAadAuthority: "https://login.windows.net/72f988bf-86f1-41af-91ab-2d7cd011db47"
-    }, new ConsoleLogger());
+    const authenticator = new ArmAuthenticator(new ConsoleLogger());
+
+    authenticator.setEditorSettings({
+        armEndpoint: "management.azure.com",
+        clientId: "a962e1ed-5694-4abe-9e9b-d08d35877efc",
+        tenantId: "https://login.windows.net/72f988bf-86f1-41af-91ab-2d7cd011db47"
+    });
 
     it("setBaseUrl - Appends /mapi", async () => {
-
         //arrange
         const httpClient = new MockHttpClient();
         const settings = await settingsProvider.getSettings<object>();

@@ -1,9 +1,9 @@
-import { IAuthenticator } from "./IAuthenticator";
-import { HttpClient } from "@paperbits/common/http/httpClient";
+import { HttpClient } from "@paperbits/common/http";
 import { Logger } from "@paperbits/common/logging";
 import { ConfigEndpoints } from "../constants";
+import { AccessToken } from "./accessToken";
 import { ArmAuthenticator } from "./armAuthenticator";
-import { SsoAuthenticator } from "./ssoAuthenticator";
+import { IAuthenticator } from "./IAuthenticator";
 import { IEditorSettings } from "./IEditorSettings";
 
 export class AuthenticatorResolver {
@@ -22,26 +22,24 @@ export class AuthenticatorResolver {
     }
 
     public async resolveAuthenticator(): Promise<IAuthenticator> {
-        // const ssoAuthenticator = new SsoAuthenticator(this.httpClient, this.logger);
+        this.logger.trackEvent("AuthenticatorResolver", { message: "Using ARM authenticator." });
 
-        // if (await ssoAuthenticator.isAuthenticated() || location.pathname.startsWith("/signin-sso")) {
-        //     this.logger.trackEvent("AuthenticatorResolver", { message: "Using SSO authenticator." });
-        //     return ssoAuthenticator;
-        // }
+        const authenticator = new ArmAuthenticator(this.logger);
+
+        if (typeof ARM_TOKEN !== "undefined") {
+            await authenticator.setAccessToken(AccessToken.parse(ARM_TOKEN));
+            return authenticator;
+        }
 
         const response = await this.httpClient.send<IEditorSettings>({ url: ConfigEndpoints.editor, method: "GET" });
 
         if (response.statusCode !== 200) {
-            throw new Error(`Failed to load editor settings from ${ConfigEndpoints.editor}.`);
+            throw new Error(`Failed to load editor settings from ${ConfigEndpoints.editor}. Please ensure the file exists and is accessible.`);
         }
 
-        const editorConfig: any = {};  // response.toObject();
+        const editorConfig = response.toObject();
+        authenticator.setEditorSettings(editorConfig);
 
-        // if (editorConfig.isArmAuthEnabled) {
-            this.logger.trackEvent("AuthenticatorResolver", { message: "Using ARM authenticator." });
-            return new ArmAuthenticator(editorConfig, this.logger);
-        //}
-
-        throw new Error(`Unable to authenticate: Either setting "isArmAuthEnabled": true has to be specified in editor-config.json or SSO token (/signin-sso?token=...) query parameter must be present in URL.`);
+        return authenticator;
     }
 }

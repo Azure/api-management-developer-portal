@@ -10,18 +10,13 @@ describe("IEditorSetting", () => {
             SettingNames.aadAuthority
         ];
 
-        const expectedAdditionalProperties = [
-            "isArmAuthEnabled"
-        ];
-
-        const tempObject: IEditorSettings = {
-            isArmAuthEnabled: true,
-            editorArmEndpoint: "editorArmEndpoint",
-            editorAadAuthority: "editorArmEndpoint",
-            editorAadClientId: "editorArmEndpoint"
+        const settingKeys: IEditorSettings = {
+            armEndpoint: "armEndpoint",
+            tenantId: "tenantId",
+            clientId: "clientId"
         };
 
-        const objectProps = Object.keys(tempObject);
+        const objectProps = Object.keys(settingKeys);
         for (const prop of expectedConstantProperties) {
             if (!objectProps.includes(prop)) {
                 assert.fail(`Required property "${prop}" is missing.`);
@@ -29,7 +24,7 @@ describe("IEditorSetting", () => {
         }
 
         for (const prop of objectProps) {
-            if (!expectedConstantProperties.includes(prop as SettingNames) && !expectedAdditionalProperties.includes(prop)) {
+            if (!expectedConstantProperties.includes(prop as SettingNames)) {
                 assert.fail(`Property "${prop}" is not expected.`);
             }
         }

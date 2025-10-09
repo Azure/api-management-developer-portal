@@ -93,7 +93,7 @@ async function generateWebpackConfig() {
                 ]
             }),
             new webpack.ProvidePlugin({ Buffer: ['buffer', 'Buffer'] }),
-            new webpack.DefinePlugin({ 'process.env.ARM_TOKEN': JSON.stringify(armToken) })
+            new webpack.DefinePlugin({ 'ARM_TOKEN': JSON.stringify(armToken) })
         ],
         resolve: {
             extensions: [".ts", ".tsx", ".js", ".jsx", ".html", ".scss"],

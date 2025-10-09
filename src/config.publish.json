@@ -1,10 +1,7 @@
 {
-  "environment": "publishing",
-  "isArmAuthEnabled": true,
-  "editorArmEndpoint": "management.azure.com",
-  "editorAadClientId": "a962e1ed-5694-4abe-9e9b-d08d35877efc",
-  "editorAadAuthority": "https://login.windows.net/72f988bf-86f1-41af-91ab-2d7cd011db47",
-  "subscriptionId": "a200340d-6b82-494d-9dbf-687ba6e33f9e",
-  "resourceGroupName": "Api-Default-Central-US-EUAP",
-  "serviceName": "alzasloneuap06"
+    "environment": "publishing",
+    "isArmAuthEnabled": true,
+    "subscriptionId": "< subscription ID >",
+    "resourceGroupName": "< resource group name >",
+    "serviceName": "< service name >"
 }

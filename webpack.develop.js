@@ -41,7 +41,7 @@ module.exports = async (env) => {
     // Comment out if you need to sumulate SKUv2 editor sign-in flow
     resultDesignerConfig.plugins.push(
         new webpack.DefinePlugin({
-            "process.env.ARM_TOKEN": JSON.stringify(armToken),
+            "ARM_TOKEN": JSON.stringify(armToken),
         })
     );
 

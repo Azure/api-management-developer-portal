@@ -1,6 +1,6 @@
 import * as Msal from "@azure/msal-browser";
 import { IAuthenticator, AccessToken } from ".";
-import { AadLoginRequest, SettingNames } from "../constants";
+import { AadLoginRequest } from "../constants";
 import { IEditorSettings } from "./IEditorSettings";
 import { Logger } from "@paperbits/common/logging";
 
@@ -11,13 +11,11 @@ const TOKEN_REFRESH_BEFORE = 15 * 60 * 1000; // 15 min before token expiration
 export class ArmAuthenticator implements IAuthenticator {
     private msalInstance: Msal.PublicClientApplication;
     private authPromise: Promise<AccessToken>;
+    private editorSettings: IEditorSettings;
 
     private readonly loginRequest: Msal.SilentRequest;
 
-    constructor(
-        private readonly editorSettings: IEditorSettings,
-        private readonly logger: Logger
-    ) {
+    constructor(private readonly logger: Logger) {
         this.loginRequest = { ...AadLoginRequest, forceRefresh: true };
         this.refreshToken = this.refreshToken.bind(this);
         this.getAccount = this.getAccount.bind(this);
@@ -25,8 +23,12 @@ export class ArmAuthenticator implements IAuthenticator {
         setInterval(() => this.refreshToken(), 5 * 60 * 1000); // check token expiration every 5 min
     }
 
+    public setEditorSettings(settings: IEditorSettings): void {
+        this.editorSettings = settings;
+    }
+
     public get armEndpoint() {
-        return this.editorSettings.editorArmEndpoint;
+        return this.editorSettings.armEndpoint;
     }
 
     private async checkCallbacks(): Promise<Msal.AuthenticationResult> {
@@ -40,15 +42,19 @@ export class ArmAuthenticator implements IAuthenticator {
     }
 
     private async authenticate(): Promise<AccessToken> {
-        const clientId = this.editorSettings.editorAadClientId;
-        const authority = this.editorSettings.editorAadAuthority;
+        const clientId = this.editorSettings.clientId;
+        const tenantId = this.editorSettings.tenantId;
 
         if (!clientId) {
-            throw new Error(`Settings "editorAadClientId" was not provided. It is required for MSAL configuration.`);
+            throw new Error(`Settings "clientId" was not provided. It is required for MSAL configuration.`);
         }
 
-        if (!authority) {
-            throw new Error(`Settings "editorAadAuthority" was not provided. It is required for MSAL configuration.`);
+        if (!tenantId) {
+            throw new Error(`Settings "tenantId" was not provided. It is required for MSAL configuration.`);
+        }
+
+        if (this.editorSettings.scopes) {
+            this.loginRequest.scopes = this.editorSettings.scopes;
         }
 
         const redirectUri = location.origin;
@@ -56,12 +62,12 @@ export class ArmAuthenticator implements IAuthenticator {
         const msalConfig: Msal.Configuration = {
             auth: {
                 clientId: clientId,
-                authority: authority,
+                authority: `https://login.microsoftonline.com/${tenantId}`,
                 redirectUri: redirectUri
             },
             cache: {
                 cacheLocation: "sessionStorage", // This configures where your cache will be stored
-                storeAuthStateInCookie: false, // Set this to "true" if you are having issues on IE11 or Edge
+                storeAuthStateInCookie: false // Set this to "true" if you are having issues on IE11 or Edge
             }
         };
 

@@ -1,3 +1,4 @@
 {
-    "environment": "runtime"
+    "environment": "runtime",
+    "backendUrl": "https://< service name >.developer.azure-api.net"
 }

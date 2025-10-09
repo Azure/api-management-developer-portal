@@ -24,10 +24,7 @@ export class RuntimeConfigurator {
     public async loadConfiguration(): Promise<void> {
         const designTimeSettings = await this.settingsProvider.getSettings();
 
-        //if (designTimeSettings[SettingNames.isArmAuthEnabled]) {
-            await this.armService.loadSessionSettings(this.settingsProvider);
-        //}
-
+        await this.armService.loadSessionSettings(this.settingsProvider);
         await this.propagateRuntimeSettingsToSession(designTimeSettings);
 
         /* Identity providers */

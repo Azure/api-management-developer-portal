@@ -19,3 +19,5 @@ declare module "*.raw" {
 }
 
 declare let DecompressionStream: any;
+
+declare let ARM_TOKEN: string;

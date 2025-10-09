@@ -264,8 +264,8 @@ export enum SettingNames {
 
 // Should be equal to IEditorSettings property names
     armEndpoint = "armEndpoint",
-    aadClientId = "editorAadClientId",
-    aadAuthority = "editorAadAuthority",
+    aadClientId = "clientId",
+    aadAuthority = "tenantId",
 
     designTimeSettings = "designTimeSettings",
 }

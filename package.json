@@ -25,6 +25,7 @@
         "build-mock-static-data": "webpack --config webpack.mockStaticData.js && node dist/publisher/index.js",
         "build-static-data": "webpack --config webpack.staticData.js && node dist/publisher/index.js",
         "serve-static-website": "npm run build-static-data && npm run serve-website",
+        "serve-designer": "webpack serve --open --static ./dist/designer --no-stats",
         "lint": "eslint src/**/*.ts",
         "lint:fix": "eslint src/**/*.ts --fix"
     },
