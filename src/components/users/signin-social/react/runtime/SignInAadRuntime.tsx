@@ -25,7 +25,7 @@ const SignInAadRuntimeFC = ({ label, signIn, tenants, classNames }: SignInAadRun
     return (
         <div className="flex flex-wrap">
             {tenants.map(tenant => (
-            <BtnSpinner onClick={()=>signIn(tenant)} className={classNames}>
+            <BtnSpinner key={tenant} onClick={()=>signIn(tenant)} className={classNames}>
                 <i className="icon-emb icon-svg-entraId"></i>
                 {tenants.length > 1 ? `${label} (${tenant.replace('.onmicrosoft.com', '')})`: label }
             </BtnSpinner>))}
