@@ -18,6 +18,11 @@ export interface AadClientConfig {
     signinTenant: string;
 
     /**
+     * The list of allowed tenants for multi-tenant applications.
+     */
+    allowedTenants?: string[];
+
+    /**
      * The client library to be used in the developer portal
      */
     clientLibrary: AadClientLibrary;

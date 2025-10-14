@@ -1,6 +1,6 @@
 import { AadClientConfig } from "./aadClientConfig";
 
-export interface AadB2CClientConfig extends AadClientConfig{
+export interface AadB2CClientConfig extends AadClientConfig {
     /**
      * Sign-in policy name. Only applies to AAD B2C identity provider.
      */

@@ -36,6 +36,7 @@ export class RuntimeConfigurator {
                 clientId: aadIdentityProvider.clientId,
                 authority: aadIdentityProvider.authority,
                 signinTenant: aadIdentityProvider.signinTenant,
+                allowedTenants: aadIdentityProvider.allowedTenants,
                 clientLibrary: aadIdentityProvider.clientLibrary
             };
 
