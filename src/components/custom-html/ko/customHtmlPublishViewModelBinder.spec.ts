@@ -7,8 +7,10 @@ import { IBlobStorage } from "@paperbits/common/persistence";
 import { expect } from "chai";
 import { CustomHtmlModel } from "../customHtmlModel";
 
-const htmlCode = `<html>
+const htmlCode = `<!DOCTYPE html>
+<html>
 <head>
+    <meta charset="utf-8">
     <style>
         /* Custom styles */
         body {

@@ -1,8 +1,9 @@
 import { SizeStylePluginConfig } from "@paperbits/styles/plugins";
 
-export const htmlCodeInitial =
-`<html>
+export const htmlCodeInitial =`<!DOCTYPE html>
+<html>
 <head>
+    <meta charset="utf-8">
     <style>
         /* Custom styles */
         body {
