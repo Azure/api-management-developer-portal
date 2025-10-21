@@ -1,6 +1,5 @@
 {
     "environment": "development",
-    "isArmAuthEnabled": true,
     "subscriptionId": "< subscription ID >",
     "resourceGroupName": "< resource group name >",
     "serviceName": "< service name >"
