@@ -18,6 +18,13 @@
  *    --destServiceName "< your service name >"
  */
 
+/*
+* 12.18.2025 - Added below arguments to align with migrate.js
+*    --TenantId "< optional (needed if tenant ID is different > \r
+*    --ServicePrincipal "< optional service principal or user name. > \r
+*    --ServicePrincipalSecret "< optional secret or password for service principal or az login for the destination. >\n`)
+*/
+
 const { ImporterExporter } = require("./utils");
 
 const yargs = require('yargs')
@@ -39,6 +46,21 @@ const yargs = require('yargs')
         type: 'string',
         description: 'API Management service name.',
     })
+    .option('tenantId', {
+        type: 'string',
+        description: 'Azure tenant ID (optional, required if different from your default tenant).',
+        demandOption: false
+    })
+    .option('servicePrincipal', {
+        type: 'string',
+        description: 'service principal or user name.',
+        demandOption: false
+    })
+    .option('servicePrincipalSecret', {
+        type: 'string',
+        description: 'service principal secret.',
+        demandOption: false
+    })
     .help()
     .argv;
 
@@ -46,7 +68,10 @@ async function cleanup() {
     const importerExporter = new ImporterExporter(
         yargs.subscriptionId,
         yargs.resourceGroupName,
-        yargs.serviceName
+        yargs.serviceName,
+        yargs.tenantId,
+        yargs.servicePrincipal,
+        yargs.servicePrincipalSecret
     );
 
     await importerExporter.cleanup();
