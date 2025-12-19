@@ -30,7 +30,7 @@
     },
     "devDependencies": {
         "@azure/identity": "^4.0.1",
-        "@azure/storage-blob": "12.16.0",
+        "@azure/storage-blob": "^12.16.0",
         "@playwright/test": "1.40.1",
         "@types/chai": "^4.3.6",
         "@types/google-maps": "^3.2.3",
