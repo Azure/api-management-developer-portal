@@ -45,7 +45,7 @@ export class GraphqlService {
                 return;
             }
             const schema = graphQLSchema.graphQLSchema;
-            const builtSchema = GraphQL.buildSchema(graphQLSchema.graphQLSchema, { commentDescriptions: true });
+            const builtSchema = GraphQL.buildSchema(graphQLSchema.graphQLSchema);
 
             graphqlTypes.query = builtSchema.getQueryType()?.getFields();
             graphqlTypes.mutation = builtSchema.getMutationType()?.getFields();

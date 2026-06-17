@@ -1,5 +1,5 @@
 import * as React from 'react';
-import Carousel, { ControlProps } from 'nuka-carousel';
+import { Carousel, SlideHandle } from 'nuka-carousel';
 import { DefaultButton, IconButton, Image, ImageFit, Link, Modal, PrimaryButton, Stack, Text } from '@fluentui/react';
 
 interface OnboardingModalState {
@@ -39,6 +39,8 @@ const modalSlides = [
 ];
 
 export class OnboardingModal extends React.Component<OnboardingModalProps, OnboardingModalState> {
+    private readonly carouselRef = React.createRef<SlideHandle>();
+
     constructor(props: OnboardingModalProps) {
         super(props);
 
@@ -47,18 +49,18 @@ export class OnboardingModal extends React.Component<OnboardingModalProps, Onboa
         }
     }
 
-    renderPrevButton = (props: ControlProps): JSX.Element => (
+    renderPrevButton = (): JSX.Element => (
         <DefaultButton
             text="Previous"
-            onClick={() => props.previousSlide()}
-            styles={{ root: { display: props.previousDisabled ? 'none' : 'block' } }}
+            onClick={() => this.carouselRef.current?.goBack()}
+            styles={{ root: { display: this.state.currentSlide === 0 ? 'none' : 'block' } }}
         />
     )
     
-    renderNextButton = (props: ControlProps): JSX.Element => (
+    renderNextButton = (): JSX.Element => (
         <PrimaryButton
-            text={props.currentSlide === modalSlides.length - 1 ? 'Close' : 'Next' }
-            onClick={() => props.currentSlide === modalSlides.length - 1 ? this.props.onDismiss() : props.nextSlide()}
+            text={this.state.currentSlide === modalSlides.length - 1 ? 'Close' : 'Next' }
+            onClick={() => this.state.currentSlide === modalSlides.length - 1 ? this.props.onDismiss() : this.carouselRef.current?.goForward()}
         />
     )
 
@@ -76,10 +78,12 @@ export class OnboardingModal extends React.Component<OnboardingModalProps, Onboa
                         onClick={this.props.onDismiss}
                     />
                     <Carousel
-                        slideIndex={this.state.currentSlide}
-                        defaultControlsConfig={{ pagingDotsClassName: 'carousel-dot', pagingDotsContainerClassName: 'carousel-dots-container' }}
-                        renderCenterLeftControls={(props: ControlProps) => this.renderPrevButton(props)}
-                        renderCenterRightControls={(props: ControlProps) => this.renderNextButton(props)}
+                        ref={this.carouselRef}
+                        showArrows={false}
+                        showDots
+                        wrapMode="nowrap"
+                        className="onboarding-carousel"
+                        afterSlide={(index: number) => this.setState({ currentSlide: index })}
                     >
                         {modalSlides.map(slide => (
                             <div key={slide.header}>
@@ -96,6 +100,10 @@ export class OnboardingModal extends React.Component<OnboardingModalProps, Onboa
                             </div>
                         ))}
                     </Carousel>
+                    <Stack horizontal horizontalAlign="space-between" className="onboarding-modal-controls">
+                        {this.renderPrevButton()}
+                        {this.renderNextButton()}
+                    </Stack>
                 </>
             </Modal>
         </>

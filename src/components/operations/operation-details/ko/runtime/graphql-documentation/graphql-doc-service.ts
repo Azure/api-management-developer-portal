@@ -73,7 +73,7 @@ export class GraphDocService {
                 return;
             }
             this.content(graphQLSchema.graphQLSchema);
-            const schema = GraphQL.buildSchema(this.content(), { commentDescriptions: true });
+            const schema = GraphQL.buildSchema(this.content());
 
             this.docGraphs.query(schema.getQueryType()?.getFields());
             this.docGraphs.mutation(schema.getMutationType()?.getFields());

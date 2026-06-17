@@ -19,15 +19,16 @@ interface Validity {
 
 describe("Mapi Client", async () => {
 
+    const sessionStorageValues = new Map<string, string>();
     global.sessionStorage = {
-        _values: new Map<string, string>(),
-        length: global.sessionStorage._values.size,
+        _values: sessionStorageValues,
+        get length() { return sessionStorageValues.size; },
         key: (index: number) => { return null; },
-        getItem: (key: string) => { return global.sessionStorage._values.get(key); },
-        setItem: (key: string, value: string) => { global.sessionStorage._values.set(key, value); },
-        removeItem: (key: string) => { global.sessionStorage._values.delete(key); },
-        clear: () => { global.sessionStorage._values.clear(); }
-    }
+        getItem: (key: string) => { return sessionStorageValues.get(key); },
+        setItem: (key: string, value: string) => { sessionStorageValues.set(key, value); },
+        removeItem: (key: string) => { sessionStorageValues.delete(key); },
+        clear: () => { sessionStorageValues.clear(); }
+    } as any;
 
     const settingsProvider = new StaticSettingsProvider({
         managementApiUrl: "https://contoso.management.azure-api.net",

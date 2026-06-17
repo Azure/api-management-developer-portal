@@ -62,6 +62,6 @@ export class WorkerManager {
                 schemaConfig: this.defaults.schemaConfig,
                 exteralFragmentDefinitions: this.defaults.externalFragmentDefinitions
             },
-        } as ICreateData);
+        } as unknown as ICreateData);
     }
 }

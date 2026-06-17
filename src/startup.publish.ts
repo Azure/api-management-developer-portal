@@ -1,3 +1,4 @@
+import "./react-dom-compat";
 import * as fs from "fs";
 import * as path from "path";
 import { ISettingsProvider } from "@paperbits/common/configuration";

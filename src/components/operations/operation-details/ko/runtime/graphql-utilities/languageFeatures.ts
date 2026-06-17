@@ -34,7 +34,7 @@ export class DiagnosticsAdapter {
         const monacoEditorInstance = (<any>window).monaco.editor;
 
         const onModelAdd = (model: editor.IModel): void => {
-            const modeId = model.getModeId();
+            const modeId = model.getLanguageId();
             if (modeId !== this.defaults.languageId) {
                 return;
             }

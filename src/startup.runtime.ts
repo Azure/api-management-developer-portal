@@ -1,17 +1,15 @@
+import "./react-dom-compat";
 import { InversifyInjector } from "@paperbits/common/injection";
 import { CoreRuntimeModule } from "@paperbits/core/core.runtime.module";
 import { StyleRuntimeModule } from "@paperbits/styles/styles.runtime.module";
 import { ApimRuntimeModule } from "./apim.runtime.module";
 import { staticDataEnvironment } from "./../environmentConstants";
-import { define } from "mime";
 import { TraceClick } from "./bindingHandlers/traceClick";
 import { Logger } from "@paperbits/common/logging";
 import { TelemetryConfigurator } from "./telemetry/telemetryConfigurator";
 import { Utils } from "./utils";
 import { ISettingsProvider } from "@paperbits/common/configuration/ISettingsProvider";
 import { FEATURE_CLIENT_TELEMETRY, isRedesignEnabledSetting } from "./constants";
-
-define({ "application/x-zip-compressed": ["zip"] }, true);
 
 const injector = new InversifyInjector();
 injector.bindModule(new CoreRuntimeModule());

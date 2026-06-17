@@ -42,7 +42,7 @@ export class ApimMediaService implements IMediaService {
 
     public async createMedia(name: string, content: Uint8Array, contentType?: string): Promise<MediaContract> {
         const formData = new FormData();
-        let blob = new Blob([content], { type: contentType ?? 'application/octet-stream' });
+        let blob = new Blob([content as BlobPart], { type: contentType ?? 'application/octet-stream' });
         formData.append('file', blob, name);
 
         const accessToken = await this.authenticator.getAccessToken();

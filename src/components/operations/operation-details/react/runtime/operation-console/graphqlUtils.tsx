@@ -30,19 +30,19 @@ export const loadGQLSchema = async (
         const operationNodes = {
             query: new GraphQLOutputTreeNode(
                 GraphqlTypes.query,
-                { type: schema.getQueryType(), args: [] } as GraphQL.GraphQLField<any, any>,
+                { type: schema.getQueryType(), args: [] } as unknown as GraphQL.GraphQLField<any, any>,
                 () => generateDocument(globalNodes),
                 null
             ),
             mutation: new GraphQLOutputTreeNode(
                 GraphqlTypes.mutation,
-                { type: schema.getMutationType(), args: [] } as GraphQL.GraphQLField<any, any>,
+                { type: schema.getMutationType(), args: [] } as unknown as GraphQL.GraphQLField<any, any>,
                 () => generateDocument(globalNodes),
                 null
             ),
             subscription: new GraphQLOutputTreeNode(
                 GraphqlTypes.subscription,
-                { type: schema.getSubscriptionType(), args: [] } as GraphQL.GraphQLField<any, any>,
+                { type: schema.getSubscriptionType(), args: [] } as unknown as GraphQL.GraphQLField<any, any>,
                 () => generateDocument(globalNodes),
                 null
             )

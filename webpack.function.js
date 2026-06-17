@@ -50,7 +50,8 @@ const functionConfig = {
                 test: /\.tsx?$/,
                 loader: "ts-loader",
                 options: {
-                    allowTsInNodeModules: true
+                    allowTsInNodeModules: true,
+                    reportFiles: ["src/**/*.ts", "src/**/*.tsx"]
                 }
             },
             {
@@ -92,7 +93,13 @@ const functionConfig = {
         })
     ],
     resolve: {
-        extensions: [".ts", ".tsx", ".js", ".jsx", ".html", ".scss"]
+        extensions: [".ts", ".tsx", ".js", ".jsx", ".html", ".scss"],
+        alias: {
+            react: path.resolve(__dirname, "node_modules/react"),
+            "react-dom": path.resolve(__dirname, "node_modules/react-dom"),
+            "react/jsx-runtime": require.resolve("react/jsx-runtime"),
+            "react/jsx-dev-runtime": require.resolve("react/jsx-dev-runtime")
+        }
     }
 };
 

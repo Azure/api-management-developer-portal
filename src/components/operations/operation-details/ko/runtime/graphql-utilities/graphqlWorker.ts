@@ -6,9 +6,10 @@
  */
 
 import type { editor, Position, IRange, languages } from "monaco-editor";
-import type { SchemaResponse, CompletionItem as GraphQLCompletionItem } from "graphql-language-service";
+import type { CompletionItem as GraphQLCompletionItem } from "graphql-language-service";
 import { FormattingOptions, ICreateData } from "./typings";
-import { getRange, LanguageService } from "graphql-language-service";
+import { getRange } from "graphql-language-service";
+import { LanguageService, SchemaResponse } from "./languageService";
 
 import {
     toGraphQLPosition,
@@ -75,7 +76,7 @@ export class GraphQLWorker {
 
     public async doFormat(text: string): Promise<string> {
         const prettierStandalone = await import("prettier/standalone");
-        const prettierGraphqlParser = await import("prettier/parser-graphql");
+        const prettierGraphqlParser = await import("prettier/plugins/graphql");
 
         return prettierStandalone.format(text, {
             ...this.formattingOptions,

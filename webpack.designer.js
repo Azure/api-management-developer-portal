@@ -35,7 +35,7 @@ const designerConfig = {
             {
                 test: /\.tsx?$/,
                 use: [
-                    { loader: "ts-loader", options: { allowTsInNodeModules: true } },
+                    { loader: "ts-loader", options: { allowTsInNodeModules: true, reportFiles: ["src/**/*.ts", "src/**/*.tsx"] } },
                     { loader: "ifdef-loader", options: {
                         SkuV2: false,
                         "ifdef-verbose": true,
@@ -85,6 +85,12 @@ const designerConfig = {
     ],
     resolve: {
         extensions: [".ts", ".tsx", ".js", ".jsx", ".html", ".scss"],
+        alias: {
+            react: path.resolve(__dirname, "node_modules/react"),
+            "react-dom": path.resolve(__dirname, "node_modules/react-dom"),
+            "react/jsx-runtime": require.resolve("react/jsx-runtime"),
+            "react/jsx-dev-runtime": require.resolve("react/jsx-dev-runtime")
+        },
         fallback: {
             buffer: require.resolve("buffer"),
             stream: require.resolve("stream-browserify"),

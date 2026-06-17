@@ -1,4 +1,4 @@
-import * as moment from "moment";
+import moment from "moment";
 import { Trace } from "../../contracts/trace";
 
 export class ConsoleTrace {

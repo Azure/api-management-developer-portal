@@ -1,4 +1,4 @@
-import type { SchemaConfig as SchemaConfiguration, GraphQLLanguageConfig } from "graphql-language-service";
+import type { SchemaConfig as SchemaConfiguration, GraphQLLanguageConfig } from "../languageService";
 import type { Options as PrettierConfig } from "prettier";
 
 export interface IDisposable {

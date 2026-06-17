@@ -1,4 +1,4 @@
-import * as ClientOAuth2 from "client-oauth2";
+import ClientOAuth2 from "client-oauth2";
 import { ISettingsProvider } from "@paperbits/common/configuration";
 import { HttpClient, HttpMethod } from "@paperbits/common/http";
 import { Logger } from "@paperbits/common/logging";

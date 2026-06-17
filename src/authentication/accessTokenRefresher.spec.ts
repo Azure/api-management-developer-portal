@@ -7,7 +7,7 @@ import { IApiClient } from "../clients";
 import { expect } from 'chai';
 import { SinonFakeTimers, useFakeTimers, stub } from 'sinon';
 import * as crypto from 'crypto';
-import * as moment from "moment";
+import moment from "moment";
 
 describe('AccessTokenRefresher', () => {
     let settingsProvider: ISettingsProvider;
