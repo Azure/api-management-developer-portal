@@ -1,35 +1,34 @@
 const {staticDataEnvironment} = require("./environmentConstants")
 const webpack = require("webpack");
-const publisherConfig = require("./webpack.publisher");
+const getPublisherConfigs = require("./webpack.publisher");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 
+module.exports = async () => {
+    const [publisherConfig, publisherRuntimeConfig] = await getPublisherConfigs();
 
-let staticData = publisherConfig;
+    publisherConfig.mode = "none";
+    publisherConfig.plugins.push(new webpack.DefinePlugin({
+        "process.env.NODE_ENV": JSON.stringify(staticDataEnvironment)
+    }));
+    publisherConfig.plugins.push(new CopyWebpackPlugin({
+        patterns: [
+            { from: `./templates/default-old.json`, to: "editors/templates/default.json" },
+            { from: `./tests/mocks/defaultStaticData.json`, to: "tests/mocks/defaultStaticData.json" }
+        ]
+    }));
 
-staticData.publisherConfig.mode = "none";
-staticData.publisherConfig.plugins.push(new webpack.DefinePlugin({
-    "process.env.NODE_ENV": JSON.stringify(staticDataEnvironment)
-}));
-staticData.publisherConfig.plugins.push(new CopyWebpackPlugin({
-    patterns: [
-        { from: `./templates/default-old.json`, to: "editors/templates/default.json" },
-        { from: `./tests/mocks/defaultStaticData.json`, to: "tests/mocks/defaultStaticData.json" }
-    ]
-}));
+    publisherRuntimeConfig.mode = "none";
+    publisherRuntimeConfig.plugins.push(new webpack.DefinePlugin({
+        "process.env.NODE_ENV": JSON.stringify(staticDataEnvironment),
+        "process.env.ACCESS_TOKEN": "\"\"",
+    }));
 
-staticData.publisherRuntimeConfig.mode = "none";
-staticData.publisherRuntimeConfig.plugins.push(new webpack.DefinePlugin({
-    "process.env.NODE_ENV": JSON.stringify(staticDataEnvironment),
-    "process.env.ACCESS_TOKEN": "\"\"",
-}));
+    publisherRuntimeConfig.plugins.push(new CopyWebpackPlugin({
+        patterns: [
+            { from: `./templates/default-old.json`, to: "editors/templates/default.json" },
+            { from: `./tests/mocks/defaultStaticData.json`, to: "tests/mocks/defaultStaticData.json" }
+        ]
+    }));
 
-staticData.publisherRuntimeConfig.plugins.push(new CopyWebpackPlugin({
-    patterns: [
-        { from: `./templates/default-old.json`, to: "editors/templates/default.json" },
-        { from: `./tests/mocks/defaultStaticData.json`, to: "tests/mocks/defaultStaticData.json" }
-    ]
-}));
-
-module.exports = {
-    default: [staticData.publisherConfig, staticData.publisherRuntimeConfig]
-}
+    return [publisherConfig, publisherRuntimeConfig];
+};
