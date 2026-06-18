@@ -1,3 +1,4 @@
+import "./react-dom-compat";
 import "./polyfills";
 import * as ko from "knockout";
 import { ComponentBinder } from "@paperbits/common/components";

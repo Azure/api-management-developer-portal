@@ -460,17 +460,17 @@ export class GraphqlConsole {
     private buildTree(content: string): void {
         const schema = GraphQL.buildSchema(content);
 
-        this.operationNodes.query(new GraphQLOutputTreeNode(GraphqlTypes.query, <GraphQL.GraphQLField<any, any>>{
+        this.operationNodes.query(new GraphQLOutputTreeNode(GraphqlTypes.query, <GraphQL.GraphQLField<any, any>><unknown>{
             type: schema.getQueryType(),
             args: []
         }, () => this.generateDocument(), null));
 
-        this.operationNodes.mutation(new GraphQLOutputTreeNode(GraphqlTypes.mutation, <GraphQL.GraphQLField<any, any>>{
+        this.operationNodes.mutation(new GraphQLOutputTreeNode(GraphqlTypes.mutation, <GraphQL.GraphQLField<any, any>><unknown>{
             type: schema.getMutationType(),
             args: []
         }, () => this.generateDocument(), null));
 
-        this.operationNodes.subscription(new GraphQLOutputTreeNode(GraphqlTypes.subscription, <GraphQL.GraphQLField<any, any>>{
+        this.operationNodes.subscription(new GraphQLOutputTreeNode(GraphqlTypes.subscription, <GraphQL.GraphQLField<any, any>><unknown>{
             type: schema.getSubscriptionType(),
             args: []
         }, () => this.generateDocument(), null));

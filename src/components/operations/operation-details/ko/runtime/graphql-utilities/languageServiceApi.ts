@@ -5,7 +5,7 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import { SchemaConfig, SchemaResponse } from "graphql-language-service";
+import { SchemaConfig, SchemaResponse } from "./languageService";
 import type { Emitter } from "monaco-editor";
 import type { FormattingOptions, ModeConfiguration } from "./typings";
 import type { WorkerAccessor } from "./languageFeatures";
@@ -119,7 +119,7 @@ export class LanguageServiceApi {
         let rawSchema = schema as string;
 
         if (typeof schema !== "string") {
-            rawSchema = printSchema(schema, { commentDescriptions: true });
+            rawSchema = printSchema(schema);
         }
 
         this._schemaString = rawSchema;

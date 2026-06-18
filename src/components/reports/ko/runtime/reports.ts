@@ -1,5 +1,5 @@
 import * as ko from "knockout";
-import * as moment from "moment";
+import moment from "moment";
 import * as Constants from "../../../../constants";
 import template from "./reports.html";
 import { Utils } from "../../../../utils";

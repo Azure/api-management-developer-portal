@@ -1,6 +1,6 @@
 import * as React from "react";
 import { useEffect, useState } from "react";
-import * as moment from "moment/moment";
+import moment from "moment/moment";
 import { Stack } from "@fluentui/react";
 import { FluentProvider } from "@fluentui/react-components";
 import { Resolve } from "@paperbits/react/decorators";

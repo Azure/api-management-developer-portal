@@ -3,7 +3,7 @@ import * as ko from "knockout";
 ko.bindingHandlers["copyToClipboard"] = {
     init: (element: HTMLElement, valueAccessor: () => (string | (() => Promise<string>))): void => {
         const copyToClipboard = async () => {
-            const unwrappedValue = ko.unwrap(valueAccessor());
+            const unwrappedValue: string | (() => Promise<string>) = ko.unwrap(valueAccessor() as any);
             const text = typeof unwrappedValue === "string"
                 ? unwrappedValue as string
                 : await (unwrappedValue as (() => Promise<string>))();

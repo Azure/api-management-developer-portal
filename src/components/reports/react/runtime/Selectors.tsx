@@ -1,5 +1,5 @@
 import * as React from "react";
-import * as moment from "moment/moment";
+import moment from "moment/moment";
 import { Stack } from "@fluentui/react";
 import { Dropdown, Option, OptionGroup } from "@fluentui/react-components";
 

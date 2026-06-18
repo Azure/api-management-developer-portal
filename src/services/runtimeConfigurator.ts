@@ -56,6 +56,7 @@ export class RuntimeConfigurator {
                 clientId: aadB2CIdentityProvider.clientId,
                 authority: aadB2CIdentityProvider.authority,
                 signinTenant: signinTenant,
+                allowedTenants: aadB2CIdentityProvider.allowedTenants,
                 signinPolicyName: aadB2CIdentityProvider.signinPolicyName,
                 signupPolicyName: aadB2CIdentityProvider.signupPolicyName,
                 passwordResetPolicyName: aadB2CIdentityProvider.passwordResetPolicyName,

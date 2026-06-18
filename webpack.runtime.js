@@ -9,6 +9,16 @@ const NODE_ENV = process.env.NODE_ENV || "development";
 const runtimeConfig = {
     mode: NODE_ENV,
     target: "web",
+    ignoreWarnings: [
+        {
+            module: /@paperbits[\\/]react[\\/]bindings[\\/]reactComponentBinder\.ts$/,
+            message: /export 'render' \(imported as 'ReactDOM'\) was not found in 'react-dom'/
+        },
+        {
+            module: /@paperbits[\\/]react[\\/]customElements\.ts$/,
+            message: /export 'render' \(imported as 'ReactDOM'\) was not found in 'react-dom'/
+        }
+    ],
     entry: {
         "scripts/theme": ["./src/startup.runtime.ts"],
         "serviceWorker": ["./src/telemetry/serviceWorker.ts"]
@@ -28,14 +38,22 @@ const runtimeConfig = {
                         options: { url: { filter: (url) => /\/icon-.*\.svg$/.test(url) } }
                     },
                     { loader: "postcss-loader" },
-                    { loader: "sass-loader" }
+                    {
+                        loader: "sass-loader",
+                        options: {
+                            sassOptions: {
+                                silenceDeprecations: ["import", "global-builtin", "color-functions"]
+                            }
+                        }
+                    }
                 ]
             },
             {
                 test: /\.tsx?$/,
                 loader: "ts-loader",
                 options: {
-                    allowTsInNodeModules: true
+                    allowTsInNodeModules: true,
+                    reportFiles: ["src/**/*.ts", "src/**/*.tsx"]
                 }
             },
             {
@@ -77,6 +95,12 @@ const runtimeConfig = {
     ],
     resolve: {
         extensions: [".js", ".ts", ".jsx", ".tsx", ".html", ".scss"],
+        alias: {
+            react: path.resolve(__dirname, "node_modules/react"),
+            "react-dom": path.resolve(__dirname, "node_modules/react-dom"),
+            "react/jsx-runtime": require.resolve("react/jsx-runtime"),
+            "react/jsx-dev-runtime": require.resolve("react/jsx-dev-runtime")
+        },
         fallback: {
             buffer: require.resolve("buffer"),
             stream: require.resolve("stream-browserify"),

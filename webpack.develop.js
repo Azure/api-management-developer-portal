@@ -15,7 +15,7 @@ module.exports = async (env) => {
             rules[i].use = [
                 {
                     loader: "ts-loader",
-                    options: { allowTsInNodeModules: true },
+                    options: { allowTsInNodeModules: true, reportFiles: ["src/**/*.ts", "src/**/*.tsx"] },
                 }
             ];
         }

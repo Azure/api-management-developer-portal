@@ -1,5 +1,5 @@
 ﻿import template from "./content.html";
-import * as moment from "moment";
+import moment from "moment";
 import * as Constants from "../../constants";
 import { ViewManager, View } from "@paperbits/common/ui";
 import { Component } from "@paperbits/common/ko/decorators";

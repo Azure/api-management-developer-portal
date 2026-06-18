@@ -124,15 +124,11 @@ export class AadService implements IAadService {
             throw new Error(`Parameter "tenant" not specified.`);
         }
 
-        if (!instance) {
-            throw new Error(`Parameter "instance" not specified.`);
-        }
-
         if (!userFlow) {
             throw new Error(`Parameter "userFlow" not specified.`);
         }
 
-        const auth = `https://${tenant}/tfp/${instance}/${userFlow}`;
+        const auth = this.getAadB2CAuthority(tenant, instance, userFlow);
 
         const msalConfig: Msal.Configuration = {
             auth: {
@@ -157,6 +153,31 @@ export class AadService implements IAadService {
         if (response.idToken && response.idToken.rawIdToken) {
             await this.exchangeIdToken(response.idToken.rawIdToken, Constants.IdentityProviders.aadB2C);
         }
+    }
+
+    private getAadB2CAuthority(tenant: string, instance: string, userFlow: string): string {
+        const normalizedTenant = (tenant || "").trim().replace(/\/+$/, "");
+        const normalizedUserFlow = (userFlow || "").trim();
+        const normalizedInstance = (instance || "").trim();
+
+        const baseAuthority = /^https?:\/\//i.test(normalizedTenant)
+            ? normalizedTenant
+            : `https://${normalizedTenant}`;
+
+        if (normalizedInstance) {
+            return `${baseAuthority}/tfp/${normalizedInstance}/${normalizedUserFlow}`;
+        }
+
+        if (/\/tfp\//i.test(baseAuthority)) {
+            const userFlowSuffix = `/${normalizedUserFlow}`.toLowerCase();
+            if (baseAuthority.toLowerCase().endsWith(userFlowSuffix)) {
+                return baseAuthority;
+            }
+
+            return `${baseAuthority}/${normalizedUserFlow}`;
+        }
+
+        throw new Error(`AAD B2C configuration is missing signin tenant.`);
     }
 
     /**

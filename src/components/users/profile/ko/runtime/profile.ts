@@ -1,5 +1,5 @@
 import * as ko from "knockout";
-import * as moment from "moment";
+import moment from "moment";
 import * as validation from "knockout.validation";
 import template from "./profile.html";
 import { Component, RuntimeComponent, OnMounted } from "@paperbits/common/ko/decorators";

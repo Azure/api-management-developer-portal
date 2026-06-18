@@ -10,6 +10,16 @@ const packageJson = require("./package.json");
 const designerConfig = {
     mode: "development",
     target: "web",
+    ignoreWarnings: [
+        {
+            module: /@paperbits[\\/]react[\\/]bindings[\\/]reactComponentBinder\.ts$/,
+            message: /export 'render' \(imported as 'ReactDOM'\) was not found in 'react-dom'/
+        },
+        {
+            module: /@paperbits[\\/]react[\\/]customElements\.ts$/,
+            message: /export 'render' \(imported as 'ReactDOM'\) was not found in 'react-dom'/
+        }
+    ],
     entry: {
         "editors/scripts/paperbits": ["./src/startup.design.ts"],
         "editors/styles/paperbits": [`./src/themes/designer/styles/styles.scss`],
@@ -29,13 +39,20 @@ const designerConfig = {
                         options: { url: { filter: (url) => /\/icon-.*\.svg$/.test(url) } }
                     },
                     { loader: "postcss-loader" },
-                    { loader: "sass-loader" }
+                    {
+                        loader: "sass-loader",
+                        options: {
+                            sassOptions: {
+                                silenceDeprecations: ["import", "global-builtin", "color-functions"]
+                            }
+                        }
+                    }
                 ]
             },
             {
                 test: /\.tsx?$/,
                 use: [
-                    { loader: "ts-loader", options: { allowTsInNodeModules: true } },
+                    { loader: "ts-loader", options: { allowTsInNodeModules: true, reportFiles: ["src/**/*.ts", "src/**/*.tsx"] } },
                     { loader: "ifdef-loader", options: {
                         SkuV2: false,
                         "ifdef-verbose": true,
@@ -85,6 +102,12 @@ const designerConfig = {
     ],
     resolve: {
         extensions: [".ts", ".tsx", ".js", ".jsx", ".html", ".scss"],
+        alias: {
+            react: path.resolve(__dirname, "node_modules/react"),
+            "react-dom": path.resolve(__dirname, "node_modules/react-dom"),
+            "react/jsx-runtime": require.resolve("react/jsx-runtime"),
+            "react/jsx-dev-runtime": require.resolve("react/jsx-dev-runtime")
+        },
         fallback: {
             buffer: require.resolve("buffer"),
             stream: require.resolve("stream-browserify"),

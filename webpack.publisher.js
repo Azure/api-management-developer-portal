@@ -28,6 +28,16 @@ async function generateWebpackConfig() {
     const publisherConfig = {
         mode: "development",
         target: "node",
+        ignoreWarnings: [
+            {
+                module: /@paperbits[\\/]react[\\/]bindings[\\/]reactComponentBinder\.ts$/,
+                message: /export 'render' \(imported as 'ReactDOM'\) was not found in 'react-dom'/
+            },
+            {
+                module: /@paperbits[\\/]react[\\/]customElements\.ts$/,
+                message: /export 'render' \(imported as 'ReactDOM'\) was not found in 'react-dom'/
+            }
+        ],
         node: {
             __dirname: false,
             __filename: false,
@@ -47,14 +57,22 @@ async function generateWebpackConfig() {
                         MiniCssExtractPlugin.loader,
                         { loader: "css-loader", options: { url: false } },
                         { loader: "postcss-loader" },
-                        { loader: "sass-loader" }
+                        {
+                            loader: "sass-loader",
+                            options: {
+                                sassOptions: {
+                                    silenceDeprecations: ["import", "global-builtin", "color-functions"]
+                                }
+                            }
+                        }
                     ]
                 },
                 {
                     test: /\.tsx?$/,
                     loader: "ts-loader",
                     options: {
-                        allowTsInNodeModules: true
+                        allowTsInNodeModules: true,
+                        reportFiles: ["src/**/*.ts", "src/**/*.tsx"]
                     }
                 },
                 {
@@ -98,6 +116,12 @@ async function generateWebpackConfig() {
         ],
         resolve: {
             extensions: [".ts", ".tsx", ".js", ".jsx", ".html", ".scss"],
+            alias: {
+                react: path.resolve(__dirname, "node_modules/react"),
+                "react-dom": path.resolve(__dirname, "node_modules/react-dom"),
+                "react/jsx-runtime": require.resolve("react/jsx-runtime"),
+                "react/jsx-dev-runtime": require.resolve("react/jsx-dev-runtime")
+            },
             fallback: {
                 buffer: require.resolve("buffer"),
                 stream: require.resolve("stream-browserify"),

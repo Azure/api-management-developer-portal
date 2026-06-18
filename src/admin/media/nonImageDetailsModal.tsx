@@ -9,7 +9,7 @@ import { CopyableTextField } from '../utils/components/copyableTextField';
 import { REQUIRED, UNIQUE_REQUIRED, URL_REQUIRED, validateField } from '../utils/validator';
 import { reservedPermalinks } from '../../constants';
 import { MimeTypes } from '@paperbits/common';
-import { getType } from "mime";
+import mime from "mime";
 
 interface NonImageDetailsModalState {
     mediaItem: MediaContract,
@@ -44,7 +44,7 @@ export class NonImageDetailsModal extends React.Component<NonImageDetailsModalPr
         const newStateMediaItem: MediaContract = { ...this.state.mediaItem, [field]: newValue };
 
         if (field === 'downloadUrl') {
-            const newMimeType: string = getType(newValue);
+            const newMimeType: string = mime.getType(newValue);
             if (newMimeType) {
                 newStateMediaItem.mimeType = newMimeType;
             }

@@ -80,18 +80,26 @@ export class SignInAadB2C {
             return;
         }
 
+        const signinTenant = this.aadConfig.signinTenant || this.aadConfig.allowedTenants?.[0];
+
+        if (!signinTenant) {
+            const error = new Error(`AAD B2C configuration is missing a signin tenant.`);
+            parseAndDispatchError(this.eventManager, ErrorSources.signInOAuth, error, this.logger);
+            return;
+        }
+
         try {
             await this.selectedService.runAadB2CUserFlow(
                 this.aadConfig.clientId,
                 this.aadConfig.authority,
-                this.aadConfig.signinTenant,
+                signinTenant,
                 this.aadConfig.signinPolicyName,
                 this.replyUrl());
         }
         catch (error) {
             if (this.aadConfig.passwordResetPolicyName && error.message.includes(aadb2cResetPasswordErrorCode)) { // Reset password requested
                 try {
-                    await this.selectedService.runAadB2CUserFlow(this.aadConfig.clientId, this.aadConfig.authority, this.aadConfig.signinTenant, this.aadConfig.passwordResetPolicyName);
+                    await this.selectedService.runAadB2CUserFlow(this.aadConfig.clientId, this.aadConfig.authority, signinTenant, this.aadConfig.passwordResetPolicyName);
                     return;
                 }
                 catch (resetpasswordError) {

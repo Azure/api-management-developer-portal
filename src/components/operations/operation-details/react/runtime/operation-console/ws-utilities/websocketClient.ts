@@ -63,7 +63,7 @@ export class WebsocketClient {
     public send(data: string | ArrayBufferLike | Blob | ArrayBufferView): void {
         this.logDataItem(data.toString(), LogItemType.SendData);
         if (this.websocket) {
-            this.websocket.send(data);
+            this.websocket.send(data as string | BufferSource | Blob);
         }
     }
 

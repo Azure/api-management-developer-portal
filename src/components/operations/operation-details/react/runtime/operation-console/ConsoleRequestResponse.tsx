@@ -2,7 +2,7 @@ import * as React from "react";
 import * as ko from "knockout";
 import { useEffect, useState } from "react";
 import { saveAs } from "file-saver";
-import { getExtension } from "mime";
+import mime from "mime";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { a11yLight } from "react-syntax-highlighter/dist/esm/styles/hljs";
 import { HttpClient, HttpHeader, HttpMethod, HttpRequest } from "@paperbits/common/http";
@@ -126,7 +126,7 @@ export const ConsoleRequestResponse = ({ api, consoleOperation, backendUrl, useC
     const decompressBody = async (body: Buffer): Promise<string> => {
         const ds = new DecompressionStream("gzip");
         const dsWriter = ds.writable.getWriter();
-        dsWriter.write(body);
+        dsWriter.write(new Uint8Array(body));
         dsWriter.close();
         const output: Uint8Array[] = [];
         const reader = ds.readable.getReader();
@@ -306,8 +306,8 @@ export const ConsoleRequestResponse = ({ api, consoleOperation, backendUrl, useC
             let responseBodyFormatted: string = "";
 
             if (responseContentType && downloadableTypes.some(type => responseContentType.includes(type))) {
-                const blob = new Blob([response.body], { type: responseContentType });
-                const fileExtension = getExtension(responseContentType);
+                const blob = new Blob([response.body as BlobPart], { type: responseContentType });
+                const fileExtension = mime.getExtension(responseContentType);
 
                 const fileName = fileExtension
                     ? consoleOperation.name + "." + fileExtension

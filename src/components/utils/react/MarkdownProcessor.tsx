@@ -11,11 +11,12 @@ type TMarkdownProcessorProps = {
 }
 
 export const MarkdownProcessor = ({ markdownToDisplay, maxChars, truncate = false }: TMarkdownProcessorProps) => (
-    <ReactMarkdown
-        remarkPlugins={[remarkGfm]}
-        rehypePlugins={[rehypeRaw, [rehypeTruncate, { maxChars, disable: typeof maxChars === "undefined"}]]}
-        className={truncate ? "markdown-truncate" : ""}
-    >
-        {markdownToDisplay}
-    </ReactMarkdown>
+    <div className={truncate ? "markdown-truncate" : ""}>
+        <ReactMarkdown
+            remarkPlugins={[remarkGfm]}
+            rehypePlugins={[rehypeRaw, [rehypeTruncate, { maxChars, disable: typeof maxChars === "undefined"}]]}
+        >
+            {markdownToDisplay}
+        </ReactMarkdown>
+    </div>
 );

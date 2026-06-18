@@ -1,5 +1,5 @@
 import * as ko from "knockout";
-import * as moment from "moment";
+import moment from "moment";
 import template from "./subscriptions.html";
 import { Component, RuntimeComponent, OnMounted } from "@paperbits/common/ko/decorators";
 import { SubscriptionListItem } from "./subscriptionListItem";

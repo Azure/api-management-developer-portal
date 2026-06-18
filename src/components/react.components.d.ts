@@ -1,5 +1,8 @@
-declare namespace JSX {
-    interface IntrinsicElements {
+import "react";
+
+declare module "react" {
+    namespace JSX {
+        interface IntrinsicElements {
         "fui-operation-list": any;
         "operation-list": any;
         "fui-operation-details": any;
@@ -54,5 +57,6 @@ declare namespace JSX {
         "placeholder-content": any;
         "fui-reports-runtime": any;
         "reports-runtime": any;
+        }
     }
 }
