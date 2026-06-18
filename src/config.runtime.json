@@ -1,4 +1,4 @@
 {
     "environment": "runtime",
-    "backendUrl": "https://< service name >.developer.azure-api.net"
+    "backendUrl": "https://alzaslon-runtime-redesign.developer.azure-api.net"
 }

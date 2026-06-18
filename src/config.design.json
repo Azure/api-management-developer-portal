@@ -1,6 +1,6 @@
 {
-    "environment": "development",
-    "subscriptionId": "< subscription ID >",
-    "resourceGroupName": "< resource group name >",
-    "serviceName": "< service name >"
+  "environment": "development",
+  "subscriptionId": "35ab1ed1-bdbf-4875-b0a9-6da9abec2e7b",
+  "resourceGroupName": "testing",
+  "serviceName": "alzaslon-runtime-redesign"
 }

@@ -28,7 +28,7 @@ export class AnalyticsService {
      * @returns Page of report records.
      */
     public async getReportsByTime(startTime: Date, endTime: Date, interval: number): Promise<Page<ReportRecordByTime>> {
-        const userId = await this.usersService.getCurrentUserId();
+        const userId = await this.getCurrentUserIdOrThrow();
         const query = `${userId}/reports/ByTime?$filter=timestamp ge ${startTime.toISOString()} and timestamp le ${endTime.toISOString()}&interval=PT${interval}M`;
         const pageOfRecords = await this.apiClient.get<Page<ReportRecordByTime>>(query, [await this.apiClient.getPortalHeader("getReportsByTime")]);
 
@@ -42,7 +42,7 @@ export class AnalyticsService {
      * @returns Page of report records.
      */
     public async getReportsByGeo(startTime: Date, endTime: Date): Promise<Page<ReportRecordByGeo>> {
-        const userId = await this.usersService.getCurrentUserId();
+        const userId = await this.getCurrentUserIdOrThrow();
         const query = `${userId}/reports/ByRegion?$filter=timestamp ge ${startTime.toISOString()} and timestamp le ${endTime.toISOString()}`;
         const pageOfRecords = await this.apiClient.get<Page<ReportRecordByGeo>>(query, [await this.apiClient.getPortalHeader("getReportsByGeo")]);
 
@@ -63,7 +63,7 @@ export class AnalyticsService {
         const startTime = reportQuery.startTime.toISOString();
         const endTime = reportQuery.endTime.toISOString();
 
-        const userId = await this.usersService.getCurrentUserId();
+        const userId = await this.getCurrentUserIdOrThrow();
         const query = `${userId}/reports/ByProduct?$filter=timestamp ge ${startTime} and timestamp le ${endTime}&$top=${take}&$skip=${skip}&$orderby=${orderBy} ${orderDirection}`;
         const pageOfRecords = await this.apiClient.get<Page<ReportRecordByProduct>>(query, [await this.apiClient.getPortalHeader("getReportsByProduct")]);
 
@@ -84,7 +84,7 @@ export class AnalyticsService {
         const startTime = reportQuery.startTime.toISOString();
         const endTime = reportQuery.endTime.toISOString();
 
-        const userId = await this.usersService.getCurrentUserId();
+        const userId = await this.getCurrentUserIdOrThrow();
         const query = `${userId}/reports/BySubscription?$filter=timestamp ge ${startTime} and timestamp le ${endTime}&$top=${take}&$skip=${skip}&$orderby=${orderBy} ${orderDirection}`;
         const pageOfRecords = await this.apiClient.get<Page<ReportRecordBySubscription>>(query, [await this.apiClient.getPortalHeader("getReportsBySubscription")]);
 
@@ -105,7 +105,7 @@ export class AnalyticsService {
         const startTime = reportQuery.startTime.toISOString();
         const endTime = reportQuery.endTime.toISOString();
 
-        const userId = await this.usersService.getCurrentUserId();
+        const userId = await this.getCurrentUserIdOrThrow();
         const query = `${userId}/reports/ByEndpoint?$filter=timestamp ge ${startTime} and timestamp le ${endTime}&$top=${take}&$skip=${skip}&$orderby=${orderBy} ${orderDirection}`;
         const pageOfRecords = await this.apiClient.get<Page<ReportRecordByApi>>(query, [await this.apiClient.getPortalHeader("getReportsByApi")]);
 
@@ -126,10 +126,21 @@ export class AnalyticsService {
         const startTime = reportQuery.startTime.toISOString();
         const endTime = reportQuery.endTime.toISOString();
 
-        const userId = await this.usersService.getCurrentUserId();
+        const userId = await this.getCurrentUserIdOrThrow();
         const query = `${userId}/reports/ByOperation?$filter=timestamp ge ${startTime} and timestamp le ${endTime}&$top=${take}&$skip=${skip}&$orderby=${orderBy} ${orderDirection}`;
         const pageOfRecords = await this.apiClient.get<Page<ReportRecordByOperation>>(query, [await this.apiClient.getPortalHeader("getReportsByOperation")]);
 
         return pageOfRecords;
+    }
+
+    private async getCurrentUserIdOrThrow(): Promise<string> {
+        const userId = await this.usersService.getCurrentUserId();
+
+        if (userId) {
+            return userId;
+        }
+
+        // In editor/integration contexts there is no signed-in user; APIM reports are queried as admin.
+        return `/users/${Constants.adminUserId}`;
     }
 }

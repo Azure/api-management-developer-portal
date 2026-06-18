@@ -9,6 +9,16 @@ const NODE_ENV = process.env.NODE_ENV || "development";
 const runtimeConfig = {
     mode: NODE_ENV,
     target: "web",
+    ignoreWarnings: [
+        {
+            module: /@paperbits[\\/]react[\\/]bindings[\\/]reactComponentBinder\.ts$/,
+            message: /export 'render' \(imported as 'ReactDOM'\) was not found in 'react-dom'/
+        },
+        {
+            module: /@paperbits[\\/]react[\\/]customElements\.ts$/,
+            message: /export 'render' \(imported as 'ReactDOM'\) was not found in 'react-dom'/
+        }
+    ],
     entry: {
         "scripts/theme": ["./src/startup.runtime.ts"],
         "serviceWorker": ["./src/telemetry/serviceWorker.ts"]
@@ -28,7 +38,14 @@ const runtimeConfig = {
                         options: { url: { filter: (url) => /\/icon-.*\.svg$/.test(url) } }
                     },
                     { loader: "postcss-loader" },
-                    { loader: "sass-loader" }
+                    {
+                        loader: "sass-loader",
+                        options: {
+                            sassOptions: {
+                                silenceDeprecations: ["import", "global-builtin", "color-functions"]
+                            }
+                        }
+                    }
                 ]
             },
             {

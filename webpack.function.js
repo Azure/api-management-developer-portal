@@ -9,6 +9,16 @@ const runtimeConfig = require("./webpack.runtime");
 const functionConfig = {
     mode: "development",
     target: "node",
+    ignoreWarnings: [
+        {
+            module: /@paperbits[\\/]react[\\/]bindings[\\/]reactComponentBinder\.ts$/,
+            message: /export 'render' \(imported as 'ReactDOM'\) was not found in 'react-dom'/
+        },
+        {
+            module: /@paperbits[\\/]react[\\/]customElements\.ts$/,
+            message: /export 'render' \(imported as 'ReactDOM'\) was not found in 'react-dom'/
+        }
+    ],
     node: {
         __dirname: false,
         __filename: false,
@@ -43,7 +53,14 @@ const functionConfig = {
                     MiniCssExtractPlugin.loader,
                     { loader: "css-loader", options: { url: false } },
                     { loader: "postcss-loader" },
-                    { loader: "sass-loader" }
+                    {
+                        loader: "sass-loader",
+                        options: {
+                            sassOptions: {
+                                silenceDeprecations: ["import", "global-builtin", "color-functions"]
+                            }
+                        }
+                    }
                 ]
             },
             {

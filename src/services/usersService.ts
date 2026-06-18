@@ -139,12 +139,13 @@ export class UsersService {
     public async getCurrentUserId(): Promise<string> {
         try {
             const identityId = await this.getCurrentUserIdentityId();
+            const normalizedIdentityId = this.normalizeIdentityId(identityId);
 
-            if (!identityId) {
+            if (!normalizedIdentityId) {
                 return null;
             }
 
-            return `/users/${identityId}`;
+            return `/users/${normalizedIdentityId}`;
         }
         catch (error) {
             return null;
@@ -167,8 +168,14 @@ export class UsersService {
                 return null;
             }
 
+            const normalizedIdentityId = this.normalizeIdentityId(identity.id);
+
+            if (!normalizedIdentityId) {
+                return null;
+            }
+
             return {
-                id: `/users/${identity.id}`,
+                id: `/users/${normalizedIdentityId}`,
                 provider: identity.provider
             }
         }
@@ -356,5 +363,19 @@ export class UsersService {
         catch (error) {
             return null;
         }
+    }
+
+    private normalizeIdentityId(identityId: string | null | undefined): string | null {
+        if (!identityId) {
+            return null;
+        }
+
+        const normalized = identityId.trim();
+
+        if (!normalized || normalized.toLowerCase() === "null" || normalized.toLowerCase() === "undefined") {
+            return null;
+        }
+
+        return normalized;
     }
 }
