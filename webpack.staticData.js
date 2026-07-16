@@ -9,7 +9,7 @@ const staticDataCopyPatterns = [
 ];
 
 module.exports = async () => {
-    const [publisherConfig, publisherRuntimeConfig] = await getPublisherConfigs();
+    const [publisherConfig, publisherRuntimeConfig] = await getPublisherConfigs({ skipArmToken: true });
 
     publisherConfig.mode = "none";
     publisherConfig.plugins.push(new webpack.DefinePlugin({

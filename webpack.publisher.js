@@ -12,18 +12,22 @@ const publisherRuntimeConfig = merge(runtimeConfig, {
     output: { "path": path.resolve(__dirname, "dist/publisher/assets") }
 });
 
-async function generateWebpackConfig() {
-    const tokenOptions = {};
-    
-    if (config.tenantId) {
-        console.log(`Using tenantId: ${config.tenantId}`);
-        tokenOptions.tenantId = config.tenantId;
+async function generateWebpackConfig(skipArmToken = false) {
+    let armToken;
+
+    if (!skipArmToken) {
+        const tokenOptions = {};
+
+        if (config.tenantId) {
+            console.log(`Using tenantId: ${config.tenantId}`);
+            tokenOptions.tenantId = config.tenantId;
+        }
+        if (config.clientId) {
+            console.log(`Using clientId: ${config.clientId}`);
+            tokenOptions.clientId = config.clientId;
+        }
+        armToken = await getArmToken(tokenOptions);
     }
-    if (config.clientId) {
-        console.log(`Using clientId: ${config.clientId}`);
-        tokenOptions.clientId = config.clientId;
-    }
-    const armToken = await getArmToken(tokenOptions);
 
     const publisherConfig = {
         mode: "development",
@@ -110,7 +114,7 @@ async function generateWebpackConfig() {
     return publisherConfig;
 }
 
-module.exports = async () => {
-    const publisherConfig = await generateWebpackConfig();
+module.exports = async (options = {}) => {
+    const publisherConfig = await generateWebpackConfig(options.skipArmToken);
     return [publisherConfig, publisherRuntimeConfig];
 };
