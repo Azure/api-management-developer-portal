@@ -115,6 +115,6 @@ async function generateWebpackConfig(skipArmToken = false) {
 }
 
 module.exports = async (options = {}) => {
-    const publisherConfig = await generateWebpackConfig(options.skipArmToken);
+    const publisherConfig = await generateWebpackConfig(options.skipArmToken ?? false);
     return [publisherConfig, publisherRuntimeConfig];
 };
