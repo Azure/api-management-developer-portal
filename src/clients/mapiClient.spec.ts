@@ -29,6 +29,10 @@ describe("Mapi Client", async () => {
         clear: () => { global.sessionStorage._values.clear(); }
     }
 
+    // Pre-seed a valid non-expired SAS token so ArmAuthenticator.getAccessToken() returns from
+    // sessionStorage cache and never calls authenticate(), which relies on browser-only `location`.
+    global.sessionStorage.setItem("armAccessToken", createMockToken());
+
     const settingsProvider = new StaticSettingsProvider({
         managementApiUrl: "https://contoso.management.azure-api.net",
         backendUrl: "https://contoso.developer.azure-api.net",
