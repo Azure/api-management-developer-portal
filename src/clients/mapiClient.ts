@@ -45,7 +45,7 @@ export class MapiClient extends ApiClient {
             return;
         }
 
-        throw new Error("Service name setting is missing.");
+        throw new Error("Unable to determine management API URL: no valid configuration found (managementApiUrl, serviceName/subscriptionId/resourceGroupName, or backendUrl must be set).");
     }
 
     public async getTenantArmUriAsync(): Promise<string> {
