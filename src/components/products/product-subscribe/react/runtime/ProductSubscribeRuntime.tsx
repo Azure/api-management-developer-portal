@@ -27,7 +27,7 @@ type ProductSubscribeRuntimeFCProps = ProductSubscribeRuntimeProps & {
 const loadProduct = async (usersService: UsersService, delegationService: IDelegationService, productService: ProductService, productName: string) => {
     const promises = [
         await delegationService.isSubscriptionDelegationEnabled(),
-        await productService.getProduct(`products/${productName}`),
+        await productService.getProduct(productName),
         await usersService.getCurrentUserId(),
     ] as const;
     const [isDelegationEnabled, product, userId] = await Promise.all(promises);

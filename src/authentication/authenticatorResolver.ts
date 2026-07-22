@@ -6,6 +6,8 @@ import { ArmAuthenticator } from "./armAuthenticator";
 import { IAuthenticator } from "./IAuthenticator";
 import { IEditorSettings } from "./IEditorSettings";
 
+declare const ARM_TOKEN: string | undefined;
+
 export class AuthenticatorResolver {
     private loadPromise: Promise<IAuthenticator>;
 

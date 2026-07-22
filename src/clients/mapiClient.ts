@@ -7,6 +7,7 @@ import * as Constants from "../constants";
 import ApiClient from "./apiClient";
 import { IRetryStrategy } from "./retryStrategy/retryStrategy";
 import { SettingNames } from "../constants";
+import { Utils } from "../utils";
 
 export class MapiClient extends ApiClient {
     constructor(
@@ -22,25 +23,29 @@ export class MapiClient extends ApiClient {
 
     protected override async setBaseUrl() {
         const settings = await this.settingsProvider.getSettings();
-        
+
+        const managementApiUrl = settings[Constants.SettingNames.managementApiUrl];
+        if (managementApiUrl) {
+            this.baseUrl = managementApiUrl;
+            return;
+        }
+
         const serviceName = settings[Constants.SettingNames.serviceName];
         const subscriptionId = settings[Constants.SettingNames.subscriptionId];
         const resourceGroupName = settings[Constants.SettingNames.resourceGroupName];
 
-        if (!serviceName) {
-            throw new Error("Service name setting is missing.");
+        if (serviceName && subscriptionId && resourceGroupName) {
+            this.baseUrl = `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.ApiManagement/service/${serviceName}`;
+            return;
         }
 
-        if (!subscriptionId) {
-            throw new Error("Subscription ID setting is missing.");
+        const backendUrl = settings[Constants.SettingNames.backendUrl];
+        if (backendUrl) {
+            this.baseUrl = Utils.getBaseUrlWithMapiSuffix(backendUrl);
+            return;
         }
 
-        if (!resourceGroupName) {
-            throw new Error("Resource Group name setting is missing.");
-        }
-
-        this.baseUrl = `https://management.azure.com/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.ApiManagement/service/${serviceName}`;
-
+        throw new Error("Unable to determine management API URL: no valid configuration found (managementApiUrl, serviceName/subscriptionId/resourceGroupName, or backendUrl must be set).");
     }
 
     public async getTenantArmUriAsync(): Promise<string> {

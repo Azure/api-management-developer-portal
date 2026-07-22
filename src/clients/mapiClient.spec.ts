@@ -21,13 +21,17 @@ describe("Mapi Client", async () => {
 
     global.sessionStorage = {
         _values: new Map<string, string>(),
-        length: global.sessionStorage._values.size,
+        get length() { return this._values.size; },
         key: (index: number) => { return null; },
         getItem: (key: string) => { return global.sessionStorage._values.get(key); },
         setItem: (key: string, value: string) => { global.sessionStorage._values.set(key, value); },
         removeItem: (key: string) => { global.sessionStorage._values.delete(key); },
         clear: () => { global.sessionStorage._values.clear(); }
     }
+
+    // Pre-seed a valid non-expired SAS token so ArmAuthenticator.getAccessToken() returns from
+    // sessionStorage cache and never calls authenticate(), which relies on browser-only `location`.
+    global.sessionStorage.setItem("armAccessToken", createMockToken());
 
     const settingsProvider = new StaticSettingsProvider({
         managementApiUrl: "https://contoso.management.azure-api.net",

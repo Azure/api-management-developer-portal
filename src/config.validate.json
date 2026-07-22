@@ -1,7 +1,7 @@
 {
     "environment": "validation",
-    "isLocalRun": false,
-    "root": "https://<service>.developer.azure-api.net",
+    "isLocalRun": true,
+    "root": "http://localhost:8080",
     "managementUrl": "https://<service>.management.azure-api.net",
     "accessToken": "SharedAccessSignature ...",
     "useArmAuth": false,
