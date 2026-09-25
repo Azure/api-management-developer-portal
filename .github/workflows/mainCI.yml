@@ -19,10 +19,10 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@0717577d45739eb3c851188b29f50ed6c0b2194e # v2.8.0
 
       - name: Setup Node.js 20
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version: 20
 
@@ -35,7 +35,7 @@ jobs:
       - name: Scan for accessibility issues
         env:
           ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
-        uses: microsoft/accessibility-insights-action@v2
+        uses: microsoft/accessibility-insights-action@4de5e651634d3efc10c7573633780e01371aec4e # v2
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           site-dir: ${{ github.workspace }}/dist/website
@@ -43,7 +43,7 @@ jobs:
           input-urls: http://localhost:12345/profile http://localhost:12345/500 http://localhost:12345/404
 
       - name: Upload report artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: accessibility-reports
           path: ${{ github.workspace }}/_accessibility-reports
