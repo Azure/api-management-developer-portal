@@ -53,13 +53,11 @@ export class SigninSocialViewModelBinder implements ViewModelBinder<SigninSocial
         const termsOfService = await this.getTermsOfService();
         const termsOfUse = (termsOfService.text && termsOfService.enabled) ? termsOfService.text : undefined;
 
-        const tenants = aadIdentityProvider.allowedTenants || [];
-        
         if (aadIdentityProvider) {
             state.aadConfig = {
                 classNames: classNames,
                 label: model.aadLabel,
-                tenants: tenants,
+                tenants: aadIdentityProvider.allowedTenants || [],
                 replyUrl: model.aadReplyUrl || undefined,
                 termsOfUse: aadB2CIdentityProvider ? undefined : termsOfUse // display terms of use only once if both configs are present
             };
