@@ -107,7 +107,7 @@
         "file-saver": "^2.0.5",
         "google-maps": "^4.3.3",
         "graphql": "^15.5.0",
-        "graphql-config": "^4.3.6",
+        "graphql-config": "^5.1.8",
         "graphql-language-service": "3.1.6",
         "html-truncate": "1.2.2",
         "idb-keyval": "^6.2.1",
