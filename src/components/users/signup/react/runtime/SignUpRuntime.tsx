@@ -158,6 +158,7 @@ export class SignUpRuntime extends React.Component<SignUpRuntimeProps> {
             if (isCaptchaRequired) {
                 const createSignupRequest: SignupRequest = {
                     challenge: captchaData.challenge,
+                    powChallenge: captchaData.powChallenge,
                     solution: captchaData.solution?.solution,
                     flowId: captchaData.solution?.flowId,
                     token: captchaData.solution?.token,

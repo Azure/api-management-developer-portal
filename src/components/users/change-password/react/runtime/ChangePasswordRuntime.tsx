@@ -94,6 +94,7 @@ export class ChangePasswordRuntime extends React.Component<ChangePasswordRuntime
             if (isCaptchaRequired) {
                 const changePasswordRequest: ChangePasswordRequest = {
                     challenge: captchaData.challenge,
+                    powChallenge: captchaData.powChallenge,
                     solution: captchaData.solution?.solution,
                     flowId: captchaData.solution?.flowId,
                     token: captchaData.solution?.token,

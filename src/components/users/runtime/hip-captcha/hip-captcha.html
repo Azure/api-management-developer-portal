@@ -1,4 +1,4 @@
-<!-- ko if: isNewCaptcha() || isLegacyCaptcha() -->
+<!-- ko if: isNewCaptcha() || isLegacyCaptcha() || isPowCaptcha() -->
 <div id="captcha" class="captcha">
     <!-- ko if: working -->
     <div class="cards-body">
@@ -6,12 +6,22 @@
     </div>
     <!-- /ko -->
     <!-- ko ifnot: working -->
+        <!-- ko if: isPowCaptcha -->
+        <div class="form-group">
+            <altcha-widget
+                data-bind="attr: { challengejson: powChallengeJson }"
+                hidelogo="true"
+                hidefooter="true"
+                name="powPayload"
+            ></altcha-widget>
+        </div>
+        <!-- /ko -->
         <!-- ko if: isNewCaptcha -->
         <div class="form-group">
             <!-- ko if: captchaType() == 'visual' -->
             <label for="captchaValue">Enter the characters you see.</label>
             <!-- /ko -->
-            <!-- ko if: captchaType() == 'audio' -->                
+            <!-- ko if: captchaType() == 'audio' -->
             <label for="captchaValue">Press icon to play or repeat the audio. Enter the words you hear in any order.</label>
             <!-- /ko -->
             <div class="captcha-toggle">
@@ -39,7 +49,7 @@
         </div>
         <!-- /ko -->
     <!-- /ko -->
-    
+
     <!-- ko if: isLegacyCaptcha -->
     <div class="form-group">
         <div id="ispHIPHIP"></div>

@@ -198,6 +198,7 @@ export class Signup {
                     flowId: captchaRequestData.solution?.flowId,
                     token: captchaRequestData.solution?.token,
                     type: captchaRequestData.solution?.type,
+                    powChallenge: captchaRequestData.powChallenge,
                     signupData: mapiSignupData
                 };
 

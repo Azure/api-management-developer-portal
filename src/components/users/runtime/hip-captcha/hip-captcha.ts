@@ -6,6 +6,8 @@ import template from "./hip-captcha.html";
 import { CaptchaChallenge } from "../../../../contracts/captchaParams";
 import { CaptchaData } from "../../../../models/captchaData";
 
+import "altcha";
+
 declare let WLSPHIP0;
 declare let fillHipData;
 
@@ -18,20 +20,25 @@ export class HipCaptcha {
 
     public readonly isNewCaptcha: ko.Observable<boolean>;
     public readonly isLegacyCaptcha: ko.Observable<boolean>;
+    public readonly isPowCaptcha: ko.Observable<boolean>;
     public readonly captchaChallenge: ko.Observable<string>;
+    public readonly powChallengeJson: ko.Observable<string>;
     public readonly captchaValue: ko.Observable<string>;
     public readonly captchaType: ko.Observable<string>;
     public readonly working: ko.Observable<boolean>;
     public challengeData: CaptchaChallenge;
 
     private audioElement: HTMLAudioElement;
+    private altchaWidget: any;
 
     constructor(private readonly backendService: BackendService) {
         this.encryptedFlowId = ko.observable();
         this.captchaChallenge = ko.observable();
+        this.powChallengeJson = ko.observable();
         this.captchaType = ko.observable();
         this.isNewCaptcha = ko.observable(false);
         this.isLegacyCaptcha = ko.observable(false);
+        this.isPowCaptcha = ko.observable(false);
         this.working = ko.observable(true);
         this.captchaData = ko.observable();
         this.captchaValue = ko.observable();
@@ -52,11 +59,12 @@ export class HipCaptcha {
     public async initialize(): Promise<void> {
         try {
             const settings = await this.backendService.getCaptchaSettings();
-            this.isNewCaptcha(settings && settings.captchaEnabled);
+            this.isPowCaptcha(settings && settings.powEnabled);
+            this.isNewCaptcha(settings && settings.captchaEnabled && !settings.powEnabled);
             this.isLegacyCaptcha(settings && settings.legacyCaptchaEnabled);
 
             // Do not load Captcha component if captcha endpoints are not available
-            if (!this.isNewCaptcha() && !this.isLegacyCaptcha()) {
+            if (!this.isNewCaptcha() && !this.isLegacyCaptcha() && !this.isPowCaptcha()) {
                 this.working(false);
                 return;
             }
@@ -66,7 +74,9 @@ export class HipCaptcha {
         }
 
         try {
-            if (this.isNewCaptcha()) {
+            if (this.isPowCaptcha()) {
+                await this.getPowCaptchaChallenge();
+            } else if (this.isNewCaptcha()) {
                 this.captchaValue
                     .extend({ rateLimit: { timeout: Constants.defaultInputDelayMs, method: "notifyWhenChangesStop" } })
                     .subscribe(this.updateChallengeInput);
@@ -102,7 +112,7 @@ export class HipCaptcha {
         this.working(true);
         this.captchaType(challengeType);
         try {
-            this.challengeData = await this.backendService.getCaptchaChallenge(challengeType);
+            this.challengeData = await this.backendService.getHipCaptchaChallenge(challengeType);
             if (this.challengeData) {
                 this.captchaData({
                     challenge: {
@@ -127,6 +137,45 @@ export class HipCaptcha {
             }
         } finally {
             this.working(false);
+        }
+    }
+
+    private async getPowCaptchaChallenge(): Promise<void> {
+        this.working(true);
+        try {
+            const challengeData = await this.backendService.getPowCaptchaChallenge();
+            if (challengeData) {
+                this.powChallengeJson(JSON.stringify(challengeData));
+                this.captchaData({
+                    challenge: undefined,
+                    solution: undefined,
+                    powChallenge: {
+                        solution: undefined
+                    }
+                });
+
+                // Setup altcha widget listener after DOM renders
+                setTimeout(() => {
+                    this.setupAltchaWidget();
+                }, 0);
+            }
+        } finally {
+            this.working(false);
+        }
+    }
+
+    private setupAltchaWidget(): void {
+        this.altchaWidget = document.querySelector("altcha-widget");
+        if (this.altchaWidget) {
+            this.altchaWidget.addEventListener("statechange", (ev: CustomEvent) => {
+                if (ev.detail && ev.detail.payload) {
+                    const data = this.captchaData();
+                    if (data && data.powChallenge) {
+                        data.powChallenge.solution = ev.detail.payload;
+                        this.captchaData(data);
+                    }
+                }
+            });
         }
     }
 
@@ -192,7 +241,13 @@ export class HipCaptcha {
 
     public setValidation(captchaValidator: ko.Observable<string>): void {
         const data = this.captchaData();
-        if (this.isNewCaptcha()) {
+        if (this.isPowCaptcha()) {
+            if (data?.powChallenge?.solution) {
+                captchaValidator("valid");
+            } else {
+                captchaValidator(null); // is not valid
+            }
+        } else if (this.isNewCaptcha()) {
             if (data.challenge?.testCaptchaRequest.inputSolution) {
                 captchaValidator("valid");
             } else {
@@ -223,7 +278,9 @@ export class HipCaptcha {
     public async refreshCaptcha(): Promise<void> {
         this.working(true);
         try {
-            if (this.isNewCaptcha()) {
+            if (this.isPowCaptcha()) {
+                await this.getPowCaptchaChallenge();
+            } else if (this.isNewCaptcha()) {
                 await this.refreshChallenge();
             } else {
                 WLSPHIP0.reloadHIP();

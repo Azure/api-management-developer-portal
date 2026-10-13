@@ -5,11 +5,16 @@ import { CaptchaChallengeRequest } from "./captchaParams";
  */
 export interface SignupRequest {
     challenge: CaptchaChallengeRequest;
+    powChallenge: PowCaptchaPayload;
     solution: string;
     token: string;
     type: string;
     flowId: string;
     signupData: MapiSignupRequest;
+}
+
+export interface PowCaptchaPayload {
+    solution: string;
 }
 
 export interface MapiSignupRequest {

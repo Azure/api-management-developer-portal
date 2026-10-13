@@ -1,6 +1,6 @@
 import { MapiError, MapiErrorCodes } from "./../errors/mapiError";
 import { HttpClient, HttpRequest, HttpResponse, HttpMethod } from "@paperbits/common/http";
-import { CaptchaChallenge, CaptchaParams, CaptchaSettings } from "../contracts/captchaParams";
+import { CaptchaChallenge, CaptchaParams, CaptchaSettings, PowCaptchaChallengeRequest } from "../contracts/captchaParams";
 import { SignupRequest } from "../contracts/signupRequest";
 import { ResetRequest, ChangePasswordRequest } from "../contracts/resetRequest";
 import { IAuthenticator } from "../authentication";
@@ -12,7 +12,6 @@ import { KnownHttpHeaders } from "../models/knownHttpHeaders";
 import { Utils } from "../utils";
 import { AuthorizationServerForClient } from "../contracts/authorizationServer";
 import { AuthorizationServer } from "../models/authorizationServer";
-import { Bag } from "@paperbits/common/bag";
 
 export class BackendService {
     private portalUrl: string;
@@ -41,7 +40,7 @@ export class BackendService {
         return this.handleResponse<CaptchaSettings>(response, httpRequest.url);
     }
 
-    public async getCaptchaChallenge(challengeType?: string): Promise<CaptchaChallenge> {
+    public async getHipCaptchaChallenge(challengeType?: string): Promise<CaptchaChallenge> {
         let response: HttpResponse<CaptchaChallenge>;
         let requestUrl = "/captcha-challenge";
         if (challengeType) {
@@ -60,6 +59,24 @@ export class BackendService {
         }
 
         return this.handleResponse<CaptchaChallenge>(response, httpRequest.url);
+    }
+
+    public async getPowCaptchaChallenge(): Promise<PowCaptchaChallengeRequest> {
+        let response: HttpResponse<PowCaptchaChallengeRequest>;
+        const requestUrl = "/v2/captcha-challenge";
+        const httpRequest: HttpRequest = {
+            method: HttpMethod.get,
+            url: await this.getUrl(requestUrl)
+        };
+
+        try {
+            response = await this.httpClient.send<any>(httpRequest);
+        }
+        catch (error) {
+            throw new Error(`Unable to complete request. Error: ${error.message}`);
+        }
+
+        return this.handleResponse<PowCaptchaChallengeRequest>(response, httpRequest.url);
     }
 
     public async getCaptchaParams(): Promise<CaptchaParams> {
@@ -199,4 +216,3 @@ export class BackendService {
         }
     }
 }
-

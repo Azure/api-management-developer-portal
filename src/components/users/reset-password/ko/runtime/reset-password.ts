@@ -108,6 +108,7 @@ export class ResetPassword {
                 const captchaRequestData = this.captchaData();
                 const resetRequest: ResetRequest = {
                     challenge: captchaRequestData.challenge,
+                    powChallenge: captchaRequestData.powChallenge,
                     solution: captchaRequestData.solution?.solution,
                     flowId: captchaRequestData.solution?.flowId,
                     token: captchaRequestData.solution?.token,
