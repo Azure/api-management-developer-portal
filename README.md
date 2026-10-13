@@ -9,7 +9,7 @@ This repository is managed by the [Microsoft Azure API Management](https://aka.m
 The `master` branch of this repository is used for daily development purposes and may contain unstable version of the software. We recommend using [releases](https://github.com/Azure/api-management-developer-portal/releases) for setting up your portal.
 
 > [!IMPORTANT]
-> The legacy HIP CAPTCHA service is deprecated in favor of proof-of-work (PoW) CAPTCHA. If you self-host the developer portal, update to release 2.35.0 or later before HIP is disabled for your API Management service. Release 2.34.0 and earlier do not support the `powEnabled` setting; without this update, CAPTCHA-protected sign-up, password reset, and password change flows may stop working.
+> The legacy HIP CAPTCHA service is deprecated in favor of proof-of-work (PoW) CAPTCHA. If you self-host the developer portal, update to release 2.35.0 or later by **November 20, 2026**, before HIP is disabled for your API Management service. Release 2.34.0 and earlier do not support the `powEnabled` setting; without this update, CAPTCHA-protected sign-up, password reset, and password change flows may stop working.
 
 ## <a name="feedback"></a> Interactions
 
