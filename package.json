@@ -61,7 +61,7 @@
         "mini-css-extract-plugin": "^2.7.6",
         "mocha": "^10.2.0",
         "path": "^0.12.7",
-        "playwright": "1.40.1",
+        "playwright": "1.55.1",
         "postcss-loader": "^7.3.3",
         "querystring-es3": "^0.2.1",
         "raw-loader": "^4.0.2",
