@@ -73,6 +73,7 @@ export class ResetPasswordRuntime extends React.Component<ResetPasswordRuntimePr
             if (isCaptchaRequired) {
                 const resetRequest: ResetRequest = {
                     challenge: captchaData.challenge,
+                    powChallenge: captchaData.powChallenge,
                     solution: captchaData.solution?.solution,
                     flowId: captchaData.solution?.flowId,
                     token: captchaData.solution?.token,

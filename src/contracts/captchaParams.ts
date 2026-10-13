@@ -1,5 +1,5 @@
 /**
- * Contract of HipCaptcha params 
+ * Contract of HipCaptcha params
  */
 
 export interface CaptchaParams {
@@ -15,11 +15,16 @@ export interface CaptchaSettings {
      * True if new captcha endpoint is set
      */
     captchaEnabled: boolean;
-    
+
      /**
      * True if legacy captcha endpoint is set
      */
     legacyCaptchaEnabled: boolean;
+
+    /**
+     * True if proof of work captcha endpoint is set
+     */
+    powEnabled: boolean;
 
     /**
      * True if captcha service by pass allowed
@@ -28,7 +33,7 @@ export interface CaptchaSettings {
 }
 
 export interface CaptchaChallenge {
-    /** 
+    /**
      * Challenge ID, e.g.  "0520f064-e1bd-4784-bd8e-17816b720859"
      */
     ChallengeId: string;
@@ -47,6 +52,14 @@ export interface CaptchaChallenge {
      * Challenge type, can be "audio" or "visual"
      */
     ChallengeType: string;
+}
+
+export interface PowCaptchaChallengeRequest {
+  challenge: string;
+  challengeId: string;
+  expires: number;
+  algorithm: string;
+  difficulty: number;
 }
 
 export interface CaptchaChallengeRequest {

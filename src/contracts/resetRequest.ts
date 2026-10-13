@@ -1,10 +1,15 @@
 import { CaptchaChallengeRequest } from "./captchaParams";
 
+export interface PowCaptchaPayload {
+    solution: string;
+}
+
 /**
  * Cotract of Reset password request
  */
 export interface ResetRequest {
     challenge: CaptchaChallengeRequest;
+    powChallenge: PowCaptchaPayload;
     solution: string;
     token: string;
     type: string;
@@ -13,10 +18,11 @@ export interface ResetRequest {
 }
 
 /**
- * Cotract of user change password 
+ * Cotract of user change password
  */
 export interface ChangePasswordRequest {
     challenge: CaptchaChallengeRequest;
+    powChallenge: PowCaptchaPayload;
     solution: string;
     token: string;
     type: string;

@@ -18,7 +18,7 @@ const getCaptchaChallenge = async (
     challengeType: ECaptchaType,
     backendService: BackendService
 ): Promise<TCaptchaObj> => {
-    const challengeData = await backendService.getCaptchaChallenge(challengeType);
+    const challengeData = await backendService.getHipCaptchaChallenge(challengeType);
     if (challengeData) {
         return {
             captchaChallenge: challengeData.ChallengeString,
