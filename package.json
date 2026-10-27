@@ -1,6 +1,6 @@
 {
     "name": "apim-developer-portal",
-    "version": "2.33.0",
+    "version": "2.36.0",
     "description": "API management developer portal",
     "author": "Microsoft",
     "license": "MIT",
@@ -8,7 +8,7 @@
         "azure"
     ],
     "engines": {
-        "node": ">18 <23"
+        "node": ">18 <25"
     },
     "scripts": {
         "start": "webpack-dev-server --open --config webpack.develop.js",
@@ -17,7 +17,7 @@
         "build-publisher": "webpack --config webpack.publisher.js",
         "build-runtime": "webpack --config webpack.runtime.js",
         "build-function": "webpack --config webpack.function.js",
-        "test": "node node_modules/mocha/bin/_mocha -r mocha.js --exit src/**/*.spec.ts",
+        "test": "node --no-experimental-strip-types node_modules/mocha/bin/_mocha -r mocha.js --exit src/**/*.spec.ts",
         "deploy-function": "npm run build-function && cd dist/function && func azure functionapp publish < function app name >",
         "publish": "webpack --config webpack.publisher.js && node dist/publisher/index.js && npm run serve-website",
         "serve-website": "webpack serve --open --static ./dist/website --no-stats",
@@ -40,7 +40,7 @@
         "@types/knockout.validation": "0.0.40",
         "@types/mime": "^3.0.1",
         "@types/mocha": "10.0.1",
-        "@types/node": "^20.6.2",
+        "@types/node": "^24.19.2",
         "@types/react": "^18.0.27",
         "@types/sinon": "^10.0.13",
         "@typescript-eslint/eslint-plugin": "^5.60.0",
