@@ -210,7 +210,7 @@ export class OAuthService {
                 client_id: authorizationServer.clientId,
                 code_verifier: sessionStorage.getItem("code_verifier"),
                 grant_type: GrantTypes.authorizationCode,
-                redirect_uri: redirectUri,
+                redirect_uri: redirectUri.toLowerCase(),
                 code: authorizationCode
             });
 
